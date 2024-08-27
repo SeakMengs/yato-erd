@@ -10,9 +10,9 @@ import {
 import { ref } from "vue";
 import { MiniMap } from "@vue-flow/minimap";
 import { Controls } from "@vue-flow/controls";
-import TableNode from "~/components/diagram/node/TableNode.vue";
-import type { CustomTableNode } from "~/types/diagram/node/table_node";
+import type { CustomTableNode } from "~/types/diagram/table_node";
 import ThemeButton from "~/components/ThemeButton.vue";
+import { NodeType } from "~/types/diagram/node";
 
 const { applyNodeChanges, addEdges, updateEdge } = useVueFlow();
 
@@ -29,7 +29,7 @@ const nodes = ref<CustomTableNode[]>([
         },
       ],
     },
-    type: "table",
+    type: NodeType.Table,
   },
   {
     id: "2",
@@ -47,7 +47,7 @@ const nodes = ref<CustomTableNode[]>([
         },
       ],
     },
-    type: "table",
+    type: NodeType.Table,
   },
 ]);
 
@@ -71,11 +71,12 @@ function onEdgeUpdate({
 }
 
 function onConnect(params: Edge | Connection): void {
+  // console.log("On connect", params);
   addEdges([params]);
 }
 
 async function onNodesChange(changes: NodeChange[]): Promise<void> {
-  console.log(changes);
+  // console.log("Changes: ", changes);
 
   const nextChanges = [];
 
@@ -89,6 +90,7 @@ async function onNodesChange(changes: NodeChange[]): Promise<void> {
 
 <template>
   <ThemeButton />
+  <DiagramLeftSheet />
   <ClientOnly>
     <VueFlow
       class="bg-zinc-700"
@@ -100,7 +102,7 @@ async function onNodesChange(changes: NodeChange[]): Promise<void> {
       @nodes-change="onNodesChange"
     >
       <template #node-table="props">
-        <TableNode
+        <DiagramTableNode
           v-bind="{
             ...props,
             tableName: props.data.tableName,
@@ -114,7 +116,7 @@ async function onNodesChange(changes: NodeChange[]): Promise<void> {
   </ClientOnly>
 </template>
 
-<style lang="css">
+<style>
 @import "@vue-flow/core/dist/style.css";
 
 /* this contains the default theme, these are optional styles */

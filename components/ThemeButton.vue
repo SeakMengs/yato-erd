@@ -1,12 +1,5 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { THEME } from "~/types/theme";
 
 const colorMode = useColorMode();
