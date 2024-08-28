@@ -78,29 +78,33 @@ function onConnect(params: Edge | Connection): void {
 async function onNodesChange(changes: NodeChange[]): Promise<void> {
   // console.log("Changes: ", changes);
 
-  const nextChanges = [];
+  // const nextChanges = [];
+  //
+  // for (const change of changes) {
+  //   nextChanges.push(change);
+  // }
 
-  for (const change of changes) {
-    nextChanges.push(change);
-  }
-
-  applyNodeChanges(nextChanges);
+  applyNodeChanges(changes);
 }
 </script>
 
 <template>
   <ThemeButton />
-  <DiagramLeftSheet />
+  <DiagramLeftSideBar />
   <ClientOnly>
     <VueFlow
-      class="bg-zinc-700"
+      class="bg-zinc-700 !h-[calc(100%-48px)]"
       :nodes="nodes"
+      :edges-updatable="true"
       :edges="edges"
       :apply-changes="false"
+      :connection-radius="70"
+      auto-connect
       @edge-update="onEdgeUpdate"
       @connect="onConnect"
       @nodes-change="onNodesChange"
     >
+      <!-- Subjected to "#note-${node-type}" in this case, my custom node is called "table" -->
       <template #node-table="props">
         <DiagramTableNode
           v-bind="{

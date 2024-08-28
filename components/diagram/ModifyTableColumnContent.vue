@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Trash } from "lucide-vue-next";
-import { DEFAULT_COLUMN } from "~/constants/table";
+// import { DEFAULT_COLUMN } from "~/constants/table";
 import type { TableNodeDataColumn } from "~/types/diagram/table_node";
 
 const props = defineProps<{
@@ -10,17 +10,17 @@ const props = defineProps<{
   removeColumn: () => void;
 }>();
 
-watchEffect(() => {
-  if (!props.column.columnName) {
-    props.column.columnName = `column_${props.columnPosition + 1}`;
-  }
-
-  if (!props.column.attribute.type) {
-    props.column.attribute.type = structuredClone(
-      DEFAULT_COLUMN.attribute.type,
-    );
-  }
-});
+// watchEffect(() => {
+  // if (!props.column.columnName) {
+  //   props.column.columnName = `column_${props.columnPosition + 1}`;
+  // }
+  //
+  // if (!props.column.attribute.type) {
+  //   props.column.attribute.type = structuredClone(
+  //     DEFAULT_COLUMN.attribute.type,
+  //   );
+  // }
+// });
 </script>
 
 <template>

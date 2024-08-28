@@ -4,10 +4,15 @@ import CardContent from "~/components/ui/card/CardContent.vue";
 import CardHeader from "~/components/ui/card/CardHeader.vue";
 import CardTitle from "~/components/ui/card/CardTitle.vue";
 import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
-import { Position, Handle } from "@vue-flow/core";
+import { Position, Handle, type Connection } from "@vue-flow/core";
 
 // There are more props being passed by vueflow than the one i define!
 const props = defineProps<TableNodeDataWithNodeId>();
+
+function isValidConnection(connection: Connection): boolean {
+  // Prevent handle to connect with it own node (table basically)
+  return connection.source !== connection.target;
+}
 </script>
 
 <template>
@@ -21,6 +26,7 @@ const props = defineProps<TableNodeDataWithNodeId>();
           :id="`${props.id}-left-${col.columnName}`"
           type="source"
           :position="Position.Left"
+          :is-valid-connection="isValidConnection"
           class="absolute top-1/2 transform -translate-y-1/2"
         />
         <!-- Column content -->

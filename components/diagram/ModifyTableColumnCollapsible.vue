@@ -42,7 +42,11 @@ function removeColumn(pos: number): void {
 </script>
 
 <template>
-  <Collapsible :open="isOpen" class="py-4 flex flex-col gap-4">
+  <Collapsible
+    :open="isOpen"
+    class="py-4 flex flex-col gap-4"
+    :id="`collapsible-table-${props.id}`"
+  >
     <CollapsibleTrigger as-child @click="toggleOpen">
       <div class="flex flex-row items-center gap-4">
         <ChevronDown class="h-4 w-4" />
@@ -51,7 +55,7 @@ function removeColumn(pos: number): void {
     </CollapsibleTrigger>
     <CollapsibleContent>
       <div class="flex flex-col gap-4">
-        <DiagramModifyTableColumn
+        <DiagramModifyTableColumnContent
           v-for="(column, index) in props.columns"
           :table-id="props.id"
           :column="column"
