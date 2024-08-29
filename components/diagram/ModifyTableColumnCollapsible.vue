@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useVueFlow } from "@vue-flow/core";
 import { ChevronDown } from "lucide-vue-next";
+import { VUEFLOW_ID } from "~/constants/diagram";
 import { DEFAULT_COLUMN } from "~/constants/table";
 import type {
   TableNodeData,
@@ -13,7 +14,7 @@ const props = defineProps<
   }
 >();
 const isOpen = ref<boolean>(props.selected);
-const { updateNodeData } = useVueFlow();
+const { updateNodeData } = useVueFlow(VUEFLOW_ID);
 
 function toggleOpen(): void {
   isOpen.value = !isOpen.value;

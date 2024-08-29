@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import Card from "~/components/ui/card/Card.vue";
-import CardContent from "~/components/ui/card/CardContent.vue";
-import CardHeader from "~/components/ui/card/CardHeader.vue";
-import CardTitle from "~/components/ui/card/CardTitle.vue";
 import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
-import { Position, Handle, type Connection } from "@vue-flow/core";
+import { Position, Handle, type Connection, useVueFlow } from "@vue-flow/core";
+import { VUEFLOW_ID } from "~/constants/diagram";
 
-// There are more props being passed by vueflow than the one i define!
+// There are more props being passed by vueflow than the type i define!
 const props = defineProps<TableNodeDataWithNodeId>();
+const { findNode } = useVueFlow(VUEFLOW_ID);
+
+const selected = computed<boolean>(() => {
+  return findNode(props.id)?.selected ?? false;
+});
 
 function isValidConnection(connection: Connection): boolean {
   // Prevent handle to connect with it own node (table basically)
@@ -16,7 +18,15 @@ function isValidConnection(connection: Connection): boolean {
 </script>
 
 <template>
-  <Card class="w-[320px]">
+  <Card
+    :class="
+      cn('w-[320px]', {
+        'ring-2 ring-ring': selected,
+        // maybe one day allow user to export with or without drop shadow
+        'drop-shadow': true,
+      })
+    "
+  >
     <CardHeader class="p-4">
       <CardTitle>{{ props.tableName }}</CardTitle>
     </CardHeader>
@@ -27,7 +37,7 @@ function isValidConnection(connection: Connection): boolean {
           type="source"
           :position="Position.Left"
           :is-valid-connection="isValidConnection"
-          class="absolute top-1/2 transform -translate-y-1/2"
+          class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
         />
         <!-- Column content -->
         <div>
@@ -42,9 +52,18 @@ function isValidConnection(connection: Connection): boolean {
           :id="`${props.id}-right-${col.columnName}`"
           type="source"
           :position="Position.Right"
-          class="absolute top-1/2 transform -translate-y-1/2"
+          class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
         />
       </div>
     </CardContent>
   </Card>
 </template>
+
+<style scoped>
+.vue-flow__handle {
+  height: 1.5rem;
+  width: 0.5rem;
+  border-color: hsl(var(--primary));
+  border-radius: 0.25rem;
+}
+</style>

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useVueFlow } from "@vue-flow/core";
 import { CirclePlus } from "lucide-vue-next";
+import { VUEFLOW_ID } from "~/constants/diagram";
 import { DEFAULT_TABLE } from "~/constants/table";
 import { NodeType } from "~/types/diagram/node";
 
-const { getNodes, addNodes } = useVueFlow();
+const { getNodes, addNodes } = useVueFlow(VUEFLOW_ID);
 
 function addTable(): void {
   const newTable = structuredClone(DEFAULT_TABLE);
@@ -39,7 +40,7 @@ function addTable(): void {
     </SheetTrigger>
     <SheetContent side="left" class="p-0 scroll-smooth">
       <SheetHeader class="mt-4 p-6 pb-0">
-        <div class="flex flex-row justify-between">
+        <div class="flex flex-row justify-between items-center">
           <SheetTitle>Edit tables</SheetTitle>
           <Button
             @click="addTable"
@@ -52,7 +53,10 @@ function addTable(): void {
         </div>
         <SheetDescription></SheetDescription>
       </SheetHeader>
-      <ScrollArea class="h-[calc(100%-72px)] p-6 py-0">
+      <ScrollArea
+        class="h-[calc(100%-72px)] p-6 py-0"
+        v-if="getNodes.length > 0"
+      >
         <DiagramModifyTableColumnCollapsible
           v-for="(node, index) in getNodes"
           :key="node.id"
@@ -65,6 +69,9 @@ function addTable(): void {
           }"
         />
       </ScrollArea>
+      <div v-else class="flex items-center justify-center my-6">
+        <p>No table</p>
+      </div>
     </SheetContent>
   </Sheet>
 </template>

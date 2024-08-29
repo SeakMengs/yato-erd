@@ -6,6 +6,9 @@ import {
   type Edge,
   type GraphEdge,
   type Connection,
+  MarkerType,
+  type EdgeTypesObject,
+  type EdgeChange,
 } from "@vue-flow/core";
 import { ref } from "vue";
 import { MiniMap } from "@vue-flow/minimap";
@@ -13,13 +16,26 @@ import { Controls } from "@vue-flow/controls";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 import ThemeButton from "~/components/ThemeButton.vue";
 import { NodeType } from "~/types/diagram/node";
+import { EdgeType } from "~/types/diagram/edge";
+import ERDEdge from "~/components/diagram/ERDEdge.vue";
+import { THEME } from "~/types/theme";
+import { VUEFLOW_ID } from "~/constants/diagram";
 
-const { applyNodeChanges, addEdges, updateEdge } = useVueFlow();
+const { applyNodeChanges, applyEdgeChanges, addEdges, updateEdge, findEdge } =
+  useVueFlow(VUEFLOW_ID);
+
+const colorMode = useColorMode();
+const dark = computed(() => colorMode.preference === THEME.DARK);
+
+const edgeTypes = {
+  default: markRaw(ERDEdge),
+  erd: markRaw(ERDEdge),
+} satisfies EdgeTypesObject;
 
 const nodes = ref<CustomTableNode[]>([
   {
     id: "1",
-    position: { x: 0, y: 0 },
+    position: { x: 100, y: 100 },
     data: {
       tableName: "Node 1",
       columns: [
@@ -33,7 +49,7 @@ const nodes = ref<CustomTableNode[]>([
   },
   {
     id: "2",
-    position: { x: 100, y: 100 },
+    position: { x: 250, y: 250 },
     data: {
       tableName: "Node 2",
       columns: [
@@ -52,14 +68,15 @@ const nodes = ref<CustomTableNode[]>([
 ]);
 
 const edges = ref<Edge[]>([
-  // {
-  //   id: "e1->2",
-  //   source: "1",
-  //   type: "step",
-  //   target: "2",
-  // },
+  {
+    id: "e1->2",
+    source: "1",
+    type: EdgeType.ERD,
+    target: "2",
+  },
 ]);
 
+// basically for user to move the connected edge to other handle
 function onEdgeUpdate({
   edge,
   connection,
@@ -71,20 +88,28 @@ function onEdgeUpdate({
 }
 
 function onConnect(params: Edge | Connection): void {
-  // console.log("On connect", params);
-  addEdges([params]);
+  addEdges({ ...params, markerEnd: MarkerType.Arrow, type: "smoothstep" });
 }
 
-async function onNodesChange(changes: NodeChange[]): Promise<void> {
-  // console.log("Changes: ", changes);
-
-  // const nextChanges = [];
-  //
-  // for (const change of changes) {
-  //   nextChanges.push(change);
-  // }
-
+function onNodesChange(changes: NodeChange[]): void {
   applyNodeChanges(changes);
+}
+
+function handleEdgeSelect(edgeId: string): void {
+  const edge = findEdge(edgeId);
+
+  if (!edge) return;
+  edge.animated = edge.selected;
+}
+
+function onEdgesChange(changes: EdgeChange[]): void {
+  changes.forEach((c) => {
+    if (c.type === "select") {
+      handleEdgeSelect(c.id);
+    }
+  });
+
+  applyEdgeChanges(changes);
 }
 </script>
 
@@ -93,26 +118,40 @@ async function onNodesChange(changes: NodeChange[]): Promise<void> {
   <DiagramLeftSideBar />
   <ClientOnly>
     <VueFlow
-      class="bg-zinc-700 !h-[calc(100%-48px)]"
+      :id="VUEFLOW_ID"
+      :class="
+        cn('bg-secondary !h-[calc(100%-48px)]', {
+          dark: dark,
+        })
+      "
       :nodes="nodes"
       :edges-updatable="true"
       :edges="edges"
+      :edge-types="edgeTypes"
       :apply-changes="false"
       :connection-radius="70"
-      auto-connect
+      :auto-connect="true"
+      :only-render-visible-elements="true"
       @edge-update="onEdgeUpdate"
       @connect="onConnect"
       @nodes-change="onNodesChange"
+      @edges-change="onEdgesChange"
     >
       <!-- Subjected to "#note-${node-type}" in this case, my custom node is called "table" -->
-      <template #node-table="props">
+      <template #node-table="erdNodeprops">
         <DiagramTableNode
           v-bind="{
-            ...props,
-            tableName: props.data.tableName,
-            columns: props.data.columns,
+            ...erdNodeprops,
+            tableName: erdNodeprops.data.tableName,
+            columns: erdNodeprops.data.columns,
           }"
         />
+      </template>
+      <template #connection-line="lineProps">
+        <DiagramConnectionLine v-bind="lineProps" />
+      </template>
+      <template #edge-erd="edgeErdProps">
+        <DiagramERDEdge v-bind="edgeErdProps" />
       </template>
       <!-- <MiniMap pannable zoomable /> -->
       <Controls />
