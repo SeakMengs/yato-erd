@@ -1,6 +1,6 @@
 import { NodeType } from "~/types/diagram/node";
 import type {
-  CustomTableNode,
+  TableNode,
   TableNodeDataColumn,
 } from "~/types/diagram/table_node";
 
@@ -29,4 +29,4 @@ export const DEFAULT_TABLE = {
     ],
   },
   type: NodeType.Table,
-} satisfies CustomTableNode;
+} satisfies TableNode;

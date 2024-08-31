@@ -13,7 +13,7 @@ import {
 import { ref } from "vue";
 import { MiniMap } from "@vue-flow/minimap";
 import { Controls } from "@vue-flow/controls";
-import type { CustomTableNode } from "~/types/diagram/table_node";
+import type { TableNode } from "~/types/diagram/table_node";
 import ThemeButton from "~/components/ThemeButton.vue";
 import { NodeType } from "~/types/diagram/node";
 import { EdgeType } from "~/types/diagram/edge";
@@ -32,7 +32,7 @@ const edgeTypes = {
   erd: markRaw(ERDEdge),
 } satisfies EdgeTypesObject;
 
-const nodes = ref<CustomTableNode[]>([
+const nodes = ref<TableNode[]>([
   {
     id: "1",
     position: { x: 100, y: 100 },
@@ -84,6 +84,8 @@ function onEdgeUpdate({
   edge: GraphEdge;
   connection: Connection;
 }): void {
+  if (!isValidEdgeConnection(connection)) return;
+
   updateEdge(edge, connection);
 }
 
@@ -95,17 +97,28 @@ function onNodesChange(changes: NodeChange[]): void {
   applyNodeChanges(changes);
 }
 
-function handleEdgeSelect(edgeId: string): void {
+function handleSelectEdge(edgeId: string): void {
   const edge = findEdge(edgeId);
 
   if (!edge) return;
   edge.animated = edge.selected;
 }
 
+function handleAddEdgeType(type: EdgeType | string): string {
+  return type === EdgeType.Default ? EdgeType.ERD : type;
+}
+
 function onEdgesChange(changes: EdgeChange[]): void {
   changes.forEach((c) => {
-    if (c.type === "select") {
-      handleEdgeSelect(c.id);
+    switch (c.type) {
+      case "select":
+        handleSelectEdge(c.id);
+        break;
+      case "add":
+        c.item.type = handleAddEdgeType(c.item.type);
+        break;
+      default:
+        break;
     }
   });
 
@@ -147,6 +160,7 @@ function onEdgesChange(changes: EdgeChange[]): void {
           }"
         />
       </template>
+      <!-- Default connection line when user drag the line from handle -->
       <template #connection-line="lineProps">
         <DiagramConnectionLine v-bind="lineProps" />
       </template>
