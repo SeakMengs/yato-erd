@@ -6,12 +6,13 @@ import { DEFAULT_TABLE } from "~/constants/table";
 import { NodeType } from "~/types/diagram/node";
 
 const { getNodes, addNodes } = useVueFlow(VUEFLOW_ID);
+const { generateRandomNodePosition } = useVueFlowUtils();
 
 function addTable(): void {
   const newTable = structuredClone(DEFAULT_TABLE);
 
-  newTable.id = crypto.randomUUID();
-  newTable.data.tableName = `Table-${getNodes.value.length + 1}`;
+  newTable.id = generateShortId();
+  newTable.data.tableName = `Table-${getNodes.value.length + 1}-${generateShortId(3)}`;
 
   const conflict = getNodes.value.some((node) => {
     if (node.type !== NodeType.Table) {
@@ -60,9 +61,11 @@ function addTable(): void {
         <DiagramModifyTableColumnCollapsible
           v-for="(node, index) in getNodes"
           :key="node.id"
-          :id="node.id"
-          :table-name="node.data?.tableName ?? ''"
-          :columns="node.data?.columns ?? []"
+          :table-node-data-with-node-id="{
+            tableNodeId: node.id,
+            columns: node.data?.columns ?? [],
+            tableName: node.data?.tableName ?? '',
+          }"
           :selected="node.selected ?? false"
           :class="{
             'mb-6': getNodes.length === index + 1,

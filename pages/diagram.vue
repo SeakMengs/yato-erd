@@ -10,21 +10,26 @@ import {
   type EdgeTypesObject,
   type EdgeChange,
 } from "@vue-flow/core";
-import { ref } from "vue";
 import { MiniMap } from "@vue-flow/minimap";
 import { Controls } from "@vue-flow/controls";
-import type { TableNode } from "~/types/diagram/table_node";
 import ThemeButton from "~/components/ThemeButton.vue";
-import { NodeType } from "~/types/diagram/node";
-import { EdgeType } from "~/types/diagram/edge";
 import ERDEdge from "~/components/diagram/ERDEdge.vue";
 import { THEME } from "~/types/theme";
 import { VUEFLOW_ID } from "~/constants/diagram";
 
-const { applyNodeChanges, applyEdgeChanges, addEdges, updateEdge, findEdge } =
-  useVueFlow(VUEFLOW_ID);
+const {
+  applyNodeChanges,
+  applyEdgeChanges,
+  addEdges,
+  updateEdge,
+  findEdge,
+  getNodes,
+  getEdges,
+} = useVueFlow(VUEFLOW_ID);
+const { isValidEdgeConnection } = useVueFlowUtils();
 
 const colorMode = useColorMode();
+// FIXME: check what if user use system mode? they would get unwanted colorscheme in the diagram
 const dark = computed(() => colorMode.preference === THEME.DARK);
 
 const edgeTypes = {
@@ -32,49 +37,11 @@ const edgeTypes = {
   erd: markRaw(ERDEdge),
 } satisfies EdgeTypesObject;
 
-const nodes = ref<TableNode[]>([
-  {
-    id: "1",
-    position: { x: 100, y: 100 },
-    data: {
-      tableName: "Node 1",
-      columns: [
-        {
-          columnName: "Lol",
-          attribute: {},
-        },
-      ],
-    },
-    type: NodeType.Table,
-  },
-  {
-    id: "2",
-    position: { x: 250, y: 250 },
-    data: {
-      tableName: "Node 2",
-      columns: [
-        {
-          columnName: "Lolc1",
-          attribute: {},
-        },
-        {
-          columnName: "Lolc2",
-          attribute: {},
-        },
-      ],
-    },
-    type: NodeType.Table,
-  },
-]);
+const erdState = useErd();
 
-const edges = ref<Edge[]>([
-  {
-    id: "e1->2",
-    source: "1",
-    type: EdgeType.ERD,
-    target: "2",
-  },
-]);
+onMounted(() => {
+  erdState.fetchErdState();
+});
 
 // basically for user to move the connected edge to other handle
 function onEdgeUpdate({
@@ -84,7 +51,7 @@ function onEdgeUpdate({
   edge: GraphEdge;
   connection: Connection;
 }): void {
-  if (!isValidEdgeConnection(connection)) return;
+  if (!isValidEdgeConnection(connection, false)) return;
 
   updateEdge(edge, connection);
 }
@@ -104,10 +71,6 @@ function handleSelectEdge(edgeId: string): void {
   edge.animated = edge.selected;
 }
 
-function handleAddEdgeType(type: EdgeType | string): string {
-  return type === EdgeType.Default ? EdgeType.ERD : type;
-}
-
 function onEdgesChange(changes: EdgeChange[]): void {
   changes.forEach((c) => {
     switch (c.type) {
@@ -115,7 +78,7 @@ function onEdgesChange(changes: EdgeChange[]): void {
         handleSelectEdge(c.id);
         break;
       case "add":
-        c.item.type = handleAddEdgeType(c.item.type);
+        c.item.type = handleDefaultEdgeType(c.item.type);
         break;
       default:
         break;
@@ -129,6 +92,11 @@ function onEdgesChange(changes: EdgeChange[]): void {
 <template>
   <ThemeButton />
   <DiagramLeftSideBar />
+  <Button
+    variant="outline"
+    @click="() => erdState.saveErdStateToLocalStorage(getNodes, getEdges)"
+    >Save state
+  </Button>
   <ClientOnly>
     <VueFlow
       :id="VUEFLOW_ID"
@@ -137,14 +105,14 @@ function onEdgesChange(changes: EdgeChange[]): void {
           dark: dark,
         })
       "
-      :nodes="nodes"
+      :nodes="erdState.getNodes"
+      :edges="erdState.getEdges"
       :edges-updatable="true"
-      :edges="edges"
       :edge-types="edgeTypes"
       :apply-changes="false"
       :connection-radius="70"
       :auto-connect="true"
-      :only-render-visible-elements="true"
+      :only-render-visible-elements="false"
       @edge-update="onEdgeUpdate"
       @connect="onConnect"
       @nodes-change="onNodesChange"
@@ -155,8 +123,11 @@ function onEdgesChange(changes: EdgeChange[]): void {
         <DiagramTableNode
           v-bind="{
             ...erdNodeprops,
-            tableName: erdNodeprops.data.tableName,
-            columns: erdNodeprops.data.columns,
+            tableNodeDataWithNodeId: {
+              tableNodeId: erdNodeprops.id,
+              tableName: erdNodeprops.data.tableName,
+              columns: erdNodeprops.data.columns,
+            },
           }"
         />
       </template>

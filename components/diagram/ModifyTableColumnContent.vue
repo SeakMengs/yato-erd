@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useVueFlow } from "@vue-flow/core";
 import { Trash } from "lucide-vue-next";
 // import { DEFAULT_COLUMN } from "~/constants/table";
 import type { TableNodeDataColumn } from "~/types/diagram/table_node";
@@ -11,15 +12,15 @@ const props = defineProps<{
 }>();
 
 // watchEffect(() => {
-  // if (!props.column.columnName) {
-  //   props.column.columnName = `column_${props.columnPosition + 1}`;
-  // }
-  //
-  // if (!props.column.attribute.type) {
-  //   props.column.attribute.type = structuredClone(
-  //     DEFAULT_COLUMN.attribute.type,
-  //   );
-  // }
+// if (!props.column.columnName) {
+//   props.column.columnName = `column_${props.columnPosition + 1}`;
+// }
+//
+// if (!props.column.attribute.type) {
+//   props.column.attribute.type = structuredClone(
+//     DEFAULT_COLUMN.attribute.type,
+//   );
+// }
 // });
 </script>
 
