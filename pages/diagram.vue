@@ -6,7 +6,6 @@ import {
   type Edge,
   type GraphEdge,
   type Connection,
-  MarkerType,
   type EdgeTypesObject,
   type EdgeChange,
 } from "@vue-flow/core";
@@ -57,7 +56,7 @@ function onEdgeUpdate({
 }
 
 function onConnect(params: Edge | Connection): void {
-  addEdges({ ...params, markerEnd: MarkerType.Arrow, type: "smoothstep" });
+  addEdges({ ...params });
 }
 
 function onNodesChange(changes: NodeChange[]): void {

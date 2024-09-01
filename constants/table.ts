@@ -6,6 +6,7 @@ import type {
 
 // Becareful with reference, make sure to deep clone the object when assigning the variable to somewhere that has user input
 export const DEFAULT_COLUMN = {
+  columnId: "",
   columnName: "",
   attribute: {
     type: "bigint",
@@ -21,12 +22,7 @@ export const DEFAULT_TABLE = {
   position: { x: 0, y: 0 },
   data: {
     tableName: "",
-    columns: [
-      {
-        columnName: "column-1",
-        attribute: {},
-      },
-    ],
+    columns: [] as TableNodeDataColumn[],
   },
   type: NodeType.Table,
 } satisfies CustomTableNode;

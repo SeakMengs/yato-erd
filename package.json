@@ -24,6 +24,8 @@
     "lucide-vue-next": "^0.435.0",
     "nuxt": "^3.12.4",
     "pinia": "^2.2.2",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.2",
     "radix-vue": "^1.9.4",
     "shadcn-nuxt": "^0.10.4",
     "tailwind-merge": "^2.5.2",

@@ -139,7 +139,7 @@ export const useErd = defineStore("erd-state", {
   actions: {
     validateErdState(state: any): ERDState {
       const result = erdStateSchema.safeParse(state);
-      console.log("validated", result);
+      logger.info("validated", result);
       if (!result.success) {
         return {
           nodes: [],
@@ -160,7 +160,6 @@ export const useErd = defineStore("erd-state", {
       nodes: Node[] | GraphNode[],
       edges: Edge[] | GraphEdge[],
     ): void {
-      console.log(nodes, edges);
       localStorage.setItem(
         "erd-state",
         JSON.stringify(

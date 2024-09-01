@@ -2,36 +2,9 @@
 import { useVueFlow } from "@vue-flow/core";
 import { CirclePlus } from "lucide-vue-next";
 import { VUEFLOW_ID } from "~/constants/diagram";
-import { DEFAULT_TABLE } from "~/constants/table";
-import { NodeType } from "~/types/diagram/node";
 
-const { getNodes, addNodes } = useVueFlow(VUEFLOW_ID);
-const { generateRandomNodePosition } = useVueFlowUtils();
-
-function addTable(): void {
-  const newTable = structuredClone(DEFAULT_TABLE);
-
-  newTable.id = generateShortId();
-  newTable.data.tableName = `Table-${getNodes.value.length + 1}-${generateShortId(3)}`;
-
-  const conflict = getNodes.value.some((node) => {
-    if (node.type !== NodeType.Table) {
-      return false;
-    }
-
-    return (
-      node.data?.tableName === newTable.data.tableName ||
-      node.id === newTable.id
-    );
-  });
-
-  if (conflict) {
-    return addTable();
-  }
-
-  newTable.position = generateRandomNodePosition();
-  addNodes(newTable);
-}
+const { getNodes } = useVueFlow(VUEFLOW_ID);
+const { addTable } = useVueFlowUtils();
 </script>
 
 <template>

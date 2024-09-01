@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import { useVueFlow } from "@vue-flow/core";
 import { ChevronDown } from "lucide-vue-next";
-import { VUEFLOW_ID } from "~/constants/diagram";
-import { DEFAULT_COLUMN } from "~/constants/table";
-import type {
-  TableNodeData,
-  TableNodeDataWithNodeId,
-} from "~/types/diagram/table_node";
+import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
 
 const props = defineProps<{
   // cannot just use type and extend the object, cuz vue will throw unresolve type error
@@ -14,34 +8,10 @@ const props = defineProps<{
   selected: boolean;
 }>();
 const isOpen = ref<boolean>(props.selected);
-const { updateNodeData } = useVueFlow(VUEFLOW_ID);
+const { addColumn, removeColumn } = useVueFlowUtils();
 
 function toggleOpen(): void {
   isOpen.value = !isOpen.value;
-}
-
-function addColumn(): void {
-  props.tableNodeDataWithNodeId.columns.push({
-    ...structuredClone(DEFAULT_COLUMN),
-    columnId: generateShortId(),
-    columnName: `column_${props.tableNodeDataWithNodeId.columns.length + 1}`,
-  });
-}
-
-// Index position of the column array that we want to delete
-function removeColumn(pos: number): void {
-  if (pos < 0 && pos >= props.tableNodeDataWithNodeId.columns.length) {
-    return;
-  }
-
-  const newColumns = props.tableNodeDataWithNodeId.columns.filter(
-    (_, i) => i != pos,
-  );
-  const newData = {
-    tableName: props.tableNodeDataWithNodeId.tableName,
-    columns: newColumns,
-  } satisfies TableNodeData;
-  updateNodeData(props.tableNodeDataWithNodeId.tableNodeId, newData);
 }
 </script>
 
@@ -65,9 +35,14 @@ function removeColumn(pos: number): void {
           :column="column"
           :column-position="index"
           :key="index"
-          :removeColumn="() => removeColumn(index)"
+          :removeColumn="
+            () => removeColumn(props.tableNodeDataWithNodeId.tableNodeId, index)
+          "
         />
-        <Button @click="addColumn">Add column</Button>
+        <Button
+          @click="() => addColumn(props.tableNodeDataWithNodeId.tableNodeId)"
+          >Add column</Button
+        >
       </div>
     </CollapsibleContent>
   </Collapsible>

@@ -43,7 +43,9 @@ function getHandleId(position: "left" | "right", columnId: string): string {
           :id="getHandleId('left', col.columnId)"
           type="source"
           :position="Position.Left"
-          :is-valid-connection="isValidEdgeConnection"
+          :is-valid-connection="
+            (connection) => isValidEdgeConnection(connection)
+          "
           class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
         />
         <!-- Column content -->
@@ -60,7 +62,9 @@ function getHandleId(position: "left" | "right", columnId: string): string {
           type="source"
           :position="Position.Right"
           class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
-          :is-valid-connection="isValidEdgeConnection"
+          :is-valid-connection="
+            (connection) => isValidEdgeConnection(connection)
+          "
         />
       </div>
     </CardContent>
