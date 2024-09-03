@@ -152,25 +152,44 @@ export const useErd = defineStore(ERD_STATE_ID, {
       return result.data;
     },
     getErdStateFromLocalStorage(): ERDState {
-      const state = JSON.parse(localStorage.getItem("erd-state") ?? "{}");
+      try {
+        logger.info("Get erd state from local storage");
+        const state = JSON.parse(localStorage.getItem("erd-state") ?? "{}");
+        return this.validateErdState(state);
+      } catch (error) {
+        logger.error(
+          `There was an error in getErdStateFromLocalStorage`,
+          error,
+        );
+      }
 
-      return this.validateErdState(state);
+      return {
+        nodes: [],
+        edges: [],
+      };
     },
     saveErdStateToLocalStorage(
       nodes: Node[] | GraphNode[],
       edges: Edge[] | GraphEdge[],
     ): void {
-      localStorage.setItem(
-        "erd-state",
-        JSON.stringify(
-          this.validateErdState({
-            nodes: nodes,
-            edges: edges,
-          }),
-        ),
-      );
+      try {
+        logger.info("Saving erd state to local storage");
+        localStorage.setItem(
+          "erd-state",
+          JSON.stringify(
+            this.validateErdState({
+              nodes: nodes,
+              edges: edges,
+            }),
+          ),
+        );
+      } catch (error) {
+        logger.error(`There was an error while saving erd state`, error);
+        throw new Error("Failed to save erd state to local storage");
+      }
     },
     fetchErdState(): void {
+      logger.info("Fetching erd state from local storage");
       const state = this.getErdStateFromLocalStorage();
 
       this.nodes = state.nodes;

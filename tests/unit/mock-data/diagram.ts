@@ -1,3 +1,4 @@
+import type { Connection } from "@vue-flow/core";
 import type { DEFAULT_TABLE } from "~/constants/table";
 import { NodeType } from "~/types/diagram/node";
 
@@ -58,3 +59,17 @@ export const MOCK_NO_CONFLICT_TABLE = {
     tableName: "NoConflictTable",
   },
 };
+
+export const INVALID_EDGE_CONNECTION = {
+  source: "22b5d",
+  target: "22b5d",
+  sourceHandle: null,
+  targetHandle: null,
+} satisfies Connection;
+
+export const VALID_EDGE_CONNECTION = {
+  source: "22b5d",
+  target: "b4657",
+  sourceHandle: null,
+  targetHandle: null,
+} satisfies Connection;

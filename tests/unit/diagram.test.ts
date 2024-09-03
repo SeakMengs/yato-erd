@@ -1,9 +1,11 @@
 import { useVueFlow } from "@vue-flow/core";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  INVALID_EDGE_CONNECTION,
   MOCK_CONFLICT_TABLE,
   MOCK_NO_CONFLICT_TABLE,
   MOCK_TABLE_NODES,
+  VALID_EDGE_CONNECTION,
 } from "./mock-data/diagram";
 import { VUEFLOW_ID } from "~/constants/key";
 import type {
@@ -44,7 +46,7 @@ describe("useVueFlowUtils functionality", () => {
     expect(tableHasConflict(MOCK_CONFLICT_TABLE)).toBe(true);
   });
 
-  it("Should be able to add new table node", () => {
+  it("Should be able to add a new table node", () => {
     expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length);
     addTable();
     expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length + 1);
@@ -76,5 +78,10 @@ describe("useVueFlowUtils functionality", () => {
       EdgeType.SmoothStep,
     );
     expect(handleDefaultEdgeType(EdgeType.ERD)).toEqual(EdgeType.ERD);
+  });
+
+  it("Should not allow table handle to connect itself", () => {
+    expect(isValidEdgeConnection(INVALID_EDGE_CONNECTION, false)).toBe(false);
+    expect(isValidEdgeConnection(VALID_EDGE_CONNECTION, false)).toBe(true);
   });
 });

@@ -3,19 +3,16 @@ import type { Position } from "@vueuse/core";
 import { VUEFLOW_ID } from "~/constants/key";
 import { DEFAULT_COLUMN, DEFAULT_TABLE } from "~/constants/table";
 import { NodeType } from "~/types/diagram/node";
-import type {
-  CustomTableNode,
-  TableNodeData,
-} from "~/types/diagram/table_node";
+import type { CustomTableNode } from "~/types/diagram/table_node";
 
 export function useVueFlowUtils() {
   const {
     getConnectedEdges,
-    getViewport,
     findNode,
     getNodes,
     addNodes,
     updateNodeData,
+    setNodes,
   } = useVueFlow(VUEFLOW_ID);
 
   function generateRandomNodePosition(): Position {
@@ -23,6 +20,19 @@ export function useVueFlowUtils() {
       x: Math.random() * 400,
       y: Math.random() * 400,
     };
+  }
+
+  function onCollapsibleClick(nodeId: string) {
+    setNodes((nodes) => {
+      return nodes.map((n) => {
+        if (n.id === nodeId) {
+          n.selected = !n.selected;
+        } else {
+          n.selected = false;
+        }
+        return n;
+      });
+    });
   }
 
   function hasExistingEdgeOnColumnSide(
@@ -116,7 +126,7 @@ export function useVueFlowUtils() {
 
       addNodes([newTable]);
     } catch (error) {
-      logger.error(`There was an error in addTable ${error}`);
+      logger.error(`There was an error in addTable`, error);
     }
   }
 
@@ -149,7 +159,7 @@ export function useVueFlowUtils() {
         ],
       });
     } catch (error) {
-      logger.error(`There was an error in addColumn ${error}`);
+      logger.error(`There was an error in addColumn`, error);
     }
   }
 
@@ -190,7 +200,7 @@ export function useVueFlowUtils() {
         columns: node.data.columns.filter((c) => c.columnId != columnId),
       });
     } catch (error) {
-      logger.error(`There was an error in removeColumn ${error}`);
+      logger.error(`There was an error in removeColumn`, error);
     }
   }
 
@@ -203,5 +213,6 @@ export function useVueFlowUtils() {
     addTable,
     isValidEdgeConnection,
     handleDefaultEdgeType,
+    onCollapsibleClick,
   };
 }

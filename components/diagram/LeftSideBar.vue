@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useVueFlow } from "@vue-flow/core";
 import { CirclePlus } from "lucide-vue-next";
-import { VUEFLOW_ID } from "~/constants/diagram";
+import { VUEFLOW_ID } from "~/constants/key";
 
 const { getNodes } = useVueFlow(VUEFLOW_ID);
 const { addTable } = useVueFlowUtils();

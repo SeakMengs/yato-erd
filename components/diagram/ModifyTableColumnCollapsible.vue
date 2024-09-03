@@ -8,11 +8,19 @@ const props = defineProps<{
   selected: boolean;
 }>();
 const isOpen = ref<boolean>(props.selected);
-const { addColumn, removeColumn } = useVueFlowUtils();
+const { addColumn, removeColumn, onCollapsibleClick } = useVueFlowUtils();
 
 function toggleOpen(): void {
   isOpen.value = !isOpen.value;
+  onCollapsibleClick(props.tableNodeDataWithNodeId.tableNodeId);
 }
+
+watch(
+  () => props.selected,
+  () => {
+    isOpen.value = props.selected;
+  },
+);
 </script>
 
 <template>
