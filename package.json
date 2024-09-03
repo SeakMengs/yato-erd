@@ -5,11 +5,13 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "test": "vitest",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxtjs/i18n": "^8.5.1",
     "@pinia/nuxt": "^0.5.4",
     "@unovis/ts": "^1.4.3-beta.0",
     "@unovis/vue": "^1.4.3-beta.0",
@@ -40,11 +42,16 @@
   "devDependencies": {
     "@iconify-json/radix-icons": "^1.1.15",
     "@iconify/vue": "^4.1.2",
+    "@nuxt/test-utils": "^3.14.1",
     "@nuxtjs/color-mode": "^3.4.4",
     "@nuxtjs/tailwindcss": "^6.12.1",
+    "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.20",
+    "happy-dom": "^14.12.3",
+    "playwright-core": "^1.46.1",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   }
 }

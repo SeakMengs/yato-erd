@@ -1,5 +1,6 @@
 import { useVueFlow, type Connection } from "@vue-flow/core";
 import type { Position } from "@vueuse/core";
+import { VUEFLOW_ID } from "~/constants/key";
 import { DEFAULT_COLUMN, DEFAULT_TABLE } from "~/constants/table";
 import { NodeType } from "~/types/diagram/node";
 import type {
@@ -15,7 +16,7 @@ export function useVueFlowUtils() {
     getNodes,
     addNodes,
     updateNodeData,
-  } = useVueFlow();
+  } = useVueFlow(VUEFLOW_ID);
 
   function generateRandomNodePosition(): Position {
     return {
@@ -33,8 +34,7 @@ export function useVueFlowUtils() {
     }
 
     const extractColId = (handle: string | null | undefined): string => {
-      // Example
-      // targetHandle: "f48e3-left-73149"
+      // Example targetHandle: "f48e3-left-73149"
       return handle?.split("-")[2] ?? "";
     };
 
@@ -68,7 +68,7 @@ export function useVueFlowUtils() {
       }
     }
 
-    // Prevent handle to connect with it own node (table basically)
+    // Prevent handle to connect with it own node
     return connection.source !== connection.target;
   }
 
@@ -84,15 +84,14 @@ export function useVueFlowUtils() {
     };
   }
 
-  function isTableHasConflict(table: typeof DEFAULT_TABLE): boolean {
+  function tableHasConflict(table: typeof DEFAULT_TABLE): boolean {
+    logger.info(`Check for table node conflict of table id: ${table.id}`);
     return getNodes.value.some((node) => {
       if (node.type !== NodeType.Table) {
         return false;
       }
 
-      return (
-        node.data?.tableName === table.data?.tableName || node.id === table.id
-      );
+      return node.id === table.id;
     });
   }
 
@@ -109,13 +108,13 @@ export function useVueFlowUtils() {
           tableName: generateTableName(),
         },
         position: generateRandomNodePosition(),
-      } satisfies typeof DEFAULT_TABLE;
+      };
 
-      if (isTableHasConflict(newTable)) {
+      if (tableHasConflict(newTable)) {
         return addTable();
       }
 
-      addNodes(newTable);
+      addNodes([newTable]);
     } catch (error) {
       logger.error(`There was an error in addTable ${error}`);
     }
@@ -154,10 +153,11 @@ export function useVueFlowUtils() {
     }
   }
 
-  // Index position of the column array that we want to delete
-  function removeColumn(nodeId: string, pos: number): void {
+  function removeColumn(nodeId: string, columnId: string): void {
     try {
-      logger.info(`Removing a new column to table node id: ${nodeId}`);
+      logger.info(
+        `Removing a new column to table node id: ${nodeId}, column id: ${columnId}`,
+      );
 
       const node = findNode(nodeId) as CustomTableNode;
 
@@ -178,9 +178,16 @@ export function useVueFlowUtils() {
         node.data.columns = [];
       }
 
+      if (node.data.columns.length === 1) {
+        logger.info(
+          `Skip remove column in table node id: ${nodeId}, column id: ${columnId} because the table has only one column left`,
+        );
+        return;
+      }
+
       updateNodeData(node.id, {
         ...node.data,
-        columns: node.data.columns.filter((_, i: number) => i != pos),
+        columns: node.data.columns.filter((c) => c.columnId != columnId),
       });
     } catch (error) {
       logger.error(`There was an error in removeColumn ${error}`);
@@ -188,6 +195,9 @@ export function useVueFlowUtils() {
   }
 
   return {
+    // Export for unit test
+    tableHasConflict,
+    // End of export for unit test
     addColumn,
     removeColumn,
     addTable,

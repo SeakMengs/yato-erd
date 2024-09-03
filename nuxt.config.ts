@@ -7,7 +7,12 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
     "shadcn-nuxt",
     "@pinia/nuxt",
+    "@nuxtjs/i18n",
+    "@nuxt/test-utils/module",
   ],
+  i18n: {
+    vueI18n: "./config/i18n.config.ts",
+  },
   colorMode: {
     classSuffix: "",
   },

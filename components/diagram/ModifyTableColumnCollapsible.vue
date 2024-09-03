@@ -36,7 +36,11 @@ function toggleOpen(): void {
           :column-position="index"
           :key="index"
           :removeColumn="
-            () => removeColumn(props.tableNodeDataWithNodeId.tableNodeId, index)
+            () =>
+              removeColumn(
+                props.tableNodeDataWithNodeId.tableNodeId,
+                column.columnId,
+              )
           "
         />
         <Button

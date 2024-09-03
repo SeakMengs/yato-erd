@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
 import { Position, Handle, useVueFlow, type Connection } from "@vue-flow/core";
-import { VUEFLOW_ID } from "~/constants/diagram";
+import { VUEFLOW_ID } from "~/constants/key";
 
 // There are more props being passed by vueflow than the type i define!
 const props = defineProps<{

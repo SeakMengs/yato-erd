@@ -14,7 +14,7 @@ import { Controls } from "@vue-flow/controls";
 import ThemeButton from "~/components/ThemeButton.vue";
 import ERDEdge from "~/components/diagram/ERDEdge.vue";
 import { THEME } from "~/types/theme";
-import { VUEFLOW_ID } from "~/constants/diagram";
+import { VUEFLOW_ID } from "~/constants/key";
 
 const {
   applyNodeChanges,

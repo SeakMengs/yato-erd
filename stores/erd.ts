@@ -5,6 +5,7 @@ import { z } from "zod";
 import { NodeType } from "~/types/diagram/node";
 import { EdgeType } from "~/types/diagram/edge";
 import type { GraphNode } from "@unovis/ts";
+import { ERD_STATE_ID } from "~/constants/key";
 
 const columnIndexTypeSchemaEnum = z.enum(["Primary key", "Unique", "None"]);
 export const tableNodeDataColumnSchema = z.object({
@@ -31,7 +32,6 @@ export const tableNodeDataColumnSchema = z.object({
       .max(64, {
         message: "Column type must be less than 64 characters",
       })
-      .default("int")
       .optional(),
     nullable: z
       .boolean({
@@ -123,7 +123,7 @@ type ERDState = {
   edges: Edge[];
 };
 
-export const useErd = defineStore("erd-state", {
+export const useErd = defineStore(ERD_STATE_ID, {
   state: (): ERDState => ({
     nodes: [],
     edges: [],
