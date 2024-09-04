@@ -5,6 +5,7 @@ import {
   MOCK_CONFLICT_TABLE,
   MOCK_NO_CONFLICT_TABLE,
   MOCK_TABLE_NODES,
+  REMOVE_TABLE_NODE_ID,
   VALID_EDGE_CONNECTION,
 } from "./mock-data/diagram";
 import { VUEFLOW_ID } from "~/constants/key";
@@ -25,13 +26,16 @@ describe("useVueFlowUtils functionality", () => {
     isValidEdgeConnection,
   } = useVueFlowUtils();
 
+  const { removeTableByNodeId } = useVueFlowEvents();
+
   function getTable1Columns(): TableNodeDataColumn[] {
     const data = store.getNodes.value[0].data as TableNodeData;
     return data.columns;
   }
 
   beforeEach(() => {
-    store.addNodes(MOCK_TABLE_NODES);
+    // Reset node before everytime `it` function run
+    store.setNodes(MOCK_TABLE_NODES);
   });
 
   it("Should mock the `useVueFlow` composable, using getNodes should return mock table data", () => {
@@ -50,6 +54,12 @@ describe("useVueFlowUtils functionality", () => {
     expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length);
     addTable();
     expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length + 1);
+  });
+
+  it("Should be able to remove a table node", () => {
+    expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length);
+    removeTableByNodeId(REMOVE_TABLE_NODE_ID);
+    expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length - 1);
   });
 
   it("Should be able to add a new column to an existing table", () => {

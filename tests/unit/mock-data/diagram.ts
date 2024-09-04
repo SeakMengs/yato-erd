@@ -1,6 +1,6 @@
 import type { Connection } from "@vue-flow/core";
 import type { DEFAULT_TABLE } from "~/constants/table";
-import { NodeType } from "~/types/diagram/node";
+import { NodeType, type NodeConfirmedRemoveChange } from "~/types/diagram/node";
 
 export const MOCK_TABLE_NODES = [
   {
@@ -73,3 +73,5 @@ export const VALID_EDGE_CONNECTION = {
   sourceHandle: null,
   targetHandle: null,
 } satisfies Connection;
+
+export const REMOVE_TABLE_NODE_ID = MOCK_TABLE_NODES[0].id;

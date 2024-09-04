@@ -11,11 +11,11 @@ export type ConfirmDeleteNodeDialogProps = {
 };
 
 const props = defineProps<ConfirmDeleteNodeDialogProps>();
-const { deleteTableByNodeId } = useVueFlowUtils();
+const { removeTableByNodeId } = useVueFlowEvents();
 const { findNode } = useVueFlow(VUEFLOW_ID);
 const node = ref<CustomTableNode | undefined>();
 
-function assignNode(): void {
+function initializeNode(): void {
   const tempNode = findNode(props.nodeId);
 
   if (tempNode) {
@@ -24,13 +24,13 @@ function assignNode(): void {
 }
 
 onMounted(() => {
-  assignNode();
+  initializeNode();
 });
 
 watch(
   () => props.nodeId,
   () => {
-    assignNode();
+    initializeNode();
   },
 );
 </script>
@@ -59,7 +59,7 @@ watch(
                 return;
               }
 
-              deleteTableByNodeId(node.id);
+              removeTableByNodeId(node.id);
               onOpenChange(false);
             }
           "

@@ -12,6 +12,7 @@ export function useVueFlowUtils() {
     getNodes,
     addNodes,
     updateNodeData,
+    findEdge,
     setNodes,
   } = useVueFlow(VUEFLOW_ID);
 
@@ -35,13 +36,11 @@ export function useVueFlowUtils() {
     });
   }
 
-  function deleteTableByNodeId(nodeId: string) {
-    logger.info(`Deleting a table node id: ${nodeId}`);
+  function handleSelectEdge(edgeId: string): void {
+    const edge = findEdge(edgeId);
 
-    // TODO: Add applyChange function from vueflow maybe, if we consider implement real time collaboration
-    setNodes((nodes) => {
-      return nodes.filter((n) => n.id !== nodeId);
-    });
+    if (!edge) return;
+    edge.animated = !edge.selected;
   }
 
   function hasExistingEdgeOnColumnSide(
@@ -223,6 +222,6 @@ export function useVueFlowUtils() {
     isValidEdgeConnection,
     handleDefaultEdgeType,
     onCollapsibleClick,
-    deleteTableByNodeId,
+    handleSelectEdge,
   };
 }
