@@ -8,46 +8,38 @@ const { addTable } = useVueFlowUtils();
 </script>
 
 <template>
-  <Sheet>
-    <SheetTrigger as-child>
-      <Button variant="outline"> Open Sheet </Button>
-    </SheetTrigger>
-    <SheetContent side="left" class="p-0 scroll-smooth">
-      <SheetHeader class="mt-4 p-6 pb-0">
-        <div class="flex flex-row justify-between items-center">
-          <SheetTitle>Edit tables</SheetTitle>
-          <Button
-            @click="addTable"
-            variant="outline"
-            class="flex gap-2 items-center"
-          >
-            <CirclePlus class="w-4 h-4" />
-            <p>New table</p>
-          </Button>
-        </div>
-        <SheetDescription></SheetDescription>
-      </SheetHeader>
-      <ScrollArea
-        class="h-[calc(100%-72px)] p-6 py-0"
-        v-if="getNodes.length > 0"
+  <div class="flex flex-col scroll-smooth h-full truncate">
+    <div class="flex flex-row justify-between items-center p-4">
+      <h1>{{ $t("diagram.leftSideBar.editTables") }}</h1>
+      <Button
+        @click="addTable"
+        variant="outline"
+        class="flex gap-2 items-center"
       >
-        <DiagramModifyTableColumnCollapsible
-          v-for="(node, index) in getNodes"
-          :key="node.id"
-          :table-node-data-with-node-id="{
-            tableNodeId: node.id,
-            columns: node.data?.columns ?? [],
-            tableName: node.data?.tableName ?? '',
-          }"
-          :selected="node.selected ?? false"
-          :class="{
-            'mb-6': getNodes.length === index + 1,
-          }"
-        />
-      </ScrollArea>
-      <div v-else class="flex items-center justify-center my-6">
-        <p>No table</p>
-      </div>
-    </SheetContent>
-  </Sheet>
+        <CirclePlus class="w-4 h-4" />
+        <p>{{ $t("diagram.leftSideBar.newTable") }}</p>
+      </Button>
+    </div>
+    <ScrollArea
+      class="max-h-[calc(100%-72px)] p-4 py-0"
+      v-if="getNodes.length > 0"
+    >
+      <DiagramModifyTableColumnCollapsible
+        v-for="(node, index) in getNodes"
+        :key="node.id"
+        :table-node-data-with-node-id="{
+          tableNodeId: node.id,
+          columns: node.data?.columns ?? [],
+          tableName: node.data?.tableName ?? '',
+        }"
+        :selected="node.selected ?? false"
+        :class="{
+          'mb-6': getNodes.length === index + 1,
+        }"
+      />
+    </ScrollArea>
+    <div v-else class="flex items-center justify-center my-6">
+      <p>{{ $t("diagram.leftSideBar.noTable") }}</p>
+    </div>
+  </div>
 </template>

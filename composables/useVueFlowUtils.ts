@@ -35,6 +35,15 @@ export function useVueFlowUtils() {
     });
   }
 
+  function deleteTableByNodeId(nodeId: string) {
+    logger.info(`Deleting a table node id: ${nodeId}`);
+
+    // TODO: Add applyChange function from vueflow maybe, if we consider implement real time collaboration
+    setNodes((nodes) => {
+      return nodes.filter((n) => n.id !== nodeId);
+    });
+  }
+
   function hasExistingEdgeOnColumnSide(
     source: string,
     targetHandle: string | null | undefined,
@@ -214,5 +223,6 @@ export function useVueFlowUtils() {
     isValidEdgeConnection,
     handleDefaultEdgeType,
     onCollapsibleClick,
+    deleteTableByNodeId,
   };
 }

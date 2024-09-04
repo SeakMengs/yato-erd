@@ -1,11 +1,16 @@
-import type { Edge, GraphEdge, Node } from "@vue-flow/core";
+import {
+  useVueFlow,
+  type Edge,
+  type GraphEdge,
+  type Node,
+} from "@vue-flow/core";
 import { defineStore } from "pinia";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 import { z } from "zod";
 import { NodeType } from "~/types/diagram/node";
 import { EdgeType } from "~/types/diagram/edge";
 import type { GraphNode } from "@unovis/ts";
-import { ERD_STATE_ID } from "~/constants/key";
+import { ERD_STATE_ID, VUEFLOW_ID } from "~/constants/key";
 
 const columnIndexTypeSchemaEnum = z.enum(["Primary key", "Unique", "None"]);
 export const tableNodeDataColumnSchema = z.object({
@@ -168,18 +173,18 @@ export const useErd = defineStore(ERD_STATE_ID, {
         edges: [],
       };
     },
-    saveErdStateToLocalStorage(
-      nodes: Node[] | GraphNode[],
-      edges: Edge[] | GraphEdge[],
-    ): void {
+    saveErdStateToLocalStorage(): void {
+      const { toObject } = useVueFlow(VUEFLOW_ID);
+
       try {
         logger.info("Saving erd state to local storage");
+        const data = toObject();
         localStorage.setItem(
           "erd-state",
           JSON.stringify(
             this.validateErdState({
-              nodes: nodes,
-              edges: edges,
+              nodes: data.nodes,
+              edges: data.edges,
             }),
           ),
         );

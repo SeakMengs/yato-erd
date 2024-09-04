@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useVueFlow } from "@vue-flow/core";
 import { Trash } from "lucide-vue-next";
-// import { DEFAULT_COLUMN } from "~/constants/table";
 import type { TableNodeDataColumn } from "~/types/diagram/table_node";
 
 const props = defineProps<{
@@ -26,15 +24,24 @@ const props = defineProps<{
 
 <template>
   <div class="flex flex-row items-center gap-4">
-    <Input v-model="props.column.columnName" />
-    <Input v-model="props.column.attribute.type" />
-    <Button
-      @click="removeColumn"
-      variant="outline"
-      size="icon"
-      class="flex-shrink-0 hover:border-red-900 hover:text-red-900"
-    >
-      <Trash class="w-4 h-4" />
-    </Button>
+    <Input v-model="props.column.columnName" placeholder="Name" />
+    <Input v-model="props.column.attribute.type" placeholder="Type" />
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger as-child>
+          <Button
+            @click="removeColumn"
+            variant="outline"
+            size="icon"
+            class="flex-shrink-0 hover:border-red-900 hover:text-red-900"
+          >
+            <Trash class="w-4 h-4" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{{ $t("diagram.leftSideBar.column.delete") }}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   </div>
 </template>

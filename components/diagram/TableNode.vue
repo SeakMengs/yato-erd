@@ -73,8 +73,8 @@ function getHandleId(position: "left" | "right", columnId: string): string {
 
 <style scoped>
 .vue-flow__handle {
-  height: 1.5rem;
-  width: 0.5rem;
+  height: 1rem;
+  width: 0.25rem;
   border-color: hsl(var(--primary));
   border-radius: 0.25rem;
 }

@@ -53,7 +53,7 @@ watch(
         />
         <Button
           @click="() => addColumn(props.tableNodeDataWithNodeId.tableNodeId)"
-          >Add column</Button
+          >{{ $t("diagram.leftSideBar.column.add") }}</Button
         >
       </div>
     </CollapsibleContent>
