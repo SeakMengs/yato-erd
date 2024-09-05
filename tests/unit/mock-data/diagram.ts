@@ -1,6 +1,6 @@
 import type { Connection } from "@vue-flow/core";
 import type { DEFAULT_TABLE } from "~/constants/table";
-import { NodeType, type NodeConfirmedRemoveChange } from "~/types/diagram/node";
+import { NodeType } from "~/types/diagram/node";
 
 export const MOCK_TABLE_NODES = [
   {
