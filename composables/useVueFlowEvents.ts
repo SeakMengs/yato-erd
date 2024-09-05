@@ -13,8 +13,11 @@ export function useVueFlowEvents() {
     useVueFlow(VUEFLOW_ID);
   const { confirm, nodeId } = useRemoveNodeDiloag();
   const pendingNodeRemoval = computed<boolean>(() => !!nodeId.value);
-  const { getEdgeRemoveChangeFormat, handleSelectEdge, isValidEdgeConnection } =
-    useVueFlowUtils();
+  const {
+    getEdgeRemoveChangeFormat,
+    handleEdgeSelection,
+    isValidEdgeConnection,
+  } = useVueFlowUtils();
 
   // basically for user to move the connected edge to other handle
   function onEdgeUpdate({
@@ -39,7 +42,7 @@ export function useVueFlowEvents() {
     for (const c of changes) {
       switch (c.type) {
         case "select":
-          handleSelectEdge(c.id);
+          handleEdgeSelection(c.id);
           nextChanges.push(c);
           break;
         case "add":

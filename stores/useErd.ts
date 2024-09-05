@@ -1,15 +1,9 @@
-import {
-  useVueFlow,
-  type Edge,
-  type GraphEdge,
-  type Node,
-} from "@vue-flow/core";
+import { useVueFlow, type Edge } from "@vue-flow/core";
 import { defineStore } from "pinia";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 import { z } from "zod";
 import { NodeType } from "~/types/diagram/node";
 import { EdgeType } from "~/types/diagram/edge";
-import type { GraphNode } from "@unovis/ts";
 import { ERD_STATE_ID, VUEFLOW_ID } from "~/constants/key";
 
 const columnIndexTypeSchemaEnum = z.enum(["Primary key", "Unique", "None"]);
@@ -20,7 +14,7 @@ export const tableNodeDataColumnSchema = z.object({
     .min(1, {
       message: "Column id is required",
     })
-    .catch(() => generateShortId()),
+    .catch(() => generateId()),
   columnName: z
     .string()
     .trim()

@@ -14,13 +14,13 @@ import type {
   TableNodeDataColumn,
 } from "~/types/diagram/table_node";
 import { EdgeType } from "~/types/diagram/edge";
+import { tableHasConflict } from "#imports";
 
 describe("useVueFlowUtils functionality", () => {
   const store = useVueFlow(VUEFLOW_ID);
   const {
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,
-    tableHasConflict,
     addTable,
     addColumn,
     removeColumn,
