@@ -2,8 +2,9 @@ import { useVueFlow, type Connection } from "@vue-flow/core";
 import type { Position } from "@vueuse/core";
 import { VUEFLOW_ID } from "~/constants/key";
 import { DEFAULT_COLUMN, DEFAULT_TABLE } from "~/constants/table";
-import { NodeType } from "~/types/diagram/node";
+import { NodeType, type NodeConfirmedRemoveChange } from "~/types/diagram/node";
 import type { CustomTableNode } from "~/types/diagram/table_node";
+import { errorHandler, YatoErDErrorCode } from "~/utils/error";
 
 export function useVueFlowUtils() {
   const {
@@ -114,45 +115,43 @@ export function useVueFlowUtils() {
   }
 
   function addTable(): void {
-    try {
-      logger.info("Adding a new table");
+    logger.info("Adding a new table");
 
-      const newTable = {
-        ...DEFAULT_TABLE,
-        id: generateShortId(),
-        data: {
-          ...DEFAULT_TABLE.data,
-          columns: [generateColumn()],
-          tableName: generateTableName(),
-        },
-        position: generateRandomNodePosition(),
-      };
+    const newTable = {
+      ...DEFAULT_TABLE,
+      id: generateShortId(),
+      data: {
+        ...DEFAULT_TABLE.data,
+        columns: [generateColumn()],
+        tableName: generateTableName(),
+      },
+      position: generateRandomNodePosition(),
+    };
 
-      if (tableHasConflict(newTable)) {
-        return addTable();
-      }
-
-      addNodes([newTable]);
-    } catch (error) {
-      logger.error(`There was an error in addTable`, error);
+    if (tableHasConflict(newTable)) {
+      return addTable();
     }
+
+    addNodes([newTable]);
   }
 
   function addColumn(nodeId: string): void {
-    try {
-      logger.info(`Adding a new column to table node id: ${nodeId}`);
+    logger.info(`Adding a new column to table node id: ${nodeId}`);
 
+    try {
       const node = findNode(nodeId) as CustomTableNode;
 
-      if (!node || node.type !== NodeType.Table) {
-        return;
+      if (!node) {
+        throw new YatoErDError(YatoErDErrorCode.Node_Not_Found);
+      }
+
+      if (node.type !== NodeType.Table) {
+        throw new YatoErDError(YatoErDErrorCode.Node_Type_Not_Table);
       }
 
       if (!node.data) {
         logger.error("Add column failed because the node does not have data");
-        throw new Error(
-          "Add column failed because the node does not have data",
-        );
+        throw new YatoErDError(YatoErDErrorCode.Node_Does_Not_Have_Data_Object);
       }
 
       if (!Array.isArray(node.data.columns)) {
@@ -167,29 +166,31 @@ export function useVueFlowUtils() {
         ],
       });
     } catch (error) {
-      logger.error(`There was an error in addColumn`, error);
+      errorHandler(error, "addColumn");
     }
   }
 
   function removeColumn(nodeId: string, columnId: string): void {
-    try {
-      logger.info(
-        `Removing a new column to table node id: ${nodeId}, column id: ${columnId}`,
-      );
+    logger.info(
+      `Removing a new column to table node id: ${nodeId}, column id: ${columnId}`,
+    );
 
+    try {
       const node = findNode(nodeId) as CustomTableNode;
 
-      if (!node || node.type !== NodeType.Table) {
-        return;
+      if (!node) {
+        throw new YatoErDError(YatoErDErrorCode.Node_Not_Found);
+      }
+
+      if (node.type !== NodeType.Table) {
+        throw new YatoErDError(YatoErDErrorCode.Node_Type_Not_Table);
       }
 
       if (!node.data) {
         logger.error(
           "Remove column failed because the node does not have data",
         );
-        throw new Error(
-          "Remove column failed because the node does not have data",
-        );
+        throw new YatoErDError(YatoErDErrorCode.Node_Does_Not_Have_Data_Object);
       }
 
       if (!Array.isArray(node.data.columns)) {
@@ -200,7 +201,7 @@ export function useVueFlowUtils() {
         logger.info(
           `Skip remove column in table node id: ${nodeId}, column id: ${columnId} because the table has only one column left`,
         );
-        return;
+        throw new YatoErDError(YatoErDErrorCode.Delete_Last_Column_Of_Table);
       }
 
       updateNodeData(node.id, {
@@ -208,7 +209,7 @@ export function useVueFlowUtils() {
         columns: node.data.columns.filter((c) => c.columnId != columnId),
       });
     } catch (error) {
-      logger.error(`There was an error in removeColumn`, error);
+      errorHandler(error, "removeColumn");
     }
   }
 

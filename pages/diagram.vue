@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Controls } from "@vue-flow/controls";
-import { VueFlow, type EdgeTypesObject } from "@vue-flow/core";
+import {
+  ErrorCode,
+  isErrorOfType,
+  useVueFlow,
+  VueFlow,
+  VueFlowError,
+  type EdgeTypesObject,
+} from "@vue-flow/core";
 import ThemeButton from "~/components/ThemeButton.vue";
 import ERDEdge from "~/components/diagram/ERDEdge.vue";
 import { VUEFLOW_ID } from "~/constants/key";
@@ -14,6 +21,11 @@ const { onEdgeUpdate, onConnect, onEdgesChange, onNodesChange } =
   useVueFlowEvents();
 const { isDeleteNodeDialogOpen, onIsDeleteNodeDialogOpenChange } =
   useRemoveNodeDiloag();
+const { onError } = useVueFlow(VUEFLOW_ID);
+
+onError((error: VueFlowError) => {
+  errorHandler(error);
+});
 
 const edgeTypes = {
   default: markRaw(ERDEdge),
@@ -62,6 +74,7 @@ onMounted(() => {
           :connection-radius="70"
           :auto-connect="true"
           :only-render-visible-elements="false"
+          @error="errorHandler"
           @edge-update="onEdgeUpdate"
           @connect="onConnect"
           @nodes-change="onNodesChange"
