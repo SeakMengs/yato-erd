@@ -1,30 +1,49 @@
-import type { ConfirmDeleteNodeDialogProps } from "~/components/diagram/ConfirmDeleteNodeDialog.vue";
-
-// Initialize state globally otherwise user won't receive reactivity
-const isDeleteNodeDialogOpen = reactive<
-  Omit<ConfirmDeleteNodeDialogProps, "onOpenChange">
->({
-  open: false,
-  nodeId: undefined,
-});
-
 export function useRemoveNodeDiloag() {
-  function onIsDeleteNodeDialogOpenChange(open: boolean): void {
-    isDeleteNodeDialogOpen.open = open;
+  const nodeId = useState<string | undefined>(
+    "removeNodeDialogNodeId",
+    () => undefined,
+  );
 
-    if (!open) {
-      isDeleteNodeDialogOpen.nodeId = undefined;
-    }
+  type ResolveCallback = (value: boolean) => void;
+  const resolveCallback = useState<ResolveCallback | undefined>(
+    "removeNodeDialogResolveCallBack",
+    () => undefined,
+  );
+
+  // Opens the dialog and returns a promise that resolves when the user confirms or cancels.
+  // When noded id is assigned, dialog in ~/components/diagram/ConfirmDeleteNodeDialog will show up if the node exist
+  function confirm(nId: string): Promise<boolean> {
+    return new Promise((resolve: ResolveCallback) => {
+      nodeId.value = nId;
+      resolveCallback.value = resolve;
+    });
   }
 
-  function onRemoveNodeChange(nodeId: string): void {
-    isDeleteNodeDialogOpen.nodeId = nodeId;
-    isDeleteNodeDialogOpen.open = true;
+  function cleanState(): void {
+    nodeId.value = undefined;
+    resolveCallback.value = undefined;
+  }
+
+  function onConfirm(): void {
+    if (typeof resolveCallback.value === "function") {
+      resolveCallback.value(true);
+    }
+
+    cleanState();
+  }
+
+  function onCancel(): void {
+    if (typeof resolveCallback.value === "function") {
+      resolveCallback.value(false);
+    }
+
+    cleanState();
   }
 
   return {
-    isDeleteNodeDialogOpen,
-    onIsDeleteNodeDialogOpenChange,
-    onRemoveNodeChange,
+    nodeId,
+    confirm,
+    onConfirm,
+    onCancel,
   };
 }

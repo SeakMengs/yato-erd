@@ -18,6 +18,8 @@ import { EdgeType } from "~/types/diagram/edge";
 describe("useVueFlowUtils functionality", () => {
   const store = useVueFlow(VUEFLOW_ID);
   const {
+    getEdgeRemoveChangeFormat,
+    getNodeRemoveChangeFormat,
     tableHasConflict,
     addTable,
     addColumn,
@@ -26,11 +28,14 @@ describe("useVueFlowUtils functionality", () => {
     isValidEdgeConnection,
   } = useVueFlowUtils();
 
-  const { removeTableByNodeId } = useVueFlowEvents();
-
   function getTable1Columns(): TableNodeDataColumn[] {
     const data = store.getNodes.value[0].data as TableNodeData;
     return data.columns;
+  }
+
+  function removeTableByNodeId(nodeId: string): void {
+    store.applyEdgeChanges(getEdgeRemoveChangeFormat(nodeId));
+    store.applyNodeChanges([getNodeRemoveChangeFormat(nodeId)]);
   }
 
   beforeEach(() => {

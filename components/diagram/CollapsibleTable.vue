@@ -37,7 +37,7 @@ watch(
     </CollapsibleTrigger>
     <CollapsibleContent>
       <div class="flex flex-col gap-4">
-        <DiagramModifyTableColumnContent
+        <DiagramEditableTableColumn
           v-for="(column, index) in props.tableNodeDataWithNodeId.columns"
           :table-id="props.tableNodeDataWithNodeId.tableNodeId"
           :column="column"

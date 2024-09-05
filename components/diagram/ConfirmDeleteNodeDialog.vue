@@ -4,39 +4,22 @@ import { VUEFLOW_ID } from "~/constants/key";
 import { Trash } from "lucide-vue-next";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 
-export type ConfirmDeleteNodeDialogProps = {
-  open: boolean;
-  nodeId: string | null | undefined;
-  onOpenChange: (open: boolean) => void;
-};
-
-const props = defineProps<ConfirmDeleteNodeDialogProps>();
-const { removeTableByNodeId } = useVueFlowEvents();
+const { nodeId, onCancel, onConfirm } = useRemoveNodeDiloag();
 const { findNode } = useVueFlow(VUEFLOW_ID);
-const node = ref<CustomTableNode | undefined>();
+const node = computed<CustomTableNode | undefined>(() => {
+  const tempNode = findNode(nodeId.value);
 
-function initializeNode(): void {
-  const tempNode = findNode(props.nodeId);
-
-  if (tempNode) {
-    node.value = tempNode as CustomTableNode;
+  if (!tempNode) {
+    onCancel();
+    return undefined;
   }
-}
 
-onMounted(() => {
-  initializeNode();
+  return tempNode as CustomTableNode;
 });
-
-watch(
-  () => props.nodeId,
-  () => {
-    initializeNode();
-  },
-);
 </script>
 
 <template>
-  <AlertDialog v-if="nodeId && node" :open="props.open">
+  <AlertDialog v-if="nodeId && node" :open="!!node">
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle class="flex flex-row items-center gap-2 text-red-700">
@@ -49,22 +32,12 @@ watch(
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel @click="onOpenChange(false)">{{
-          $t("diagram.cancel")
-        }}</AlertDialogCancel>
-        <AlertDialogAction
-          @click="
-            () => {
-              if (!node) {
-                return;
-              }
-
-              removeTableByNodeId(node.id);
-              onOpenChange(false);
-            }
-          "
-          >{{ $t("diagram.confirm") }}</AlertDialogAction
-        >
+        <AlertDialogCancel @click="onCancel">
+          {{ $t("diagram.cancel") }}
+        </AlertDialogCancel>
+        <AlertDialogAction @click="onConfirm">
+          {{ $t("diagram.confirm") }}
+        </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

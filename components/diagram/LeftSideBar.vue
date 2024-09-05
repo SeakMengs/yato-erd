@@ -24,7 +24,7 @@ const { addTable } = useVueFlowUtils();
       class="max-h-[calc(100%-72px)] p-4 py-0"
       v-if="getNodes.length > 0"
     >
-      <DiagramModifyTableColumnCollapsible
+      <DiagramCollapsibleTable
         v-for="(node, index) in getNodes"
         :key="node.id"
         :table-node-data-with-node-id="{

@@ -1,8 +1,13 @@
-import { useVueFlow, type Connection } from "@vue-flow/core";
+import {
+  useVueFlow,
+  type Connection,
+  type EdgeRemoveChange,
+  type NodeChange,
+} from "@vue-flow/core";
 import type { Position } from "@vueuse/core";
 import { VUEFLOW_ID } from "~/constants/key";
 import { DEFAULT_COLUMN, DEFAULT_TABLE } from "~/constants/table";
-import { NodeType, type NodeConfirmedRemoveChange } from "~/types/diagram/node";
+import { NodeType } from "~/types/diagram/node";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 import { errorHandler, YatoErDErrorCode } from "~/utils/error";
 
@@ -133,6 +138,8 @@ export function useVueFlowUtils() {
     }
 
     addNodes([newTable]);
+    // Make new table selected
+    onCollapsibleClick(newTable.id);
   }
 
   function addColumn(nodeId: string): void {
@@ -213,6 +220,27 @@ export function useVueFlowUtils() {
     }
   }
 
+  function getEdgeRemoveChangeFormat(nodeId: string): EdgeRemoveChange[] {
+    const connectedEdges = getConnectedEdges(nodeId);
+    return connectedEdges.map((e) => {
+      return {
+        id: e.id,
+        source: e.source,
+        sourceHandle: e.sourceHandle as string | null,
+        target: e.target,
+        targetHandle: e.targetHandle as string | null,
+        type: "remove",
+      };
+    });
+  }
+
+  function getNodeRemoveChangeFormat(nodeId: string): NodeChange {
+    return {
+      type: "remove",
+      id: nodeId,
+    };
+  }
+
   return {
     // Export for unit test
     tableHasConflict,
@@ -224,5 +252,7 @@ export function useVueFlowUtils() {
     handleDefaultEdgeType,
     onCollapsibleClick,
     handleSelectEdge,
+    getEdgeRemoveChangeFormat,
+    getNodeRemoveChangeFormat,
   };
 }

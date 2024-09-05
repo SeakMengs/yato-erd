@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { Controls } from "@vue-flow/controls";
 import {
-  ErrorCode,
-  isErrorOfType,
   useVueFlow,
   VueFlow,
   VueFlowError,
@@ -19,8 +17,6 @@ const dark = computed(() => colorMode.preference === THEME.DARK);
 
 const { onEdgeUpdate, onConnect, onEdgesChange, onNodesChange } =
   useVueFlowEvents();
-const { isDeleteNodeDialogOpen, onIsDeleteNodeDialogOpenChange } =
-  useRemoveNodeDiloag();
 const { onError } = useVueFlow(VUEFLOW_ID);
 
 onError((error: VueFlowError) => {
@@ -45,10 +41,7 @@ onMounted(() => {
     >Save state
   </Button>
   <ClientOnly>
-    <DiagramConfirmDeleteNodeDialog
-      v-bind="isDeleteNodeDialogOpen"
-      v-on:open-change="onIsDeleteNodeDialogOpenChange"
-    />
+    <DiagramConfirmDeleteNodeDialog />
     <ResizablePanelGroup
       id="handle-group-1"
       direction="horizontal"

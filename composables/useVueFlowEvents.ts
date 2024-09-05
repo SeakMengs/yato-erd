@@ -3,52 +3,18 @@ import {
   type Connection,
   type Edge,
   type EdgeChange,
-  type EdgeRemoveChange,
   type GraphEdge,
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
-import type {
-  CustomNodeChange,
-  NodeConfirmedRemoveChange,
-} from "~/types/diagram/node";
 
 export function useVueFlowEvents() {
-  const {
-    getConnectedEdges,
-    updateEdge,
-    applyEdgeChanges,
-    applyNodeChanges,
-    addEdges,
-  } = useVueFlow(VUEFLOW_ID);
-  const { onRemoveNodeChange, isDeleteNodeDialogOpen } = useRemoveNodeDiloag();
-  const { handleSelectEdge, isValidEdgeConnection } = useVueFlowUtils();
-
-  // Technically this is not an event however since we need to use some function here, we cannot put in useVueFlowUtils because import recursion
-  function removeTableByNodeId(nodeId: string) {
-    logger.info(`Deleting a table node id: ${nodeId}`);
-
-    const connectedEdges = getConnectedEdges(nodeId);
-    if (connectedEdges.length > 0) {
-      const edgeChanges = connectedEdges.map((e) => {
-        return {
-          id: e.id,
-          source: e.source,
-          sourceHandle: e.sourceHandle as string | null,
-          target: e.target,
-          targetHandle: e.targetHandle as string | null,
-          type: "remove",
-        };
-      }) satisfies EdgeRemoveChange[];
-      onEdgesChange(edgeChanges);
-    }
-
-    const nodeChange = {
-      type: "confirmed-remove",
-      id: nodeId,
-    } satisfies NodeConfirmedRemoveChange;
-    onNodesChange([nodeChange]);
-  }
+  const { updateEdge, applyEdgeChanges, applyNodeChanges, addEdges } =
+    useVueFlow(VUEFLOW_ID);
+  const { confirm, nodeId } = useRemoveNodeDiloag();
+  const pendingNodeRemoval = computed<boolean>(() => !!nodeId.value);
+  const { getEdgeRemoveChangeFormat, handleSelectEdge, isValidEdgeConnection } =
+    useVueFlowUtils();
 
   // basically for user to move the connected edge to other handle
   function onEdgeUpdate({
@@ -81,14 +47,8 @@ export function useVueFlowEvents() {
           nextChanges.push(c);
           break;
         case "remove":
-          // Somehow when calling the two console.log, it show different state, and the solution is to wait for nextTick from vue
-          // Read more for reference from the docs: https://vuejs.org/api/general.html#nexttick
-          // console.log(isDeleteNodeDialogOpen);
-          // console.log(isDeleteNodeDialogOpen.open);
           await nextTick();
-
-          // If there is a pop up asking user to confirm delete node, then don't delete edge yet because user might cancel operation
-          if (isDeleteNodeDialogOpen.open) {
+          if (pendingNodeRemoval.value) {
             break;
           }
 
@@ -102,24 +62,23 @@ export function useVueFlowEvents() {
     applyEdgeChanges(nextChanges);
   }
 
-  async function onNodesChange(changes: CustomNodeChange[]): Promise<void> {
+  async function onNodesChange(changes: NodeChange[]): Promise<void> {
     const nextChanges: NodeChange[] = [];
 
     for (const c of changes) {
       switch (c.type) {
         case "remove":
-          // Ask user for confirmation before deleting the table node
-          onRemoveNodeChange(c.id);
-          break;
-        case "confirmed-remove":
-          // After user confirm remove, this function will be call again with change type 'confirmed-remove'
-          nextChanges.push({
-            ...c,
-            type: "remove",
-          });
+          const confirmed = await confirm(c.id);
+
+          if (confirmed) {
+            await onEdgesChange(getEdgeRemoveChangeFormat(c.id));
+            nextChanges.push(c);
+            break;
+          }
+
           break;
         default:
-          nextChanges.push(c as NodeChange);
+          nextChanges.push(c);
       }
     }
 
@@ -131,6 +90,5 @@ export function useVueFlowEvents() {
     onConnect,
     onEdgeUpdate,
     onNodesChange,
-    removeTableByNodeId,
   };
 }
