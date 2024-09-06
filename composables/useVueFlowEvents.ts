@@ -11,8 +11,7 @@ import { VUEFLOW_ID } from "~/constants/key";
 export function useVueFlowEvents() {
   const { updateEdge, applyEdgeChanges, applyNodeChanges, addEdges } =
     useVueFlow(VUEFLOW_ID);
-  const { confirm, nodeId } = useRemoveNodeDiloag();
-  const pendingNodeRemoval = computed<boolean>(() => !!nodeId.value);
+  const { confirm, pendingNodeRemoval } = useRemoveNodeDiloag();
   const {
     getEdgeRemoveChangeFormat,
     handleEdgeSelection,
@@ -74,6 +73,8 @@ export function useVueFlowEvents() {
           const confirmed = await confirm(c.id);
 
           if (confirmed) {
+            // When node remove is being ask for confirmation, we reject remove edge that vue-flow call
+            // Once the user confirm, we remove the edges first then nodes
             await onEdgesChange(getEdgeRemoveChangeFormat(c.id));
             nextChanges.push(c);
             break;

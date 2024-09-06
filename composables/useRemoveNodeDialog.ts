@@ -3,6 +3,7 @@ export function useRemoveNodeDiloag() {
     "removeNodeDialogNodeId",
     () => undefined,
   );
+  const pendingNodeRemoval = computed<boolean>(() => !!nodeId.value);
 
   type ResolveCallback = (value: boolean) => void;
   const resolveCallback = useState<ResolveCallback | undefined>(
@@ -42,6 +43,7 @@ export function useRemoveNodeDiloag() {
 
   return {
     nodeId,
+    pendingNodeRemoval,
     confirm,
     onConfirm,
     onCancel,

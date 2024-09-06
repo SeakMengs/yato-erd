@@ -9,7 +9,7 @@ const { addTable } = useVueFlowUtils();
 
 <template>
   <div class="flex flex-col scroll-smooth h-full truncate">
-    <div class="flex flex-row justify-between items-center p-4">
+    <div class="flex flex-row justify-between items-center p-2">
       <h1>{{ $t("diagram.leftSideBar.editTables") }}</h1>
       <Button
         @click="addTable"
@@ -20,10 +20,7 @@ const { addTable } = useVueFlowUtils();
         <p>{{ $t("diagram.leftSideBar.newTable") }}</p>
       </Button>
     </div>
-    <ScrollArea
-      class="max-h-[calc(100%-72px)] p-4 py-0"
-      v-if="getNodes.length > 0"
-    >
+    <ScrollArea class="max-h-[calc(100%-72px)]" v-if="getNodes.length > 0">
       <DiagramCollapsibleTable
         v-for="(node, index) in getNodes"
         :key="node.id"

@@ -10,16 +10,14 @@ export function useVueFlowUtils() {
   const { getConnectedEdges, addNodes, updateNodeData, findEdge, setNodes } =
     useVueFlow(VUEFLOW_ID);
 
+  // When a collapsible table on the left side bar is clicked make the table node in the diagram show as selected
+  // And unselect other tables
   function onCollapsibleClick(nodeId: string) {
     setNodes((nodes) => {
-      return nodes.map((n) => {
-        if (n.id === nodeId) {
-          n.selected = !n.selected;
-        } else {
-          n.selected = false;
-        }
-        return n;
-      });
+      return nodes.map((n) => ({
+        ...n,
+        selected: n.id === nodeId ? !n.selected : false,
+      }));
     });
   }
 
@@ -90,12 +88,16 @@ export function useVueFlowUtils() {
     checkExistingEdgeOnColumnSide: boolean,
   ): boolean {
     if (checkExistingEdgeOnColumnSide) {
+      console.log(connection);
       if (
         hasExistingEdgeOnColumnSide(
-          connection.source,
+          connection.sourceHandle,
           connection.targetHandle,
         ) ||
-        hasExistingEdgeOnColumnSide(connection.target, connection.sourceHandle)
+        hasExistingEdgeOnColumnSide(
+          connection.sourceHandle,
+          connection.sourceHandle,
+        )
       ) {
         return false;
       }

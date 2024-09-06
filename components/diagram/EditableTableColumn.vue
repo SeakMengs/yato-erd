@@ -23,7 +23,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-row items-center gap-4 m-1">
+  <div class="flex flex-row items-center gap-2 m-1">
     <Input v-model="props.column.columnName" placeholder="Name" />
     <Input v-model="props.column.attribute.type" placeholder="Type" />
     <TooltipProvider>

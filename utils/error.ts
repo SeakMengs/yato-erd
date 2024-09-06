@@ -13,7 +13,7 @@
  */
 
 import { ErrorCode, VueFlowError } from "@vue-flow/core";
-import { useToast } from "~/components/ui/toast";
+import { toast } from "~/components/ui/toast";
 
 export enum YatoErDErrorCode {
   Unknown = "Unknown",
@@ -21,6 +21,8 @@ export enum YatoErDErrorCode {
   Node_Does_Not_Have_Data_Object = "Node_Does_Not_Have_Data_Object",
   Node_Type_Not_Table = "Node_Type_Not_Table",
   Node_Not_Found = "Node_Not_Found",
+  Get_ERD_State_From_Local_Storage = "Get_ERD_State_From_Local_Storage",
+  Save_ERD_State_To_Local_Storage = "Save_ERD_State_To_Local_Storage",
 }
 
 export type YATO_ERD_ERROR_MESSAGE_TYPE = Record<
@@ -44,6 +46,12 @@ export const YATO_ERD_ERROR_MESSAGE = {
   ),
   [YatoErDErrorCode.Node_Not_Found]: buildYatoErdErrorMessage(
     "Opps! Node not found",
+  ),
+  [YatoErDErrorCode.Get_ERD_State_From_Local_Storage]: buildYatoErdErrorMessage(
+    "Failed to get erd state from local storage",
+  ),
+  [YatoErDErrorCode.Save_ERD_State_To_Local_Storage]: buildYatoErdErrorMessage(
+    "Failed to save erd state to local storage",
   ),
   [ErrorCode.MISSING_STYLES]: buildYatoErdErrorMessage(
     "Styles are missing for the node.",
@@ -89,8 +97,6 @@ export const YATO_ERD_ERROR_MESSAGE = {
   ),
 } satisfies YATO_ERD_ERROR_MESSAGE_TYPE;
 
-
-const { toast } = useToast();
 export function errorHandler(error: unknown, from: string = "Unknown"): void {
   let err = YATO_ERD_ERROR_MESSAGE[YatoErDErrorCode.Unknown];
 
