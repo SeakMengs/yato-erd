@@ -7,8 +7,15 @@ import {
 import { VUEFLOW_ID } from "~/constants/key";
 
 export function useVueFlowUtils() {
-  const { getConnectedEdges, addNodes, updateNodeData, findEdge, setNodes } =
-    useVueFlow(VUEFLOW_ID);
+  const {
+    getConnectedEdges,
+    addNodes,
+    updateNodeData,
+    findEdge,
+    setNodes,
+    fitView,
+    viewport,
+  } = useVueFlow(VUEFLOW_ID);
 
   // When a collapsible table on the left side bar is clicked make the table node in the diagram show as selected
   // And unselect other tables
@@ -18,6 +25,13 @@ export function useVueFlowUtils() {
         ...n,
         selected: n.id === nodeId ? !n.selected : false,
       }));
+    });
+
+    fitView({
+      nodes: [nodeId],
+      duration: 500, // use this if you want a smooth transition to the node
+      padding: 1,
+      maxZoom: viewport.value.zoom,
     });
   }
 
@@ -93,10 +107,6 @@ export function useVueFlowUtils() {
         hasExistingEdgeOnColumnSide(
           connection.sourceHandle,
           connection.targetHandle,
-        ) ||
-        hasExistingEdgeOnColumnSide(
-          connection.sourceHandle,
-          connection.sourceHandle,
         )
       ) {
         return false;

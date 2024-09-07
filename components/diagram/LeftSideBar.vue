@@ -31,7 +31,7 @@ const { addTable } = useVueFlowUtils();
         }"
         :selected="node.selected ?? false"
         :class="{
-          'mb-6': getNodes.length === index + 1,
+          'mb-2': getNodes.length === index + 1,
         }"
       />
     </ScrollArea>

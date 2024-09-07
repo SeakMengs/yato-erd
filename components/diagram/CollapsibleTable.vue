@@ -33,7 +33,7 @@ watch(
   >
     <Collapsible
       :open="isOpen"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-2"
       :id="`collapsible-table-${props.tableNodeDataWithNodeId.tableNodeId}`"
     >
       <CollapsibleTrigger as-child @click="toggleOpen">

@@ -17,6 +17,7 @@ export function useVueFlowEvents() {
     handleEdgeSelection,
     isValidEdgeConnection,
   } = useVueFlowUtils();
+  const { broadcastNodeChange, broadcastEdgeChange } = useCollaborate({});
 
   // basically for user to move the connected edge to other handle
   function onEdgeUpdate({
@@ -62,6 +63,11 @@ export function useVueFlowEvents() {
     }
 
     applyEdgeChanges(nextChanges);
+
+    // TODO: setting isCollab
+    if (true) {
+      broadcastEdgeChange(nextChanges);
+    }
   }
 
   async function onNodesChange(changes: NodeChange[]): Promise<void> {
@@ -87,6 +93,10 @@ export function useVueFlowEvents() {
     }
 
     applyNodeChanges(nextChanges);
+    // TODO: setting isCollab
+    if (true) {
+      broadcastNodeChange(nextChanges);
+    }
   }
 
   return {

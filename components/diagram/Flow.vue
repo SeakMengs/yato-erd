@@ -1,0 +1,97 @@
+<script setup lang="ts">
+import { Controls } from "@vue-flow/controls";
+import {
+  useVueFlow,
+  VueFlow,
+  VueFlowError,
+  type EdgeTypesObject,
+} from "@vue-flow/core";
+import ERDEdge from "~/components/diagram/ERDEdge.vue";
+import { VUEFLOW_ID } from "~/constants/key";
+import { THEME } from "~/types/theme";
+
+const colorMode = useColorMode();
+// FIXME: check what if user use system mode? they would get unwanted colorscheme in the diagram
+const dark = computed(() => colorMode.preference === THEME.DARK);
+
+const { onEdgeUpdate, onConnect, onEdgesChange, onNodesChange } =
+  useVueFlowEvents();
+const { onError } = useVueFlow(VUEFLOW_ID);
+const { onMouseMove } = useVueFlowMousePosition();
+
+onError((error: VueFlowError) => {
+  errorHandler(error);
+});
+
+const edgeTypes = {
+  default: markRaw(ERDEdge),
+  erd: markRaw(ERDEdge),
+} satisfies EdgeTypesObject;
+
+const erdState = useErd();
+
+onMounted(() => {
+  erdState.fetchErdState();
+});
+</script>
+
+<template>
+  <ClientOnly>
+    <VueFlow
+      :id="VUEFLOW_ID"
+      :class="
+        cn({
+          dark: dark,
+        })
+      "
+      :nodes="erdState.getNodes"
+      :edges="erdState.getEdges"
+      :edges-updatable="true"
+      :edge-types="edgeTypes"
+      :apply-default="false"
+      :connection-radius="70"
+      :auto-connect="true"
+      :only-render-visible-elements="false"
+      @mousemove="onMouseMove"
+      @error="errorHandler"
+      @edge-update="onEdgeUpdate"
+      @connect="onConnect"
+      @nodes-change="onNodesChange"
+      @edges-change="onEdgesChange"
+    >
+      <!-- Subjected to "#note-${node-type}" in this case, my custom node is called "table" -->
+      <template #node-table="erdNodeprops">
+        <DiagramTableNode
+          v-bind="{
+            ...erdNodeprops,
+            tableNodeDataWithNodeId: {
+              tableNodeId: erdNodeprops.id,
+              tableName: erdNodeprops.data.tableName,
+              columns: erdNodeprops.data.columns,
+            },
+          }"
+        />
+      </template>
+      <!-- Default connection line when user drag the line from handle -->
+      <template #connection-line="lineProps">
+        <DiagramConnectionLine v-bind="lineProps" />
+      </template>
+      <template #edge-erd="edgeErdProps">
+        <DiagramERDEdge v-bind="edgeErdProps" />
+      </template>
+      <!-- <MiniMap pannable zoomable /> -->
+      <Controls position="bottom-right" />
+    </VueFlow>
+  </ClientOnly>
+</template>
+
+<style>
+@import "@vue-flow/core/dist/style.css";
+
+/* this contains the default theme, these are optional styles */
+@import "@vue-flow/core/dist/theme-default.css";
+
+/* Comment this out if doesn't use */
+@import "@vue-flow/minimap/dist/style.css";
+@import "@vue-flow/controls/dist/style.css";
+</style>

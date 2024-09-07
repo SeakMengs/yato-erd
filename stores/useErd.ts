@@ -1,4 +1,4 @@
-import { useVueFlow, type Edge } from "@vue-flow/core";
+import { useVueFlow, type Edge, type ViewportTransform } from "@vue-flow/core";
 import { defineStore } from "pinia";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 import { ERD_STATE_ID, VUEFLOW_ID } from "~/constants/key";
@@ -9,12 +9,18 @@ import { toast } from "~/components/ui/toast";
 type ERDState = {
   nodes: CustomTableNode[];
   edges: Edge[];
+  viewport: ViewportTransform;
 };
 
 export const useErd = defineStore(ERD_STATE_ID, {
   state: (): ERDState => ({
     nodes: [],
     edges: [],
+    viewport: {
+      x: 0,
+      y: 0,
+      zoom: 1,
+    },
   }),
   getters: {
     getNodes(): ERDState["nodes"] {
@@ -32,9 +38,12 @@ export const useErd = defineStore(ERD_STATE_ID, {
         return {
           nodes: [],
           edges: [],
+          viewport: {
+            x: 0,
+            y: 0,
+            zoom: 1,
+          },
         };
-        // TODO: better error handling than this lol
-        // throw Error(result.error.toString());
       }
 
       return result.data;
@@ -66,6 +75,7 @@ export const useErd = defineStore(ERD_STATE_ID, {
             this.validateErdState({
               nodes: data.nodes,
               edges: data.edges,
+              viewport: data.viewport,
             }),
           ),
         );
@@ -84,6 +94,7 @@ export const useErd = defineStore(ERD_STATE_ID, {
 
         this.nodes = state.nodes;
         this.edges = state.edges;
+        this.viewport = state.viewport;
 
         toast({
           description: "ERD state has been loaded",

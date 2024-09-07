@@ -107,7 +107,14 @@ export const erdEdgeSchema = z.object({
   targetHandle: z.string().trim().optional(),
 });
 
+export const viewportSchema = z.object({
+  x: z.coerce.number(),
+  y: z.coerce.number(),
+  zoom: z.coerce.number(),
+});
+
 export const erdStateSchema = z.object({
   nodes: z.array(tableNodeSchema),
   edges: z.array(erdEdgeSchema),
+  viewport: viewportSchema,
 });

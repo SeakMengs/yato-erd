@@ -23,6 +23,7 @@ export enum YatoErDErrorCode {
   Node_Not_Found = "Node_Not_Found",
   Get_ERD_State_From_Local_Storage = "Get_ERD_State_From_Local_Storage",
   Save_ERD_State_To_Local_Storage = "Save_ERD_State_To_Local_Storage",
+  Yjs_WebRTC_Must_Establish_In_Client_Side = "Yjs_WebRTC_Must_Establish_In_Client_Side",
 }
 
 export type YATO_ERD_ERROR_MESSAGE_TYPE = Record<
@@ -49,10 +50,17 @@ export const YATO_ERD_ERROR_MESSAGE = {
   ),
   [YatoErDErrorCode.Get_ERD_State_From_Local_Storage]: buildYatoErdErrorMessage(
     "Failed to get erd state from local storage",
+    "danger",
   ),
   [YatoErDErrorCode.Save_ERD_State_To_Local_Storage]: buildYatoErdErrorMessage(
     "Failed to save erd state to local storage",
+    "danger",
   ),
+  [YatoErDErrorCode.Yjs_WebRTC_Must_Establish_In_Client_Side]:
+    buildYatoErdErrorMessage(
+      "Yjs WebRtc must establish on client side",
+      "danger",
+    ),
   [ErrorCode.MISSING_STYLES]: buildYatoErdErrorMessage(
     "Styles are missing for the node.",
   ),
@@ -105,7 +113,10 @@ export function errorHandler(error: unknown, from: string = "Unknown"): void {
       err = YATO_ERD_ERROR_MESSAGE[error.code as YatoErDErrorCode];
     }
   } else {
-    logger.error("message from app.vue: An unkown error was thrown", error);
+    logger.error(
+      `message from app.vue: An unkown error was thrown, ${error}`,
+      error,
+    );
   }
 
   toast({
@@ -114,7 +125,10 @@ export function errorHandler(error: unknown, from: string = "Unknown"): void {
     variant: err.type === "danger" ? "destructive" : "default",
   });
 
-  logger.error(`Development log | An error occured in ${from}`, error);
+  logger.error(
+    `Development log | An error occured in ${from}, ${error}`,
+    error,
+  );
 }
 
 export class YatoErDError extends Error {
