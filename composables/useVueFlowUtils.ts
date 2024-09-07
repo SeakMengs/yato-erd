@@ -102,7 +102,6 @@ export function useVueFlowUtils() {
     checkExistingEdgeOnColumnSide: boolean,
   ): boolean {
     if (checkExistingEdgeOnColumnSide) {
-      console.log(connection);
       if (
         hasExistingEdgeOnColumnSide(
           connection.sourceHandle,

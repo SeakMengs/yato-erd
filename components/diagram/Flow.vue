@@ -40,7 +40,7 @@ onMounted(() => {
     <VueFlow
       :id="VUEFLOW_ID"
       :class="
-        cn({
+        cn('h-full w-full', {
           dark: dark,
         })
       "

@@ -7,6 +7,7 @@ import {
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
+import debounce from "lodash/debounce";
 
 export function useVueFlowEvents() {
   const { updateEdge, applyEdgeChanges, applyNodeChanges, addEdges } =
@@ -17,7 +18,7 @@ export function useVueFlowEvents() {
     handleEdgeSelection,
     isValidEdgeConnection,
   } = useVueFlowUtils();
-  const { broadcastNodeChange, broadcastEdgeChange } = useCollaborate({});
+  const collaborate = useCollaborate();
 
   // basically for user to move the connected edge to other handle
   function onEdgeUpdate({
@@ -66,7 +67,7 @@ export function useVueFlowEvents() {
 
     // TODO: setting isCollab
     if (true) {
-      broadcastEdgeChange(nextChanges);
+      collaborate.broadcastEdgeChange(nextChanges);
     }
   }
 
@@ -95,7 +96,7 @@ export function useVueFlowEvents() {
     applyNodeChanges(nextChanges);
     // TODO: setting isCollab
     if (true) {
-      broadcastNodeChange(nextChanges);
+      collaborate.broadcastNodeChange(nextChanges);
     }
   }
 

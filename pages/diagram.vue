@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const erdState = useErd();
-const {} = useCollaborate({});
+const collaborate = useCollaborate();
+
+onMounted(() => collaborate.establishConnection());
 </script>
 
 <template>

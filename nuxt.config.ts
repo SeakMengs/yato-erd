@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
+  runtimeConfig: {
+    WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
+    public: {
+      WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
+    },
+  },
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/color-mode",
