@@ -14,49 +14,38 @@
 
 import { ErrorCode, VueFlowError } from "@vue-flow/core";
 import { toast } from "~/components/ui/toast";
+import { type YATO_ERD_ERROR_MESSAGE_TYPE, YatoErDErrorCode } from "~/types/error";
 
-export enum YatoErDErrorCode {
-  Unknown = "Unknown",
-  Delete_Last_Column_Of_Table = "Delete_Last_Column_Of_Table",
-  Node_Does_Not_Have_Data_Object = "Node_Does_Not_Have_Data_Object",
-  Node_Type_Not_Table = "Node_Type_Not_Table",
-  Node_Not_Found = "Node_Not_Found",
-  Get_ERD_State_From_Local_Storage = "Get_ERD_State_From_Local_Storage",
-  Save_ERD_State_To_Local_Storage = "Save_ERD_State_To_Local_Storage",
-  Yjs_Provider_Must_Establish_In_Client_Side = "Yjs_WebRTC_Must_Establish_In_Client_Side",
+export {
+  YatoErDErrorCode
 }
 
-export type YATO_ERD_ERROR_MESSAGE_TYPE = Record<
-  YatoErDErrorCode | ErrorCode,
-  ReturnType<typeof buildYatoErdErrorMessage>
->;
-
 export const YATO_ERD_ERROR_MESSAGE = {
-  [YatoErDErrorCode.Delete_Last_Column_Of_Table]: buildYatoErdErrorMessage(
-    "A table require at least one column",
+  [YatoErDErrorCode.DELETE_LAST_COLUMN_OF_TABLE]: buildYatoErdErrorMessage(
+    "A table requires at least one column",
   ),
-  [YatoErDErrorCode.Unknown]: buildYatoErdErrorMessage(
-    "Opps! Something went wrong",
+  [YatoErDErrorCode.UNKNOWN]: buildYatoErdErrorMessage(
+    "Oops! Something went wrong",
     "danger",
   ),
-  [YatoErDErrorCode.Node_Does_Not_Have_Data_Object]: buildYatoErdErrorMessage(
-    "Opps! Strangely, the table does not have data",
+  [YatoErDErrorCode.NODE_DOES_NOT_HAVE_DATA_OBJECT]: buildYatoErdErrorMessage(
+    "Oops! Strangely, the table does not have data",
   ),
-  [YatoErDErrorCode.Node_Type_Not_Table]: buildYatoErdErrorMessage(
-    "Opps! Node type is not 'table'",
+  [YatoErDErrorCode.NODE_TYPE_NOT_TABLE]: buildYatoErdErrorMessage(
+    "Oops! Node type is not 'table'",
   ),
-  [YatoErDErrorCode.Node_Not_Found]: buildYatoErdErrorMessage(
-    "Opps! Node not found",
+  [YatoErDErrorCode.F_NODE_NOT_FOUND]: buildYatoErdErrorMessage(
+    "Oops! Node not found",
   ),
-  [YatoErDErrorCode.Get_ERD_State_From_Local_Storage]: buildYatoErdErrorMessage(
-    "Failed to get erd state from local storage",
+  [YatoErDErrorCode.GET_ERD_STATE_FROM_LOCAL_STORAGE]: buildYatoErdErrorMessage(
+    "Failed to get ERD state from local storage",
     "danger",
   ),
-  [YatoErDErrorCode.Save_ERD_State_To_Local_Storage]: buildYatoErdErrorMessage(
-    "Failed to save erd state to local storage",
+  [YatoErDErrorCode.SAVE_ERD_STATE_TO_LOCAL_STORAGE]: buildYatoErdErrorMessage(
+    "Failed to save ERD state to local storage",
     "danger",
   ),
-  [YatoErDErrorCode.Yjs_Provider_Must_Establish_In_Client_Side]:
+  [YatoErDErrorCode.YJS_PROVIDER_MUST_ESTABLISH_IN_CLIENT_SIDE]:
     buildYatoErdErrorMessage(
       "Yjs provider must establish on client side",
       "danger",
@@ -106,7 +95,7 @@ export const YATO_ERD_ERROR_MESSAGE = {
 } satisfies YATO_ERD_ERROR_MESSAGE_TYPE;
 
 export function errorHandler(error: unknown, from: string = "Unknown"): void {
-  let err = YATO_ERD_ERROR_MESSAGE[YatoErDErrorCode.Unknown];
+  let err = YATO_ERD_ERROR_MESSAGE[YatoErDErrorCode.UNKNOWN];
 
   if (error instanceof YatoErDError || error instanceof VueFlowError) {
     if (error.code) {
@@ -137,7 +126,7 @@ export class YatoErDError extends Error {
   public readonly code: YatoErDErrorCode;
 
   constructor(
-    code: YatoErDErrorCode = YatoErDErrorCode.Unknown,
+    code: YatoErDErrorCode = YatoErDErrorCode.UNKNOWN,
     args?: {
       message?: string;
       title?: string;

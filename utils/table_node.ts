@@ -54,14 +54,14 @@ export function tableHasConflict(table: typeof DEFAULT_TABLE): boolean {
 export function validateNode(nodeId: string): CustomTableNode {
   const node = findNode(nodeId) as CustomTableNode;
 
-  if (!node) throw new YatoErDError(YatoErDErrorCode.Node_Not_Found);
+  if (!node) throw new YatoErDError(YatoErDErrorCode.F_NODE_NOT_FOUND);
 
   if (node.type !== NodeType.Table)
-    throw new YatoErDError(YatoErDErrorCode.Node_Type_Not_Table);
+    throw new YatoErDError(YatoErDErrorCode.NODE_TYPE_NOT_TABLE);
 
   if (!node.data) {
     logger.error("Operation failed because the node does not have data");
-    throw new YatoErDError(YatoErDErrorCode.Node_Does_Not_Have_Data_Object);
+    throw new YatoErDError(YatoErDErrorCode.NODE_DOES_NOT_HAVE_DATA_OBJECT);
   }
 
   if (!Array.isArray(node.data.columns)) node.data.columns = [];

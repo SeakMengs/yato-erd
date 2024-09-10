@@ -83,7 +83,7 @@ class YjsService {
 
     if (!process.client) {
       throw new YatoErDError(
-        YatoErDErrorCode.Yjs_Provider_Must_Establish_In_Client_Side,
+        YatoErDErrorCode.YJS_PROVIDER_MUST_ESTABLISH_IN_CLIENT_SIDE,
       );
     }
 
@@ -111,13 +111,6 @@ class YjsService {
     logger.info(
       `Establishing yjs websocket connection! ws server url: ${wsUrl}, room id: ${roomId}`,
     );
-
-    if (!process.client) {
-      // The error code serve the same purpose
-      throw new YatoErDError(
-        YatoErDErrorCode.Yjs_Provider_Must_Establish_In_Client_Side,
-      );
-    }
 
     this.ydoc = new Y.Doc();
     this.roomId = roomId;

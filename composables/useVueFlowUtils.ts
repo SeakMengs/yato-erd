@@ -78,7 +78,7 @@ export function useVueFlowUtils() {
         logger.info(
           `Skip remove column in table node id: ${nodeId}, column id: ${columnId} because the table has only one column left`,
         );
-        throw new YatoErDError(YatoErDErrorCode.Delete_Last_Column_Of_Table);
+        throw new YatoErDError(YatoErDErrorCode.DELETE_LAST_COLUMN_OF_TABLE);
       }
 
       updateNodeData(node.id, {
