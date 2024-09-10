@@ -2,7 +2,7 @@
 const erdState = useErd();
 const collaborate = useCollaborate();
 
-onMounted(() => collaborate.establishConnection());
+onMounted(() => collaborate.connect());
 </script>
 
 <template>

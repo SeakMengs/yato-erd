@@ -7,7 +7,6 @@ import {
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
-import debounce from "lodash/debounce";
 
 export function useVueFlowEvents() {
   const { updateEdge, applyEdgeChanges, applyNodeChanges, addEdges } =

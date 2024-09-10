@@ -23,7 +23,7 @@ export enum YatoErDErrorCode {
   Node_Not_Found = "Node_Not_Found",
   Get_ERD_State_From_Local_Storage = "Get_ERD_State_From_Local_Storage",
   Save_ERD_State_To_Local_Storage = "Save_ERD_State_To_Local_Storage",
-  Yjs_WebRTC_Must_Establish_In_Client_Side = "Yjs_WebRTC_Must_Establish_In_Client_Side",
+  Yjs_Provider_Must_Establish_In_Client_Side = "Yjs_WebRTC_Must_Establish_In_Client_Side",
 }
 
 export type YATO_ERD_ERROR_MESSAGE_TYPE = Record<
@@ -56,9 +56,9 @@ export const YATO_ERD_ERROR_MESSAGE = {
     "Failed to save erd state to local storage",
     "danger",
   ),
-  [YatoErDErrorCode.Yjs_WebRTC_Must_Establish_In_Client_Side]:
+  [YatoErDErrorCode.Yjs_Provider_Must_Establish_In_Client_Side]:
     buildYatoErdErrorMessage(
-      "Yjs WebRtc must establish on client side",
+      "Yjs provider must establish on client side",
       "danger",
     ),
   [ErrorCode.MISSING_STYLES]: buildYatoErdErrorMessage(

@@ -4,7 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
+    WS_URL: process.env.WS_URL,
     public: {
+      WS_URL: process.env.WS_URL,
       WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
     },
   },

@@ -1,6 +1,4 @@
 import * as Y from "yjs";
-import { WebrtcProvider } from "y-webrtc";
-import type { Awareness } from "y-protocols/awareness.js";
 import {
   type Edge,
   type Node,
@@ -9,24 +7,19 @@ import {
   useVueFlow,
 } from "@vue-flow/core";
 import { COLLABORATE_ID, VUEFLOW_ID } from "~/constants/key";
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
+import YjsService from "~/lib/yjs-service";
+import { DEFAULT_WS_CONFIG, SYNC_THROTTLE } from "~/constants/yjs";
 
-type EstablishWebRtcConnection = {
-  roomId?: string;
-  password?: string;
-  signaling?: string;
-};
-
-/*
- * Usage: call establishConnection() on client side (onMounted)
- */
 export const useCollaborate = defineStore(COLLABORATE_ID, () => {
   const { applyEdgeChanges, applyNodeChanges } = useVueFlow(VUEFLOW_ID);
 
-  const ydoc = ref<Y.Doc>();
-  const webrtcProvider = ref<WebrtcProvider>();
-
-  const awareness = ref<Awareness>();
+  const yjs = ref<YjsService>(
+    new YjsService({
+      // Update provider type here if needed
+      providerType: "websocket",
+    }),
+  );
 
   const ymapErdState = ref<Y.Map<Edge[] | Node[]>>(
     new Y.Map<Edge[] | Node[]>(),
@@ -34,54 +27,34 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
   const yarrayEdgeChanges = ref<Y.Array<EdgeChange>>(new Y.Array<EdgeChange>());
   const yarrayNodeChanges = ref<Y.Array<NodeChange>>(new Y.Array<NodeChange>());
 
-  onUnmounted(() => {
-    destroy();
-  });
-
-  function establishConnection({
-    roomId = "public-room",
-    password = "optional-room-password",
-    signaling = getWebRTCSignalServer(),
-  }: EstablishWebRtcConnection = {}): void {
-    logger.info(
-      `Establishing yjs webrtc connection! signal server url: ${getWebRTCSignalServer()}, room id: ${roomId}`,
-    );
-
-    if (!process.client) {
-      throw new YatoErDError(
-        YatoErDErrorCode.Yjs_WebRTC_Must_Establish_In_Client_Side,
-      );
+  function connect(): void {
+    try {
+      yjs.value.establishConnection({
+        ...DEFAULT_WS_CONFIG,
+        // Optional args, by default the Yjs service already handle these default value
+        // roomId:
+        // wsUrl:
+      });
+      getRoomState();
+      subscribe();
+    } catch (error) {
+      errorHandler(error);
     }
-
-    ydoc.value = new Y.Doc();
-
-    webrtcProvider.value = new WebrtcProvider(roomId, ydoc.value, {
-      password,
-      // Peers using the same signaling server will find each other
-      signaling: [signaling],
-      // Maximal number of WebRTC connections.
-      maxConns: 20 + Math.floor(Math.random() * 15),
-    });
-    awareness.value = webrtcProvider.value.awareness;
-
-    // TODO: Add awareness
-    awareness.value.setLocalStateField("user", {
-      name: "Oni",
-    });
-
-    getRoomState();
-    subscribe();
   }
 
+  onUnmounted(() => {
+    yjs.value.destroy();
+  });
+
   function getRoomState(): void {
-    if (!ydoc.value) {
+    if (!yjs.value.ydoc) {
       return;
     }
 
-    ymapErdState.value = ydoc.value.getMap("yerdState");
+    ymapErdState.value = yjs.value.ydoc.getMap("yerdState");
 
-    yarrayEdgeChanges.value = ydoc.value.getArray("edgeChanges");
-    yarrayNodeChanges.value = ydoc.value.getArray("nodeChanges");
+    yarrayEdgeChanges.value = yjs.value.ydoc.getArray("edgeChanges");
+    yarrayNodeChanges.value = yjs.value.ydoc.getArray("nodeChanges");
   }
 
   function subscribe(): void {
@@ -100,21 +73,6 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
 
       applyEdgeChanges(yarrayEdgeChanges.value.toArray());
     });
-  }
-
-  function destroy(): void {
-    if (webrtcProvider.value) {
-      logger.info("Disconnecting WebRtc");
-      webrtcProvider.value.disconnect();
-    }
-
-    if (ydoc.value) {
-      ydoc.value.destroy();
-    }
-
-    if (awareness.value) {
-      awareness.value.destroy();
-    }
   }
 
   function getYMapNodes(): Node[] {
@@ -150,11 +108,9 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
   }
 
   function broadcastEdgeChange(changes: EdgeChange[]): void {
-    if (!Array.isArray(changes)) {
-      return;
-    }
+    if (!Array.isArray(changes) || !yjs.value.ydoc) return;
 
-    ydoc.value?.transact(() => {
+    yjs.value.ydoc.transact(() => {
       yarrayEdgeChanges.value.push(changes);
     });
 
@@ -162,10 +118,11 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
   }
 
   function broadcastNodeChange(changes: NodeChange[]): void {
-    if (!Array.isArray(changes)) return;
+    if (!Array.isArray(changes) || !yjs.value.ydoc) return;
 
     const operation = (changes: NodeChange[]) => {
-      ydoc.value?.transact(() => {
+      if (!yjs.value.ydoc) return;
+      yjs.value.ydoc.transact(() => {
         yarrayNodeChanges.value.push(changes);
       });
 
@@ -173,23 +130,18 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
     };
 
     // If user drag node, don't send data too frequently because it slow down performance. tested on slow internet.
-    // high debounce ms may result in longer delay
-    if (changes.some((c) => c.type === "position")) {
-      debounce(() => {
+    // high throttle ms may result in longer delay
+    if (nodeChangesContainPosition(changes)) {
+      throttle(() => {
         operation(changes);
-      }, 2)();
+      }, SYNC_THROTTLE)();
       return;
     }
     operation(changes);
   }
 
   return {
-    ydoc,
-    awareness,
-    wrtcProvider: webrtcProvider,
-    getYMapNodes,
-    getYMapEdges,
-    establishConnection,
+    connect,
     startAwareness,
     stopAwareness,
     broadcastEdgeChange,
