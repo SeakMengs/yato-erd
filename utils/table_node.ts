@@ -1,7 +1,8 @@
-import { useVueFlow } from "@vue-flow/core";
+import { useVueFlow, type Node } from "@vue-flow/core";
 import type { Position } from "@vueuse/core";
 import { VUEFLOW_ID } from "~/constants/key";
 import { DEFAULT_COLUMN, DEFAULT_TABLE } from "~/constants/table";
+import { tableNodesSchema } from "~/schemas/erd";
 import { NodeType } from "~/types/diagram/node";
 import type { CustomTableNode } from "~/types/diagram/table_node";
 
@@ -51,7 +52,7 @@ export function tableHasConflict(table: typeof DEFAULT_TABLE): boolean {
   });
 }
 
-export function validateNode(nodeId: string): CustomTableNode {
+export function findNodeSafe(nodeId: string): CustomTableNode {
   const node = findNode(nodeId) as CustomTableNode;
 
   if (!node) throw new YatoErDError(YatoErDErrorCode.F_NODE_NOT_FOUND);
@@ -67,4 +68,9 @@ export function validateNode(nodeId: string): CustomTableNode {
   if (!Array.isArray(node.data.columns)) node.data.columns = [];
 
   return node;
+}
+
+export function validateNodes(data: unknown): Node[] {
+  const result = tableNodesSchema.safeParse(data);
+  return (result.success ? result.data : []) as unknown as Node[];
 }

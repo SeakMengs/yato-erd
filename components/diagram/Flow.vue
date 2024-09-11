@@ -20,7 +20,7 @@ const { onError } = useVueFlow(VUEFLOW_ID);
 const { onMouseMove } = useVueFlowMousePosition();
 
 onError((error: VueFlowError) => {
-  errorHandler(error);
+  errorHandler(error, "nuxt's onError");
 });
 
 const edgeTypes = {
@@ -29,10 +29,6 @@ const edgeTypes = {
 } satisfies EdgeTypesObject;
 
 const erdState = useErd();
-
-onMounted(() => {
-  erdState.fetchErdState();
-});
 </script>
 
 <template>

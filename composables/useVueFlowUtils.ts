@@ -52,7 +52,7 @@ export function useVueFlowUtils() {
     logger.info(`Adding a new column to table node id: ${nodeId}`);
 
     try {
-      const node = validateNode(nodeId);
+      const node = findNodeSafe(nodeId);
 
       updateNodeData(node.id, {
         ...node.data,
@@ -72,7 +72,7 @@ export function useVueFlowUtils() {
     );
 
     try {
-      const node = validateNode(nodeId);
+      const node = findNodeSafe(nodeId);
 
       if (node.data!.columns.length === 1) {
         logger.info(

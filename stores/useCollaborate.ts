@@ -8,11 +8,24 @@ import {
 } from "@vue-flow/core";
 import { COLLABORATE_ID, VUEFLOW_ID } from "~/constants/key";
 import throttle from "lodash/throttle";
+import isEqual from "lodash/isEqual.js";
 import YjsService from "~/lib/yjs-service";
-import { DEFAULT_WS_CONFIG, SYNC_THROTTLE } from "~/constants/yjs";
+import {
+  DEFAULT_WS_CONFIG,
+  SYNC_EDGES_DELAY,
+  SYNC_NODES_DELAY,
+  SYNC_THROTTLE,
+} from "~/constants/yjs";
 
 export const useCollaborate = defineStore(COLLABORATE_ID, () => {
-  const { applyEdgeChanges, applyNodeChanges } = useVueFlow(VUEFLOW_ID);
+  const {
+    applyEdgeChanges,
+    applyNodeChanges,
+    setNodes,
+    setEdges,
+    getNodes,
+    getEdges,
+  } = useVueFlow(VUEFLOW_ID);
 
   const yjs = ref<YjsService>(
     new YjsService({
@@ -21,9 +34,12 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
     }),
   );
 
-  const ymapErdState = ref<Y.Map<Edge[] | Node[]>>(
-    new Y.Map<Edge[] | Node[]>(),
-  );
+  // For sync nodes and edges interval
+  let syncNodesInterval: NodeJS.Timeout;
+  let syncEdgesInterval: NodeJS.Timeout;
+
+  const yarrayNodes = ref<Y.Array<Node>>(new Y.Array<Node>());
+  const yarrayEdges = ref<Y.Array<Edge>>(new Y.Array<Edge>());
   const yarrayEdgeChanges = ref<Y.Array<EdgeChange>>(new Y.Array<EdgeChange>());
   const yarrayNodeChanges = ref<Y.Array<NodeChange>>(new Y.Array<NodeChange>());
 
@@ -37,13 +53,26 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
       });
       getRoomState();
       subscribe();
+
+      // Sync nodes and edges every 5s (5s is subjected to change)
+      syncNodesInterval = setInterval(() => {
+        broadcastNodes();
+      }, SYNC_NODES_DELAY);
+
+      syncEdgesInterval = setInterval(() => {
+        broadcastEdges();
+      }, SYNC_EDGES_DELAY);
     } catch (error) {
       errorHandler(error);
     }
   }
 
   onUnmounted(() => {
+    logger.info("useCollaborate unMounted, destroy yjs, and clear interval");
     yjs.value.destroy();
+
+    clearInterval(syncNodesInterval);
+    clearInterval(syncEdgesInterval);
   });
 
   function getRoomState(): void {
@@ -51,10 +80,13 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
       return;
     }
 
-    ymapErdState.value = yjs.value.ydoc.getMap("yerdState");
-
+    yarrayEdges.value = yjs.value.ydoc.getArray("edges");
+    yarrayNodes.value = yjs.value.ydoc.getArray("nodes");
     yarrayEdgeChanges.value = yjs.value.ydoc.getArray("edgeChanges");
     yarrayNodeChanges.value = yjs.value.ydoc.getArray("nodeChanges");
+
+    setNodes(yarrayNodes.value.toArray());
+    setEdges(yarrayEdges.value.toArray());
   }
 
   function subscribe(): void {
@@ -73,30 +105,23 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
 
       applyEdgeChanges(yarrayEdgeChanges.value.toArray());
     });
-  }
 
-  function getYMapNodes(): Node[] {
-    // TODO: use zod to validate
-    const nodes = ymapErdState.value.get("nodes") as Node[];
+    yarrayNodes.value.observe((event, transaction) => {
+      if (transaction.local) {
+        return;
+      }
 
-    if (Array.isArray(nodes)) {
-      return nodes;
-    }
+      console.log("New nodes,", yarrayNodes.value.toArray());
+      setNodes(yarrayNodes.value.toArray());
+    });
 
-    logger.warn("YMapNodes is not an array, return empty array");
-    return [];
-  }
+    yarrayEdges.value.observe((event, transaction) => {
+      if (transaction.local) {
+        return;
+      }
 
-  function getYMapEdges(): Edge[] {
-    // TODO: use zod to validate
-    const edges = ymapErdState.value.get("edges") as Edge[];
-
-    if (Array.isArray(edges)) {
-      return edges;
-    }
-
-    logger.warn("YMapEdges is not an array, return empty array");
-    return [];
+      setEdges(yarrayEdges.value.toArray());
+    });
   }
 
   function startAwareness(): void {
@@ -107,14 +132,48 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
     // TODO: implement
   }
 
+  function broadcastNodes(): void {
+    if (!Array.isArray(getNodes.value) || !yjs.value.ydoc) return;
+    const localNodes = validateNodes(getNodes.value);
+    const syncNodes = validateNodes(yarrayNodes.value.toArray());
+
+    if (isEqual(localNodes, syncNodes)) {
+      return;
+    }
+
+    yjs.value.ydoc.transact(() => {
+      yarrayNodes.value.delete(0, syncNodes.length);
+      yarrayNodes.value.push(getNodes.value);
+
+      // Since the nodes is already sync to the server, nodeChanges can be cleared
+      yarrayNodeChanges.value.delete(0, yarrayNodeChanges.value.length);
+    });
+  }
+
+  function broadcastEdges(): void {
+    if (!Array.isArray(getEdges) || !yjs.value.ydoc) return;
+    const localEdges = validateEdges(getEdges.value);
+    const syncEdges = validateEdges(yarrayEdges.value);
+
+    if (isEqual(localEdges, syncEdges)) {
+      return;
+    }
+
+    yjs.value.ydoc.transact(() => {
+      yarrayEdges.value.delete(0, syncEdges.length);
+      yarrayEdges.value.insert(0, getEdges.value);
+
+      // Since the edges is already sync to the server, edgeChanges can be cleared
+      yarrayEdgeChanges.value.delete(0, yarrayEdgeChanges.value.length);
+    });
+  }
+
   function broadcastEdgeChange(changes: EdgeChange[]): void {
     if (!Array.isArray(changes) || !yjs.value.ydoc) return;
 
     yjs.value.ydoc.transact(() => {
       yarrayEdgeChanges.value.push(changes);
     });
-
-    yarrayEdgeChanges.value.delete(0, yarrayEdgeChanges.value.length);
   }
 
   function broadcastNodeChange(changes: NodeChange[]): void {
@@ -125,8 +184,6 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
       yjs.value.ydoc.transact(() => {
         yarrayNodeChanges.value.push(changes);
       });
-
-      yarrayNodeChanges.value.delete(0, yarrayNodeChanges.value.length);
     };
 
     // If user drag node, don't send data too frequently because it slow down performance. tested on slow internet.

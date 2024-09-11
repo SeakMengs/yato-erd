@@ -4,6 +4,7 @@ import { EdgeType } from "~/types/diagram/edge";
 
 const columnIndexTypeSchemaEnum = z.enum(["Primary key", "Unique", "None"]);
 export const tableNodeDataColumnSchema = z.object({
+  // Bug might occurs if column id is duplicate
   columnId: z
     .string()
     .trim()
@@ -68,6 +69,7 @@ export const tableNodeDataSchema = z.object({
 // Use this schema to validate and filter only necessary data we need
 // If you want to use type, use CustomTableNode defined in types/diagram/table.
 export const tableNodeSchema = z.object({
+  // Bug might occurs if id is duplicate
   id: z.string().trim().min(1, {
     message: "Id is required",
   }),
@@ -107,6 +109,9 @@ export const erdEdgeSchema = z.object({
   targetHandle: z.string().trim().optional(),
 });
 
+export const tableNodesSchema = z.array(tableNodeSchema);
+export const erdEdgesSchema = z.array(erdEdgeSchema);
+
 export const viewportSchema = z.object({
   x: z.coerce.number(),
   y: z.coerce.number(),
@@ -114,7 +119,7 @@ export const viewportSchema = z.object({
 });
 
 export const erdStateSchema = z.object({
-  nodes: z.array(tableNodeSchema),
-  edges: z.array(erdEdgeSchema),
+  nodes: tableNodesSchema,
+  edges: erdEdgesSchema,
   viewport: viewportSchema,
 });

@@ -1,5 +1,11 @@
-import { useVueFlow, type GraphEdge, type Node } from "@vue-flow/core";
+import {
+  useVueFlow,
+  type Edge,
+  type GraphEdge,
+  type Node,
+} from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
+import { erdEdgesSchema } from "~/schemas/erd";
 import { EdgeType } from "~/types/diagram/edge";
 
 const { getConnectedEdges } = useVueFlow(VUEFLOW_ID);
@@ -46,4 +52,9 @@ export function hasExistingEdgeOnColumnSide(
       sourceColId.toLowerCase() ===
         extractColumnId(e.sourceHandle).toLowerCase(),
   );
+}
+
+export function validateEdges(data: unknown): Edge[] {
+  const result = erdEdgesSchema.safeParse(data);
+  return result.success ? result.data : [];
 }

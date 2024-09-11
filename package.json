@@ -16,6 +16,7 @@
   "dependencies": {
     "@nuxtjs/i18n": "^8.5.1",
     "@pinia/nuxt": "^0.5.4",
+    "@types/uuid": "^10.0.0",
     "@unovis/ts": "^1.4.3-beta.0",
     "@unovis/vue": "^1.4.3-beta.0",
     "@vee-validate/zod": "^4.13.2",
@@ -35,6 +36,7 @@
     "shadcn-nuxt": "^0.10.4",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^10.0.0",
     "v-calendar": "^3.1.2",
     "vaul-vue": "^0.2.0",
     "vee-validate": "^4.13.2",

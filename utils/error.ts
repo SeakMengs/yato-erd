@@ -14,11 +14,12 @@
 
 import { ErrorCode, VueFlowError } from "@vue-flow/core";
 import { toast } from "~/components/ui/toast";
-import { type YATO_ERD_ERROR_MESSAGE_TYPE, YatoErDErrorCode } from "~/types/error";
+import {
+  type YATO_ERD_ERROR_MESSAGE_TYPE,
+  YatoErDErrorCode,
+} from "~/types/error";
 
-export {
-  YatoErDErrorCode
-}
+export { YatoErDErrorCode };
 
 export const YATO_ERD_ERROR_MESSAGE = {
   [YatoErDErrorCode.DELETE_LAST_COLUMN_OF_TABLE]: buildYatoErdErrorMessage(
@@ -110,6 +111,8 @@ export function errorHandler(error: unknown, from: string = "Unknown"): void {
 
   toast({
     description: err.description,
+    // For debug purpose on device that cannot use inspect element
+    // description: `${error}`,
     title: err.title ?? "",
     variant: err.type === "danger" ? "destructive" : "default",
   });

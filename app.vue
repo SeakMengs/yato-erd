@@ -8,7 +8,7 @@ useHead({
   },
 });
 
-onErrorCaptured((error) => errorHandler(error));
+onErrorCaptured((error) => errorHandler(error, "onErrorCaptured"));
 </script>
 
 <template>

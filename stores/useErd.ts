@@ -59,7 +59,7 @@ export const useErd = defineStore(ERD_STATE_ID, {
           error,
         );
         throw new YatoErDError(
-          YatoErDErrorCode.Get_ERD_State_From_Local_Storage,
+          YatoErDErrorCode.GET_ERD_STATE_FROM_LOCAL_STORAGE,
         );
       }
     },
@@ -100,7 +100,7 @@ export const useErd = defineStore(ERD_STATE_ID, {
           description: "ERD state has been loaded",
         });
       } catch (error) {
-        errorHandler(error);
+        errorHandler(error, "fetchErdState");
       }
     },
   },

@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-04-03",
+  compatibilityDate: "2024-09-11",
   devtools: { enabled: true },
   runtimeConfig: {
     WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
