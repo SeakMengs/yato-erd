@@ -33,7 +33,7 @@ const selected = computed<boolean>(() => {
       <div
         v-for="(col, index) in props.tableNodeDataWithNodeId.columns"
         :key="index"
-        class="relative"
+        class="relative hover:bg-secondary"
       >
         <Handle
           :id="

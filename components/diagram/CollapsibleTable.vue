@@ -38,7 +38,10 @@ watch(
     >
       <CollapsibleTrigger as-child @click="toggleOpen">
         <div class="flex flex-row items-center gap-2">
-          <ChevronDown class="h-4 w-4" />
+          <ChevronDown
+            :data-state="isOpen ? 'open' : 'close'"
+            class="h-4 w-4 data-[state=close]:-rotate-90 transition-transform duration-200"
+          />
           <p>{{ props.tableNodeDataWithNodeId.tableName }}</p>
         </div>
       </CollapsibleTrigger>

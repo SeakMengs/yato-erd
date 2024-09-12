@@ -48,7 +48,7 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
       yjs.value.establishConnection({
         ...DEFAULT_WS_CONFIG,
         // Optional args, by default the Yjs service already handle these default value
-        // roomId:
+        // roomId: "room-id",
         // wsUrl:
       });
       getRoomState();
@@ -151,7 +151,7 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
   }
 
   function broadcastEdges(): void {
-    if (!Array.isArray(getEdges) || !yjs.value.ydoc) return;
+    if (!Array.isArray(getEdges.value) || !yjs.value.ydoc) return;
     const localEdges = validateEdges(getEdges.value);
     const syncEdges = validateEdges(yarrayEdges.value);
 

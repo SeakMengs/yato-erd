@@ -2,7 +2,11 @@ import { z } from "zod";
 import { NodeType } from "~/types/diagram/node";
 import { EdgeType } from "~/types/diagram/edge";
 
-const columnIndexTypeSchemaEnum = z.enum(["Primary key", "Unique", "None"]);
+export const columnIndexTypeSchemaEnum = z.enum([
+  "Primary key",
+  "Unique",
+  "None",
+]);
 export const tableNodeDataColumnSchema = z.object({
   // Bug might occurs if column id is duplicate
   columnId: z
@@ -37,7 +41,7 @@ export const tableNodeDataColumnSchema = z.object({
       .optional(),
     autoIncrement: z
       .boolean({
-        invalid_type_error: "Nullable type must be boolean",
+        invalid_type_error: "Auto increment type must be boolean",
       })
       .default(false)
       .optional(),

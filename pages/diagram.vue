@@ -2,8 +2,8 @@
 const erdState = useErd();
 onMounted(() => erdState.fetchErdState());
 
-const collaborate = useCollaborate();
-onMounted(() => collaborate.connect());
+// const collaborate = useCollaborate();
+// onMounted(() => collaborate.connect());
 </script>
 
 <template>
