@@ -29,10 +29,12 @@ export const tableNodeDataColumnSchema = z.object({
     type: z
       .string()
       .trim()
+      .min(1, {
+        message: "Column type is required",
+      })
       .max(64, {
         message: "Column type must be less than 64 characters",
-      })
-      .optional(),
+      }),
     nullable: z
       .boolean({
         invalid_type_error: "Nullable type must be boolean",

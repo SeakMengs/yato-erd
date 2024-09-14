@@ -52,7 +52,7 @@ watch(
             :table-id="props.tableNodeDataWithNodeId.tableNodeId"
             :column="column"
             :column-position="index"
-            :key="index"
+            :key="column.columnId"
             :removeColumn="
               () =>
                 removeColumn(

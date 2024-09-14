@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { Ellipsis, Trash } from "lucide-vue-next";
-import { DEFAULT_COLUMN } from "~/constants/table";
-import { columnIndexTypeSchemaEnum } from "~/schemas/erd";
+import {
+  columnIndexTypeSchemaEnum,
+  tableNodeDataColumnSchema,
+} from "~/schemas/erd";
+import { configure, useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 import type { TableNodeDataColumn } from "~/types/diagram/table_node";
+import { toast } from "~/components/ui/toast";
+import { vAutoAnimate } from "@formkit/auto-animate/vue";
 
 const props = defineProps<{
   tableId: string;
@@ -12,21 +18,104 @@ const props = defineProps<{
 }>();
 
 const indexTypes = columnIndexTypeSchemaEnum.options;
+
+const formSchema = toTypedSchema(tableNodeDataColumnSchema);
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: props.column,
+});
+
+configure({
+  validateOnInput: true,
+});
+
+const formHasError = (): boolean => {
+  return Object.keys(form.errors.value).length > 0;
+};
+
+watch(
+  () => props.column,
+  () => {
+    // If there there is an error don't reset form initialValues
+    if (formHasError()) {
+      return;
+    }
+
+    form.resetForm({
+      values: props.column,
+    });
+  },
+);
+
+watch(
+  () => form.errors.value,
+  () => {
+    const fieldKeys = Object.keys(form.errors.value) as Array<
+      keyof typeof form.errors.value
+    >;
+
+    if (Array.isArray(fieldKeys) && fieldKeys.length === 0) {
+      return;
+    }
+
+    fieldKeys.forEach((fk) => {
+      toast({
+        title: "Update column fail",
+        description: form.errors.value[fk],
+        variant: "destructive",
+      });
+    });
+  },
+);
+
+watch(
+  () => form.controlledValues.value,
+  async () => {
+    const { valid } = await form.validate();
+
+    if (!valid) {
+      return;
+    }
+
+    updateTableNodeColumn(props.tableId, {
+      ...props.column,
+      ...form.controlledValues.value,
+    } as TableNodeDataColumn);
+  },
+);
 </script>
 
 <template>
-  <div class="flex flex-row items-center gap-2 m-1">
-    <Input id="name" v-model="props.column.columnName" placeholder="Name" />
-    <Input id="type" v-model="props.column.attribute.type" placeholder="Type" />
+  <form class="flex flex-row items-center gap-2 m-1 w-full">
+    <FormField v-slot="{ componentField }" name="columnName">
+      <FormItem v-auto-animate class="w-full">
+        <FormLabel
+          >Name<span class="text-destructive text-sm">*</span></FormLabel
+        >
+        <FormControl>
+          <Input placeholder="Name" v-bind="componentField" />
+        </FormControl>
+        <!-- <FormMessage /> -->
+      </FormItem>
+    </FormField>
+    <FormField v-slot="{ componentField }" name="attribute.type">
+      <FormItem v-auto-animate class="w-full">
+        <FormLabel>Type<span class="text-destructive">*</span></FormLabel>
+        <FormControl>
+          <Input placeholder="type" v-bind="componentField" />
+        </FormControl>
+        <!-- <FormMessage /> -->
+      </FormItem>
+    </FormField>
     <DropdownMenu>
       <DropdownMenuTrigger>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger as-child>
+            <TooltipTrigger>
               <Button
                 variant="outline"
                 size="icon"
-                class="flex-shrink-0 hover:ring-2 ring-ring"
+                class="flex-shrink-0 hover:ring-2 ring-ring mt-[30px] mr-2"
               >
                 <Ellipsis class="w-4 h-4" />
               </Button>
@@ -49,78 +138,85 @@ const indexTypes = columnIndexTypeSchemaEnum.options;
           >
             Constraints
           </label>
-          <div class="flex gap-2">
-            <Checkbox id="nullable" v-model="props.column.attribute.nullable" />
-            <label
-              for="nullable"
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          <FormField v-slot="{ value, handleChange }" name="attribute.nullable">
+            <FormItem
+              v-auto-animate
+              class="flex flex-row items-start space-x-3 space-y-0"
             >
-              Nullable
-            </label>
-          </div>
-          <div class="flex space-x-2">
-            <Checkbox
-              id="autoIncrement"
-              v-model="props.column.attribute.autoIncrement"
-            />
-            <label
-              for="autoIncrement"
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Auto increment
-            </label>
-          </div>
-        </div>
-        <div class="flex flex-col gap-2">
-          <label
-            id="indexType"
-            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Nullable</FormLabel>
+              <!-- <FormMessage /> -->
+            </FormItem>
+          </FormField>
+          <FormField
+            v-slot="{ value, handleChange }"
+            name="attribute.autoIncrement"
           >
-            Index type
-          </label>
-          <Select :default-value="props.column.attribute.indexType">
-            <SelectTrigger id="indexType">
-              <SelectValue placeholder="Select index type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <div v-for="(it, i) in indexTypes" :key="i">
-                  <SelectItem :value="it"> {{ it }}</SelectItem>
-                </div>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <div class="flex flex-col gap-2">
-          <div class="flex flex-col gap-2">
-            <label
-              for="defaultValue"
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            <FormItem
+              v-auto-animate
+              class="flex flex-row items-start space-x-3 space-y-0"
             >
-              Default value
-            </label>
-            <Input
-              id="defaultValue"
-              v-model="props.column.attribute.defaultValue"
-              placeholder="Default value"
-            />
-          </div>
+              <FormControl>
+                <Checkbox :checked="value" @update:checked="handleChange" />
+              </FormControl>
+              <FormLabel>Auto increment</FormLabel>
+              <!-- <FormMessage /> -->
+            </FormItem>
+          </FormField>
         </div>
-        <div class="flex flex-col gap-2">
-          <div class="flex flex-col gap-2">
-            <label
-              for="userComment"
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        <FormField
+          v-slot="{ value, componentField }"
+          name="attribute.indexType"
+        >
+          <FormItem>
+            <FormLabel>Index type</FormLabel>
+            <Select
+              v-bind="componentField"
+              :default-value="value ?? props.column.attribute.indexType"
             >
-              User comment
-            </label>
-            <Textarea
-              id="userComment"
-              v-model="props.column.userComment"
-              placeholder="User comment"
-            />
-          </div>
-        </div>
+              <FormControl>
+                <SelectTrigger id="indexType">
+                  <SelectValue placeholder="Select index type" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="(it, i) in indexTypes"
+                    :key="i"
+                    :value="it"
+                  >
+                    {{ it }}</SelectItem
+                  >
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <!-- <FormMessage /> -->
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ componentField }" name="attribute.defaultValue">
+          <FormItem v-auto-animate>
+            <FormLabel>Default value</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="optional default value.."
+                v-bind="componentField"
+              />
+            </FormControl>
+            <!-- <FormMessage /> -->
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ componentField }" name="userComment">
+          <FormItem v-auto-animate>
+            <FormLabel>Comment</FormLabel>
+            <FormControl>
+              <Textarea placeholder="comment.." v-bind="componentField" />
+            </FormControl>
+            <!-- <FormMessage /> -->
+          </FormItem>
+        </FormField>
         <div class="flex flex-col gap-2">
           <label
             for="actions"
@@ -128,16 +224,18 @@ const indexTypes = columnIndexTypeSchemaEnum.options;
           >
             Actions
           </label>
-          <Button
-            @click="removeColumn"
-            variant="outline"
-            class="flex-shrink-0 text-center gap-2 hover:border-red-900 hover:text-red-900"
-          >
-            <Trash class="w-4 h-4" />
-            Delete column
-          </Button>
+          <DropdownMenuItem as-child>
+            <Button
+              @click="removeColumn"
+              variant="outline"
+              class="flex-shrink-0 text-center gap-2 hover:border-red-900 hover:text-red-900"
+            >
+              <Trash class="w-4 h-4" />
+              Delete column
+            </Button>
+          </DropdownMenuItem>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
-  </div>
+  </form>
 </template>

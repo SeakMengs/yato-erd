@@ -4,9 +4,13 @@ import { VUEFLOW_ID } from "~/constants/key";
 import { DEFAULT_COLUMN, DEFAULT_TABLE } from "~/constants/table";
 import { tableNodesSchema } from "~/schemas/erd";
 import { NodeType } from "~/types/diagram/node";
-import type { CustomTableNode } from "~/types/diagram/table_node";
+import type {
+  CustomTableNode,
+  TableNodeData,
+  TableNodeDataColumn,
+} from "~/types/diagram/table_node";
 
-const { getNodes, findNode } = useVueFlow(VUEFLOW_ID);
+const { getNodes, findNode, updateNodeData } = useVueFlow(VUEFLOW_ID);
 
 function generateRandomNodePosition(): Position {
   return {
@@ -38,6 +42,34 @@ export function generateTable(): typeof DEFAULT_TABLE {
     },
     position: generateRandomNodePosition(),
   };
+}
+
+export function applyTableNodeDataChange(
+  nodeId: string,
+  // TODO: write better type
+  data: TableNodeData,
+): void {
+  updateNodeData(nodeId, data);
+}
+
+export function updateTableNodeColumn(
+  nodeId: string,
+  newColumn: TableNodeDataColumn,
+): void {
+  const node = findNodeSafe(nodeId);
+
+  const columns = node.data?.columns.map((c) => {
+    if (c.columnId === newColumn.columnId) {
+      return newColumn;
+    }
+
+    return c;
+  });
+
+  applyTableNodeDataChange(nodeId, {
+    ...node.data,
+    columns: columns,
+  } as TableNodeData);
 }
 
 export function tableHasConflict(table: typeof DEFAULT_TABLE): boolean {

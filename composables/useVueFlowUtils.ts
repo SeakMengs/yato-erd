@@ -5,17 +5,11 @@ import {
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
+import type { TableNodeData } from "~/types/diagram/table_node";
 
 export function useVueFlowUtils() {
-  const {
-    getConnectedEdges,
-    addNodes,
-    updateNodeData,
-    findEdge,
-    setNodes,
-    fitView,
-    viewport,
-  } = useVueFlow(VUEFLOW_ID);
+  const { getConnectedEdges, addNodes, findEdge, setNodes, fitView, viewport } =
+    useVueFlow(VUEFLOW_ID);
 
   // When a collapsible table on the left side bar is clicked make the table node in the diagram show as selected
   // And unselect other tables
@@ -54,13 +48,13 @@ export function useVueFlowUtils() {
     try {
       const node = findNodeSafe(nodeId);
 
-      updateNodeData(node.id, {
+      applyTableNodeDataChange(node.id, {
         ...node.data,
         columns: [
           ...node.data!.columns,
           generateColumn(node.data!.columns.length + 1),
         ],
-      });
+      } as TableNodeData);
     } catch (error) {
       errorHandler(error, "addColumn");
     }
@@ -81,10 +75,10 @@ export function useVueFlowUtils() {
         throw new YatoErDError(YatoErDErrorCode.DELETE_LAST_COLUMN_OF_TABLE);
       }
 
-      updateNodeData(node.id, {
+      applyTableNodeDataChange(node.id, {
         ...node.data,
         columns: node.data!.columns.filter((c) => c.columnId != columnId),
-      });
+      } as TableNodeData);
     } catch (error) {
       errorHandler(error, "removeColumn");
     }
