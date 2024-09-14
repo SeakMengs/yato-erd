@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { vAutoAnimate } from "@formkit/auto-animate/vue";
 import { ChevronDown } from "lucide-vue-next";
 import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
 
@@ -46,7 +47,7 @@ watch(
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div class="flex flex-col gap-2 py-2">
+        <div v-auto-animate class="flex flex-col gap-2 py-2">
           <DiagramEditableTableColumn
             v-for="(column, index) in props.tableNodeDataWithNodeId.columns"
             :table-id="props.tableNodeDataWithNodeId.tableNodeId"

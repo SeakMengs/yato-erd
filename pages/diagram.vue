@@ -21,7 +21,7 @@ onMounted(() => erdState.fetchErdState());
       <DiagramLeftSideBar />
     </ResizablePanel>
     <ResizableHandle id="handle-handle-1" with-handle />
-    <ResizablePanel id="handle-panel-2" :default-size="80">
+    <ResizablePanel id="handle-panel-2" :default-size="80" :min-size="1">
       <DiagramFlow />
     </ResizablePanel>
   </ResizablePanelGroup>

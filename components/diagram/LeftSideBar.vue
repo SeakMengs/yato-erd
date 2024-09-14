@@ -21,19 +21,21 @@ const { addTable } = useVueFlowUtils();
       </Button>
     </div>
     <ScrollArea class="max-h-[calc(100%-72px)]" v-if="getNodes.length > 0">
-      <DiagramCollapsibleTable
-        v-for="(node, index) in getNodes"
-        :key="node.id"
-        :table-node-data-with-node-id="{
-          tableNodeId: node.id,
-          columns: node.data?.columns ?? [],
-          tableName: node.data?.tableName ?? '',
-        }"
-        :selected="node.selected ?? false"
-        :class="{
-          'mb-2': getNodes.length === index + 1,
-        }"
-      />
+      <div>
+        <DiagramCollapsibleTable
+          v-for="(node, index) in getNodes"
+          :key="node.id"
+          :table-node-data-with-node-id="{
+            tableNodeId: node.id,
+            columns: node.data?.columns ?? [],
+            tableName: node.data?.tableName ?? '',
+          }"
+          :selected="node.selected ?? false"
+          :class="{
+            'mb-2': getNodes.length === index + 1,
+          }"
+        />
+      </div>
     </ScrollArea>
     <div v-else class="flex items-center justify-center my-6">
       <p>{{ $t("diagram.leftSideBar.noTable") }}</p>

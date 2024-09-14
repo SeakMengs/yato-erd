@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
-import { Position, Handle, useVueFlow, type Connection } from "@vue-flow/core";
+import { Position, Handle, useVueFlow } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
+import { vAutoAnimate } from "@formkit/auto-animate";
 
 // There are more props being passed by vueflow than the type i define!
 const props = defineProps<{
@@ -29,7 +30,7 @@ const selected = computed<boolean>(() => {
     <CardHeader class="p-4">
       <CardTitle>{{ props.tableNodeDataWithNodeId.tableName }}</CardTitle>
     </CardHeader>
-    <CardContent class="p-0">
+    <CardContent v-auto-animate class="p-0">
       <div
         v-for="(col, index) in props.tableNodeDataWithNodeId.columns"
         :key="index"

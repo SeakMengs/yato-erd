@@ -9,6 +9,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import type { TableNodeDataColumn } from "~/types/diagram/table_node";
 import { toast } from "~/components/ui/toast";
 import { vAutoAnimate } from "@formkit/auto-animate/vue";
+import { PopoverClose } from "radix-vue";
 
 const props = defineProps<{
   tableId: string;
@@ -80,13 +81,17 @@ watch(
     updateTableNodeColumn(props.tableId, {
       ...props.column,
       ...form.controlledValues.value,
+      attribute: {
+        ...props.column.attribute,
+        ...form.controlledValues.value.attribute,
+      },
     } as TableNodeDataColumn);
   },
 );
 </script>
 
 <template>
-  <form class="flex flex-row items-center gap-2 m-1 w-full">
+  <form @submit.prevent class="flex flex-row items-center gap-2 m-1 w-full">
     <FormField v-slot="{ componentField }" name="columnName">
       <FormItem v-auto-animate class="w-full">
         <FormLabel
@@ -107,12 +112,13 @@ watch(
         <!-- <FormMessage /> -->
       </FormItem>
     </FormField>
-    <DropdownMenu>
-      <DropdownMenuTrigger>
+    <Popover>
+      <PopoverTrigger>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
               <Button
+                type="button"
                 variant="outline"
                 size="icon"
                 class="flex-shrink-0 hover:ring-2 ring-ring mt-[30px] mr-2"
@@ -125,8 +131,8 @@ watch(
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent class="min-w-32 p-2 flex flex-col gap-4">
+      </PopoverTrigger>
+      <PopoverContent class="min-w-32 p-2 flex flex-col gap-4">
         <div class="flex items-center justify-center">
           <h1>Column attributes</h1>
         </div>
@@ -224,7 +230,7 @@ watch(
           >
             Actions
           </label>
-          <DropdownMenuItem as-child>
+          <PopoverClose as-child>
             <Button
               @click="removeColumn"
               variant="outline"
@@ -233,9 +239,9 @@ watch(
               <Trash class="w-4 h-4" />
               Delete column
             </Button>
-          </DropdownMenuItem>
+          </PopoverClose>
         </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverContent>
+    </Popover>
   </form>
 </template>
