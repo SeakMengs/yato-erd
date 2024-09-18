@@ -23,15 +23,21 @@ function generateTableName(n: number): string {
   return `Table-${n + 1}-${generateId()}`;
 }
 
-export function generateColumn(n: number): typeof DEFAULT_COLUMN {
+export function generateColumn(n: number): TableNodeDataColumn {
   return {
     ...DEFAULT_COLUMN,
+    attribute: {
+      ...DEFAULT_COLUMN.attribute,
+      nullable: n !== 1,
+      indexType: n === 1 ? "Primary key" : DEFAULT_COLUMN.attribute.indexType,
+      autoIncrement: n === 1,
+    },
     columnId: generateId(),
-    columnName: `column_${n}`,
+    columnName: n === 1 ? `id` : `column_${n}`,
   };
 }
 
-export function generateTable(): typeof DEFAULT_TABLE {
+export function generateTable(): CustomTableNode {
   return {
     ...DEFAULT_TABLE,
     id: generateId(),
@@ -72,7 +78,7 @@ export function updateTableNodeColumn(
   } as TableNodeData);
 }
 
-export function tableHasConflict(table: typeof DEFAULT_TABLE): boolean {
+export function tableHasConflict(table: CustomTableNode): boolean {
   logger.info(`Check for table node conflict of table id: ${table.id}`);
 
   return getNodes.value.some((node) => {

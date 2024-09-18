@@ -17,7 +17,7 @@ const dark = computed(() => colorMode.preference === THEME.DARK);
 const { onEdgeUpdate, onConnect, onEdgesChange, onNodesChange } =
   useVueFlowEvents();
 const { onError } = useVueFlow(VUEFLOW_ID);
-const { onMouseMove } = useVueFlowMousePosition();
+// const { onMouseMove } = useVueFlowMousePosition();
 
 onError((error: VueFlowError) => {
   errorHandler(error, "nuxt's onError");
@@ -33,6 +33,7 @@ const erdState = useErd();
 
 <template>
   <ClientOnly>
+    <!-- @mousemove="onMouseMove" -->
     <VueFlow
       :id="VUEFLOW_ID"
       :class="
@@ -48,7 +49,6 @@ const erdState = useErd();
       :connection-radius="70"
       :auto-connect="true"
       :only-render-visible-elements="false"
-      @mousemove="onMouseMove"
       @error="errorHandler"
       @edge-update="onEdgeUpdate"
       @connect="onConnect"
@@ -56,17 +56,8 @@ const erdState = useErd();
       @edges-change="onEdgesChange"
     >
       <!-- Subjected to "#note-${node-type}" in this case, my custom node is called "table" -->
-      <template #node-table="erdNodeprops">
-        <DiagramTableNode
-          v-bind="{
-            ...erdNodeprops,
-            tableNodeDataWithNodeId: {
-              tableNodeId: erdNodeprops.id,
-              tableName: erdNodeprops.data.tableName,
-              columns: erdNodeprops.data.columns,
-            },
-          }"
-        />
+      <template #node-table="tableNodeProps">
+        <DiagramTableNode v-bind="tableNodeProps" />
       </template>
       <!-- Default connection line when user drag the line from handle -->
       <template #connection-line="lineProps">

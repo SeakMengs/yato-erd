@@ -1,4 +1,4 @@
-import type { Node } from "@vue-flow/core";
+import type { Node, NodeProps } from "@vue-flow/core";
 import type { NodeType } from "./node";
 import { z } from "zod";
 import { tableNodeDataColumnSchema, tableNodeDataSchema } from "~/schemas/erd";
@@ -13,6 +13,8 @@ export type TableNodeDataWithNodeId = TableNodeData & {
 export type TableNodeEvent = {};
 
 export type TableNodeType = NodeType.Table;
+
+export type CustomTableNodeProps = NodeProps<TableNodeData, TableNodeEvent>;
 
 export type CustomTableNode = Node<
   TableNodeData,

@@ -2,6 +2,7 @@
 const erdState = useErd();
 onMounted(() => erdState.fetchErdState());
 
+const { exportAsImage } = useExport();
 // const collaborate = useCollaborate();
 // onMounted(() => collaborate.connect());
 </script>
@@ -10,6 +11,11 @@ onMounted(() => erdState.fetchErdState());
   <ThemeButton />
   <Button variant="outline" @click="erdState.saveErdStateToLocalStorage"
     >Save state
+  </Button>
+  <Button
+    variant="outline"
+    @click="exportAsImage({ type: 'png', shouldDownload: true })"
+    >Export as png
   </Button>
   <DiagramConfirmDeleteNodeDialog />
   <ResizablePanelGroup

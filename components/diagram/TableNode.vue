@@ -1,75 +1,90 @@
 <script setup lang="ts">
-import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
-import { Position, Handle, useVueFlow } from "@vue-flow/core";
-import { VUEFLOW_ID } from "~/constants/key";
+import type { CustomTableNodeProps } from "~/types/diagram/table_node";
+import { Position, Handle } from "@vue-flow/core";
 import { vAutoAnimate } from "@formkit/auto-animate";
+import { KeyRound, LifeBuoy } from "lucide-vue-next";
 
-// There are more props being passed by vueflow than the type i define!
-const props = defineProps<{
-  // cannot just use type and extend the object, cuz vue will throw unresolve type error
-  tableNodeDataWithNodeId: TableNodeDataWithNodeId;
-}>();
-const { findNode } = useVueFlow(VUEFLOW_ID);
+const props = defineProps<CustomTableNodeProps>();
 const { isValidEdgeConnection } = useVueFlowUtils();
 
-const selected = computed<boolean>(() => {
-  return findNode(props.tableNodeDataWithNodeId.tableNodeId)?.selected ?? false;
-});
+const iconSize = "w-4 h-4";
 </script>
 
 <template>
   <Card
     :class="
-      cn('w-[320px]', {
-        'ring-2 ring-ring': selected,
+      cn('min-w-[320px]', {
+        'ring-2 ring-ring': props.selected,
         // maybe one day allow user to export with or without drop shadow
         'drop-shadow': true,
       })
     "
   >
     <CardHeader class="p-4">
-      <CardTitle>{{ props.tableNodeDataWithNodeId.tableName }}</CardTitle>
+      <CardTitle>{{ props.data.tableName }}</CardTitle>
     </CardHeader>
     <CardContent v-auto-animate class="p-0">
       <div
-        v-for="(col, index) in props.tableNodeDataWithNodeId.columns"
-        :key="index"
+        v-for="(col, index) in props.data.columns"
+        :key="col.columnId"
         class="relative hover:bg-secondary"
+        :class="
+          cn({
+            'rounded-b-lg ': index === props.data.columns.length - 1,
+          })
+        "
       >
         <Handle
-          :id="
-            getHandleId(
-              'left',
-              props.tableNodeDataWithNodeId.tableNodeId,
-              col.columnId,
-            )
-          "
+          :id="getHandleId('left', props.id, col.columnId)"
           type="source"
           :position="Position.Left"
           :is-valid-connection="
             (connection) => isValidEdgeConnection(connection, true)
+          "
+          :class="
+            cn({
+              'opacity-0': !props.selected,
+            })
           "
           class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
         />
         <!-- Column content -->
         <div>
           <Separator class="" />
-          <div class="p-4 flex justify-between items-center">
-            <p>{{ col.columnName }}</p>
+          <div class="p-4 flex justify-between items-center gap-2">
+            <p class="flex justify-center items-center gap-1">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <KeyRound
+                      :class="iconSize"
+                      v-if="col.attribute.indexType === 'Primary key'"
+                    />
+                    <LifeBuoy
+                      :class="iconSize"
+                      v-else-if="col.attribute.indexType === 'Unique'"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{{ col.attribute.indexType }}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {{ col.columnName }}
+            </p>
             <p>{{ col.attribute.type }}</p>
           </div>
         </div>
         <!-- End of column content -->
         <Handle
-          :id="
-            getHandleId(
-              'right',
-              props.tableNodeDataWithNodeId.tableNodeId,
-              col.columnId,
-            )
-          "
+          :id="getHandleId('right', props.id, col.columnId)"
           type="source"
           :position="Position.Right"
+          :class="
+            cn({
+              'opacity-0': !props.selected,
+            })
+          "
           class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
           :is-valid-connection="
             (connection) => isValidEdgeConnection(connection, true)
