@@ -1,1 +1,2 @@
-const FLOW_CONTROL_CLASS = "vue-flow__controls";
+// 10 seconds
+export const ERD_STATE_AUTO_SAVE_MS = 10 * 1000;

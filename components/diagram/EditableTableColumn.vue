@@ -122,13 +122,13 @@ watch(
                 <Ellipsis class="w-4 h-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent side="right">
               <p>Column attributes</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </PopoverTrigger>
-      <PopoverContent class="min-w-32 p-0">
+      <PopoverContent class="min-w-32 p-0" side="right">
         <ScrollArea>
           <div class="flex flex-col gap-4 m-4 max-h-96">
             <div class="flex items-center justify-center">

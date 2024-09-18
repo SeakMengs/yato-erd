@@ -5,11 +5,27 @@ import {
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
+import { ERD_STATE_AUTO_SAVE_MS } from "~/constants/vueflow";
 import type { TableNodeData } from "~/types/diagram/table_node";
 
 export function useVueFlowUtils() {
   const { getConnectedEdges, addNodes, findEdge, setNodes, fitView, viewport } =
     useVueFlow(VUEFLOW_ID);
+  const erdState = useErd();
+
+  let autoSaveInternal: NodeJS.Timeout;
+
+  onUnmounted(() => {
+    clearInterval(autoSaveInternal);
+  });
+
+  function registerAutoSaveErdState(ms: number = ERD_STATE_AUTO_SAVE_MS): void {
+    autoSaveInternal = setInterval(() => {
+      erdState.saveErdStateToLocalStorage({
+        silent: true,
+      });
+    }, ms);
+  }
 
   // When a collapsible table on the left side bar is clicked make the table node in the diagram show as selected
   // And unselect other tables
@@ -141,5 +157,6 @@ export function useVueFlowUtils() {
     handleEdgeSelection,
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,
+    registerAutoSaveErdState,
   };
 }

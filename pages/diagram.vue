@@ -1,28 +1,19 @@
 <script setup lang="ts">
 const erdState = useErd();
-onMounted(() => erdState.fetchErdState());
+const { registerAutoSaveErdState } = useVueFlowUtils();
 
-const { exportAsImage } = useExport();
+onMounted(() => {
+  erdState.fetchErdState();
+  registerAutoSaveErdState();
+});
+
 // const collaborate = useCollaborate();
 // onMounted(() => collaborate.connect());
 </script>
 
 <template>
-  <ThemeButton />
-  <Button variant="outline" @click="erdState.saveErdStateToLocalStorage"
-    >Save state
-  </Button>
-  <Button
-    variant="outline"
-    @click="exportAsImage({ type: 'png', shouldDownload: true })"
-    >Export as png
-  </Button>
   <DiagramConfirmDeleteNodeDialog />
-  <ResizablePanelGroup
-    id="handle-group-1"
-    direction="horizontal"
-    class="!h-[calc(100%-48px)] rounded-lg border"
-  >
+  <ResizablePanelGroup id="handle-group-1" direction="horizontal" class="">
     <ResizablePanel id="handle-panel-1" :default-size="20">
       <DiagramLeftSideBar />
     </ResizablePanel>

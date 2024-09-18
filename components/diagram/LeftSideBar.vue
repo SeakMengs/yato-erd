@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useVueFlow } from "@vue-flow/core";
-import { CirclePlus } from "lucide-vue-next";
+import { CirclePlus, FilePenLine } from "lucide-vue-next";
 import { VUEFLOW_ID } from "~/constants/key";
 
 const { getNodes } = useVueFlow(VUEFLOW_ID);
@@ -10,7 +10,10 @@ const { addTable } = useVueFlowUtils();
 <template>
   <div class="flex flex-col scroll-smooth h-full truncate">
     <div class="flex flex-row justify-between items-center p-2">
-      <h1>{{ $t("diagram.leftSideBar.editTables") }}</h1>
+      <h3 class="font-semibold ml-2 flex justify-center items-center gap-1">
+        <FilePenLine class="w-6 h-6" />
+        {{ $t("diagram.leftSideBar.tables") }}
+      </h3>
       <Button
         @click="addTable"
         variant="outline"
@@ -20,7 +23,8 @@ const { addTable } = useVueFlowUtils();
         <p>{{ $t("diagram.leftSideBar.newTable") }}</p>
       </Button>
     </div>
-    <ScrollArea class="max-h-[calc(100%-72px)]" v-if="getNodes.length > 0">
+    <Separator class="drop-shadow" />
+    <ScrollArea v-if="getNodes.length > 0">
       <div>
         <DiagramCollapsibleTable
           v-for="(node, index) in getNodes"

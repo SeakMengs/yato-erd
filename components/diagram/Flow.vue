@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { Controls } from "@vue-flow/controls";
+import { ControlButton, Controls } from "@vue-flow/controls";
 import {
   useVueFlow,
   VueFlow,
   VueFlowError,
   type EdgeTypesObject,
 } from "@vue-flow/core";
+import { Settings } from "lucide-vue-next";
 import ERDEdge from "~/components/diagram/ERDEdge.vue";
 import { VUEFLOW_ID } from "~/constants/key";
 import { THEME } from "~/types/theme";
@@ -67,7 +68,29 @@ const erdState = useErd();
         <DiagramERDEdge v-bind="edgeErdProps" />
       </template>
       <!-- <MiniMap pannable zoomable /> -->
-      <Controls position="bottom-right" />
+      <Controls
+        position="bottom-right"
+        :show-zoom="false"
+        :show-fit-view="false"
+        :show-interactive="false"
+      >
+        <div class="group flex flex-col">
+          <div
+            class="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transform group-hover:-translate-y-1 translate-y-0 transition-all duration-300 ease-in-out"
+          >
+            <DiagramControlTheme />
+            <DiagramControlSave />
+            <DiagramControlExport />
+            <DiagramControlFitView />
+            <DiagramControlInteractive />
+          </div>
+          <ControlButton>
+            <Button variant="outline" size="icon">
+              <Settings class="w-4 h-4" />
+            </Button>
+          </ControlButton>
+        </div>
+      </Controls>
     </VueFlow>
   </ClientOnly>
 </template>
@@ -80,5 +103,5 @@ const erdState = useErd();
 
 /* Comment this out if doesn't use */
 @import "@vue-flow/minimap/dist/style.css";
-@import "@vue-flow/controls/dist/style.css";
+/* @import "@vue-flow/controls/dist/style.css"; */
 </style>

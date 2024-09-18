@@ -14,7 +14,7 @@ const iconSize = "w-4 h-4";
   <Card
     :class="
       cn('min-w-[320px]', {
-        'ring-2 ring-ring': props.selected,
+        'ring-1 ring-ring': props.selected,
         // maybe one day allow user to export with or without drop shadow
         'drop-shadow': true,
       })

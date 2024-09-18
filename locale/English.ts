@@ -3,7 +3,7 @@ export default {
   diagram: {
     leftSideBar: {
       newTable: "New table",
-      editTables: "Edit tables",
+      tables: "Tables",
       noTable: "No table",
       column: {
         delete: "Delete cloumn",

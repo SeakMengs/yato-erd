@@ -35,15 +35,7 @@ export const useErd = defineStore(ERD_STATE_ID, {
       const result = erdStateSchema.safeParse(state);
       logger.info("validated", result);
       if (!result.success) {
-        return {
-          nodes: [],
-          edges: [],
-          viewport: {
-            x: 0,
-            y: 0,
-            zoom: 1,
-          },
-        };
+        throw new YatoErDError(YatoErDErrorCode.ERD_STATE_IS_INVALID);
       }
 
       return result.data;
@@ -63,7 +55,7 @@ export const useErd = defineStore(ERD_STATE_ID, {
         );
       }
     },
-    saveErdStateToLocalStorage(): void {
+    saveErdStateToLocalStorage(options: { silent?: boolean }): void {
       const { toObject } = useVueFlow(VUEFLOW_ID);
 
       try {
@@ -79,12 +71,16 @@ export const useErd = defineStore(ERD_STATE_ID, {
             }),
           ),
         );
-        toast({
-          description: "ERD state has been saved",
-        });
+
+        if (!options.silent) {
+          toast({
+            description: "ERD state has been saved",
+          });
+        }
       } catch (error) {
-        logger.error(`There was an error while saving erd state`, error);
-        throw new Error("Failed to save erd state to local storage");
+        throw new YatoErDError(
+          YatoErDErrorCode.SAVE_ERD_STATE_TO_LOCAL_STORAGE,
+        );
       }
     },
     fetchErdState(): void {

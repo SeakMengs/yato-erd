@@ -46,6 +46,10 @@ export const YATO_ERD_ERROR_MESSAGE = {
     "Failed to save ERD state to local storage",
     "danger",
   ),
+  [YatoErDErrorCode.ERD_STATE_IS_INVALID]: buildYatoErdErrorMessage(
+    "The erd state is invalid",
+    "danger",
+  ),
   [YatoErDErrorCode.YJS_PROVIDER_MUST_ESTABLISH_IN_CLIENT_SIDE]:
     buildYatoErdErrorMessage(
       "Yjs provider must establish on client side",
