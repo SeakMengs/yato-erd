@@ -81,7 +81,7 @@ class YjsService {
       `Establishing yjs webrtc connection! signal server url: ${signaling}, room id: ${roomId}`,
     );
 
-    if (!process.client) {
+    if (!import.meta.client) {
       throw new YatoErDError(
         YatoErDErrorCode.YJS_PROVIDER_MUST_ESTABLISH_IN_CLIENT_SIDE,
       );

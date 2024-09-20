@@ -3,11 +3,11 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-09-11",
   devtools: { enabled: true },
   runtimeConfig: {
-    WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
-    WS_URL: process.env.WS_URL,
+    WEB_RTC_SIGNAL: import.meta.env.WEB_RTC_SIGNAL,
+    WS_URL: import.meta.env.WS_URL,
     public: {
-      WS_URL: process.env.WS_URL,
-      WEB_RTC_SIGNAL: process.env.WEB_RTC_SIGNAL,
+      WS_URL: import.meta.env.WS_URL,
+      WEB_RTC_SIGNAL: import.meta.env.WEB_RTC_SIGNAL,
     },
   },
   modules: [
@@ -37,3 +37,4 @@ export default defineNuxtConfig({
   },
   components: [{ path: "~/components", pathPrefix: true }],
 });
+

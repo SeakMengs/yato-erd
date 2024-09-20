@@ -1,10 +1,9 @@
 <script setup lang="ts">
 const erdState = useErd();
-const { registerAutoSaveErdState } = useVueFlowUtils();
 
 onMounted(() => {
   erdState.fetchErdState();
-  registerAutoSaveErdState();
+  erdState.registerAutoSaveErdState();
 });
 
 // const collaborate = useCollaborate();

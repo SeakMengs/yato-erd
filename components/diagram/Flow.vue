@@ -74,9 +74,9 @@ const erdState = useErd();
         :show-fit-view="false"
         :show-interactive="false"
       >
-        <div class="group flex flex-col">
+        <div class="group flex flex-col gap-1">
           <div
-            class="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transform group-hover:-translate-y-1 translate-y-0 transition-all duration-300 ease-in-out"
+            class="flex flex-col gap-1 opacity-0 max-h-0 overflow-hidden group-hover:opacity-100 group-hover:max-h-96 transition-all duration-500 ease-in-out"
           >
             <DiagramControlTheme />
             <DiagramControlSave />
