@@ -58,6 +58,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
       throw new YatoErDError(YatoErDErrorCode.GET_ERD_STATE_FROM_LOCAL_STORAGE);
     }
   }
+
   function saveErdStateToLocalStorage(options: { silent?: boolean }): void {
     const { toObject } = useVueFlow(VUEFLOW_ID);
 
@@ -84,6 +85,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
       throw new YatoErDError(YatoErDErrorCode.SAVE_ERD_STATE_TO_LOCAL_STORAGE);
     }
   }
+
   function fetchErdState(): void {
     logger.info("Fetching erd state from local storage");
     try {

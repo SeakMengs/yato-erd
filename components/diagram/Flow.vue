@@ -42,8 +42,8 @@ const erdState = useErd();
           dark: dark,
         })
       "
-      :nodes="erdState.getNodes"
-      :edges="erdState.getEdges"
+      :nodes="erdState.state.nodes"
+      :edges="erdState.state.edges"
       :edges-updatable="true"
       :edge-types="edgeTypes"
       :apply-default="false"
