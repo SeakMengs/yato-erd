@@ -6,7 +6,10 @@ import {
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
 import { ERD_STATE_AUTO_SAVE_MS } from "~/constants/vueflow";
-import type { TableNodeData } from "~/types/diagram/table_node";
+import type {
+  TableNodeData,
+  TableNodeDataColumn,
+} from "~/types/diagram/table_node";
 
 export function useVueFlowUtils() {
   const {
@@ -31,9 +34,19 @@ export function useVueFlowUtils() {
 
     fitView({
       nodes: [nodeId],
-      duration: 500, // use this if you want a smooth transition to the node
+      // use this if you want a smooth transition to the node
+      duration: 500,
       padding: 1,
       maxZoom: viewport.value.zoom,
+    });
+  }
+
+  function unSelectNodes(): void {
+    setNodes((nodes) => {
+      return nodes.map((n) => ({
+        ...n,
+        selected: false,
+      }));
     });
   }
 
@@ -143,7 +156,40 @@ export function useVueFlowUtils() {
     };
   }
 
+  // Can be used for yjs collaborate
+  function updateTableNodeColumn(
+    nodeId: string,
+    newColumn: TableNodeDataColumn,
+  ): void {
+    const node = findNodeSafe(nodeId);
+
+    const columns = node.data?.columns.map((c) => {
+      if (c.columnId === newColumn.columnId) {
+        return newColumn;
+      }
+
+      return c;
+    });
+
+    applyTableNodeDataChange(nodeId, {
+      ...node.data,
+      columns: columns,
+    } as TableNodeData);
+  }
+
+  // Can be used for yjs collaborate
+  function updateTableNodeName(nodeId: string, newName: string): void {
+    const node = findNodeSafe(nodeId);
+
+    applyTableNodeDataChange(nodeId, {
+      ...node.data,
+      tableName: newName,
+    } as TableNodeData);
+  }
+
   return {
+    updateTableNodeColumn,
+    updateTableNodeName,
     addColumn,
     removeColumn,
     addTable,
@@ -151,6 +197,7 @@ export function useVueFlowUtils() {
     isValidEdgeConnection,
     handleDefaultEdgeType,
     onCollapsibleClick,
+    unSelectNodes,
     handleEdgeSelection,
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,

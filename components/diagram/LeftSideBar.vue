@@ -3,8 +3,26 @@ import { useVueFlow } from "@vue-flow/core";
 import { CirclePlus, FilePenLine } from "lucide-vue-next";
 import { VUEFLOW_ID } from "~/constants/key";
 
-const { getNodes } = useVueFlow(VUEFLOW_ID);
+const { getNodes, fitView, viewport } = useVueFlow(VUEFLOW_ID);
 const { addTable } = useVueFlowUtils();
+
+const editTableNameId = ref<string | undefined>();
+
+function closeEditTableName(): void {
+  editTableNameId.value = undefined;
+}
+
+function openEditTableName(nodeId: string): void {
+  fitView({
+    nodes: [nodeId],
+    // use this if you want a smooth transition to the node
+    duration: 500,
+    padding: 1,
+    maxZoom: viewport.value.zoom,
+  });
+
+  editTableNameId.value = nodeId;
+}
 </script>
 
 <template>
@@ -34,6 +52,9 @@ const { addTable } = useVueFlowUtils();
             columns: node.data?.columns ?? [],
             tableName: node.data?.tableName ?? '',
           }"
+          :edit-table-name="editTableNameId === node.id"
+          :close-edit-table-name="closeEditTableName"
+          :open-edit-table-name="openEditTableName"
           :selected="node.selected ?? false"
           :class="{
             'mb-2': getNodes.length === index + 1,

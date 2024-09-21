@@ -26,7 +26,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
 
   let autoSaveInternal: NodeJS.Timeout;
 
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     clearInterval(autoSaveInternal);
   });
 

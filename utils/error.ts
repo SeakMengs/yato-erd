@@ -43,7 +43,7 @@ export const YATO_ERD_ERROR_MESSAGE = {
     "danger",
   ),
   [YatoErDErrorCode.SAVE_ERD_STATE_TO_LOCAL_STORAGE]: buildYatoErdErrorMessage(
-    "Failed to save ERD state to local storage",
+    "Failed to save ERD state to local storage. This usually happen when you violate yato-erd validation format",
     "danger",
   ),
   [YatoErDErrorCode.ERD_STATE_IS_INVALID]: buildYatoErdErrorMessage(

@@ -67,7 +67,7 @@ export const useCollaborate = defineStore(COLLABORATE_ID, () => {
     }
   }
 
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     logger.info("useCollaborate unMounted, destroy yjs, and clear interval");
     yjs.value.destroy();
 

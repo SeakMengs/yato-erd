@@ -11,6 +11,7 @@ import { toast } from "~/components/ui/toast";
 import { vAutoAnimate } from "@formkit/auto-animate/vue";
 import { PopoverClose } from "radix-vue";
 
+const { updateTableNodeColumn } = useVueFlowUtils();
 const props = defineProps<{
   tableId: string;
   columnPosition: number;

@@ -58,26 +58,6 @@ export function applyTableNodeDataChange(
   updateNodeData(nodeId, data);
 }
 
-export function updateTableNodeColumn(
-  nodeId: string,
-  newColumn: TableNodeDataColumn,
-): void {
-  const node = findNodeSafe(nodeId);
-
-  const columns = node.data?.columns.map((c) => {
-    if (c.columnId === newColumn.columnId) {
-      return newColumn;
-    }
-
-    return c;
-  });
-
-  applyTableNodeDataChange(nodeId, {
-    ...node.data,
-    columns: columns,
-  } as TableNodeData);
-}
-
 export function tableHasConflict(table: CustomTableNode): boolean {
   logger.info(`Check for table node conflict of table id: ${table.id}`);
 
