@@ -26,6 +26,8 @@ const form = useForm({
   initialValues: props.column,
 });
 
+const columnBeforeFocus = ref<TableNodeDataColumn>(props.column);
+
 configure({
   validateOnInput: true,
 });
@@ -34,13 +36,11 @@ const formHasError = (): boolean => {
   return Object.keys(form.errors.value).length > 0;
 };
 
+// Reset form's default value when there's any update in the column
 watch(
   () => props.column,
   () => {
-    // If there there is an error don't reset form initialValues
-    if (formHasError()) {
-      return;
-    }
+    if (formHasError()) return;
 
     form.resetForm({
       values: props.column,
@@ -69,14 +69,32 @@ watch(
   },
 );
 
+const onInputFocusIn = (): void => {
+  columnBeforeFocus.value = props.column;
+};
+
+const onInputFocusOut = async (): Promise<void> => {
+  const { valid } = await form.validate();
+
+  if (valid) {
+    return;
+  }
+
+  updateTableNodeColumn(props.tableId, columnBeforeFocus.value);
+
+  form.resetForm({
+    values: columnBeforeFocus.value,
+  });
+
+  // Force wait for state to update
+  await nextTick();
+  await form.validate();
+};
+
 watch(
   () => form.controlledValues.value,
-  async () => {
+  async (): Promise<void> => {
     const { valid } = await form.validate();
-
-    if (!valid) {
-      return;
-    }
 
     updateTableNodeColumn(props.tableId, {
       ...props.column,
@@ -91,19 +109,40 @@ watch(
 </script>
 
 <template>
-  <form @submit.prevent class="flex flex-row items-center gap-1 m-1 w-full">
-    <FormField v-slot="{ componentField }" name="columnName">
+  <form
+    @submit.prevent
+    class="flex flex-row items-center gap-1 m-1 w-full"
+    @focusin="onInputFocusIn"
+    @focusout="onInputFocusOut"
+  >
+    <FormField v-slot="{ errors, componentField }" name="columnName">
       <FormItem v-auto-animate class="w-full">
         <FormControl>
-          <Input placeholder="Name" v-bind="componentField" />
+          <Input
+            :class="
+              cn({
+                'border-red-500': errors.length > 0,
+              })
+            "
+            placeholder="Name"
+            v-bind="componentField"
+          />
         </FormControl>
         <!-- <FormMessage /> -->
       </FormItem>
     </FormField>
-    <FormField v-slot="{ componentField }" name="attribute.type">
+    <FormField v-slot="{ errors, componentField }" name="attribute.type">
       <FormItem v-auto-animate class="w-full">
         <FormControl>
-          <Input placeholder="type" v-bind="componentField" />
+          <Input
+            :class="
+              cn({
+                'border-red-500': errors.length > 0,
+              })
+            "
+            placeholder="type"
+            v-bind="componentField"
+          />
         </FormControl>
         <!-- <FormMessage /> -->
       </FormItem>
@@ -130,7 +169,12 @@ watch(
       </PopoverTrigger>
       <PopoverContent class="min-w-32 p-0" side="right">
         <ScrollArea>
-          <div class="flex flex-col gap-4 m-4 max-h-96">
+          <form
+            @submit.prevent
+            @focusin="onInputFocusIn"
+            @focusout="onInputFocusOut"
+            class="flex flex-col gap-4 m-4 max-h-96"
+          >
             <div class="flex items-center justify-center">
               <h1>Column attributes</h1>
             </div>
@@ -245,7 +289,7 @@ watch(
                 </Button>
               </PopoverClose>
             </div>
-          </div>
+          </form>
         </ScrollArea>
       </PopoverContent>
     </Popover>

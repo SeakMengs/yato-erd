@@ -47,7 +47,13 @@ export const tableNodeDataColumnSchema = z.object({
       })
       .default(false)
       .optional(),
-    defaultValue: z.string().trim().optional(),
+    defaultValue: z
+      .string()
+      .trim()
+      .max(65535, {
+        message: "Default value must be less than 65535 characters",
+      })
+      .optional(),
     indexType: columnIndexTypeSchemaEnum.default("None").optional(),
   }),
   userComment: z

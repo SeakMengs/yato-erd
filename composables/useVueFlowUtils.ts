@@ -9,8 +9,15 @@ import { ERD_STATE_AUTO_SAVE_MS } from "~/constants/vueflow";
 import type { TableNodeData } from "~/types/diagram/table_node";
 
 export function useVueFlowUtils() {
-  const { getConnectedEdges, addNodes, findEdge, setNodes, fitView, viewport } =
-    useVueFlow(VUEFLOW_ID);
+  const {
+    getConnectedEdges,
+    addNodes,
+    findEdge,
+    setNodes,
+    removeNodes,
+    fitView,
+    viewport,
+  } = useVueFlow(VUEFLOW_ID);
 
   // When a collapsible table on the left side bar is clicked make the table node in the diagram show as selected
   // And unselect other tables
@@ -41,6 +48,10 @@ export function useVueFlowUtils() {
     addNodes([newTable]);
     // Make new table selected
     onCollapsibleClick(newTable.id);
+  }
+
+  function removeTable(nodeid: string): void {
+    removeNodes(nodeid);
   }
 
   function addColumn(nodeId: string): void {
@@ -136,6 +147,7 @@ export function useVueFlowUtils() {
     addColumn,
     removeColumn,
     addTable,
+    removeTable,
     isValidEdgeConnection,
     handleDefaultEdgeType,
     onCollapsibleClick,

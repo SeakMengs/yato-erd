@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { ControlButton, Controls } from "@vue-flow/controls";
+import { Controls } from "@vue-flow/controls";
 import {
   useVueFlow,
   VueFlow,
   VueFlowError,
   type EdgeTypesObject,
 } from "@vue-flow/core";
-import { Settings } from "lucide-vue-next";
 import ERDEdge from "~/components/diagram/ERDEdge.vue";
 import { VUEFLOW_ID } from "~/constants/key";
 import { THEME } from "~/types/theme";
 
 const colorMode = useColorMode();
-// FIXME: check what if user use system mode? they would get unwanted colorscheme in the diagram
 const dark = computed(() => colorMode.preference === THEME.DARK);
 
 const { onEdgeUpdate, onConnect, onEdgesChange, onNodesChange } =
@@ -74,22 +72,7 @@ const erdState = useErd();
         :show-fit-view="false"
         :show-interactive="false"
       >
-        <div class="group flex flex-col gap-1">
-          <div
-            class="flex flex-col gap-1 opacity-0 max-h-0 overflow-hidden group-hover:opacity-100 group-hover:max-h-96 transition-all duration-500 ease-in-out"
-          >
-            <DiagramControlTheme />
-            <DiagramControlSave />
-            <DiagramControlExport />
-            <DiagramControlFitView />
-            <DiagramControlInteractive />
-          </div>
-          <ControlButton>
-            <Button variant="outline" size="icon">
-              <Settings class="w-4 h-4" />
-            </Button>
-          </ControlButton>
-        </div>
+        <DiagramControlSettings />
       </Controls>
     </VueFlow>
   </ClientOnly>
