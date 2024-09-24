@@ -29,15 +29,17 @@ const onInputFocusIn = (): void => {
 };
 
 const confirm = async ({
-  closeTN,
+  closeETN,
   fromButton,
 }: {
-  closeTN: boolean;
+  closeETN: boolean;
   fromButton: boolean;
 }): Promise<void> => {
+  logger.info("Confirm edit table name");
   const { valid } = await form.validate();
 
   if (fromButton && !valid) {
+    logger.info("The confirm was from button, show error toast in the ui");
     return showErrorToast();
   }
 
@@ -46,22 +48,37 @@ const confirm = async ({
     form.controlledValues.value.tableName ?? "",
   );
 
-  if (closeTN) {
+  if (closeETN) {
+    logger.info("Updated the table name, closing the edit table name");
     props.closeEditTableName();
   }
 };
 
-const cancel = async (): Promise<void> => {
-  const { valid } = await form.validate();
+const cancel = (): void => {
+  logger.info(
+    "Cancel edit table name, reset to initial value when the user click on the input",
+  );
 
-  if (!valid) {
-    updateTableNodeName(
-      props.tableNodeDataWithNodeId.tableNodeId,
-      tableNameBefore.value,
-    );
-  }
+  updateTableNodeName(
+    props.tableNodeDataWithNodeId.tableNodeId,
+    tableNameBefore.value,
+  );
 
   props.closeEditTableName();
+};
+
+const cancelIfNotValid = (): void => {
+  const result = tableNodeDataSchema
+    .pick({ tableName: true })
+    .safeParse(form.controlledValues.value);
+
+  if (result.success) {
+    props.closeEditTableName();
+    return;
+  }
+
+  logger.info("Cancel the edit table name because it's not a valid form");
+  cancel();
 };
 
 const showErrorToast = (): void => {
@@ -80,9 +97,14 @@ const showErrorToast = (): void => {
   });
 };
 
+const formHasError = (): boolean => {
+  return Object.keys(form.errors.value).length > 0;
+};
 watch(
   () => props.tableNodeDataWithNodeId.tableName,
   () => {
+    if (formHasError()) return;
+
     form.resetForm({
       values: {
         tableName: props.tableNodeDataWithNodeId.tableName,
@@ -93,22 +115,22 @@ watch(
 
 watch(() => form.errors.value, showErrorToast);
 
-// If enable auto validate then save on change uncomment this. but be cautious when user can click edit other table and
-// If the user click edit other table name when the selected edit table is null, it will not call cancel() function
-// watch(
-//   () => form.controlledValues.value,
-//   async () => {
-//     await confirm({
-//       closeTN: false,
-//       fromButton: false,
-//     });
-//   },
-// );
+watch(
+  () => form.controlledValues.value,
+  async () => {
+    await confirm({
+      closeETN: false,
+      fromButton: false,
+    });
+  },
+);
 
-const divRef = ref<HTMLElement | null>(null);
-const handleClickOutside = async (event: MouseEvent): Promise<void> => {
+const divRef = ref<HTMLDivElement | null>(null);
+
+const handleClickOutside = (event: MouseEvent): void => {
   if (divRef.value && !divRef.value.contains(event.target as Node)) {
-    await cancel();
+    logger.info("User click outside of the form, cancel edit table name");
+    cancelIfNotValid();
   }
 };
 
@@ -117,6 +139,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  cancelIfNotValid();
   document.removeEventListener("click", handleClickOutside);
 });
 </script>
@@ -162,7 +185,7 @@ onBeforeUnmount(() => {
               @click="
                 confirm({
                   fromButton: true,
-                  closeTN: true,
+                  closeETN: true,
                 })
               "
             >

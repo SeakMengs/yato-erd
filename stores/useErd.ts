@@ -51,8 +51,22 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
   function getErdStateFromLocalStorage(): ERDState {
     try {
       logger.info("Get erd state from local storage");
-      const state = JSON.parse(localStorage.getItem("erd-state") ?? "{}");
-      return validateErdState(state);
+      const state = localStorage.getItem("erd-state");
+
+      if (!state) {
+        return {
+          edges: [],
+          nodes: [],
+          viewport: {
+            x: 0,
+            y: 0,
+            zoom: 1,
+          },
+        };
+      }
+
+      const parsed = JSON.parse(state);
+      return validateErdState(parsed);
     } catch (error) {
       logger.error(`There was an error in getErdStateFromLocalStorage`, error);
       throw new YatoErDError(YatoErDErrorCode.GET_ERD_STATE_FROM_LOCAL_STORAGE);

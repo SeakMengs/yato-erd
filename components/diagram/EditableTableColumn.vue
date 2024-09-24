@@ -70,11 +70,16 @@ watch(
   },
 );
 
-const onInputFocusIn = (): void => {
+const onInputFocusIn = async (): Promise<void> => {
+  // Make sure we validate and reset form before save the column value
+  await onInputFocusOut();
+
+  logger.info(`Edit table column ${props.column.columnId} focus in.`);
   columnBeforeFocus.value = props.column;
 };
 
 const onInputFocusOut = async (): Promise<void> => {
+  logger.info(`Edit table column ${props.column.columnId} focus out.`);
   const { valid } = await form.validate();
 
   if (valid) {
