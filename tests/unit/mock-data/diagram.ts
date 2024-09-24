@@ -11,7 +11,7 @@ export const MOCK_TABLE_NODES = [
       columns: [
         {
           columnId: "bc986",
-          columnName: "column_1",
+          columnName: "mock-1-column_1",
           attribute: {
             type: "bigint",
             nullable: true,
@@ -32,9 +32,9 @@ export const MOCK_TABLE_NODES = [
       columns: [
         {
           columnId: "797e2",
-          columnName: "column_1",
+          columnName: "mock-2-column_1",
           attribute: {
-            type: "bigint",
+            type: "varchar",
             nullable: true,
             autoIncrement: false,
             defaultValue: "",

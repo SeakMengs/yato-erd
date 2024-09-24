@@ -10,6 +10,7 @@ import {
 } from "./mock-data/diagram";
 import { VUEFLOW_ID } from "~/constants/key";
 import type {
+  CustomTableNode,
   TableNodeData,
   TableNodeDataColumn,
 } from "~/types/diagram/table_node";
@@ -21,6 +22,9 @@ describe("useVueFlowUtils functionality", () => {
   const {
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,
+    updateTableNodeName,
+    updateTableNodeColumn,
+    removeTable,
     addTable,
     addColumn,
     removeColumn,
@@ -31,11 +35,6 @@ describe("useVueFlowUtils functionality", () => {
   function getTable1Columns(): TableNodeDataColumn[] {
     const data = store.getNodes.value[0].data as TableNodeData;
     return data.columns;
-  }
-
-  function removeTableByNodeId(nodeId: string): void {
-    store.applyEdgeChanges(getEdgeRemoveChangeFormat(nodeId));
-    store.applyNodeChanges([getNodeRemoveChangeFormat(nodeId)]);
   }
 
   beforeEach(() => {
@@ -63,7 +62,7 @@ describe("useVueFlowUtils functionality", () => {
 
   it("Should be able to remove a table node", () => {
     expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length);
-    removeTableByNodeId(REMOVE_TABLE_NODE_ID);
+    removeTable(REMOVE_TABLE_NODE_ID);
     expect(store.getNodes.value.length).toBe(MOCK_TABLE_NODES.length - 1);
   });
 
@@ -78,6 +77,28 @@ describe("useVueFlowUtils functionality", () => {
     expect(getTable1Columns().length).toBe(2);
     removeColumn(store.getNodes.value[0].id, getTable1Columns()[0].columnId);
     expect(getTable1Columns().length).toBe(1);
+  });
+
+  it("Should be able to edit table columns", () => {
+    const nodeToUpdate = store.getNodes.value[0] as CustomTableNode;
+
+    const columnToBeUpdated = {
+      ...MOCK_TABLE_NODES[1].data.columns[0],
+      columnId: nodeToUpdate.data!.columns[0].columnId,
+    };
+
+    // Update first node column to second node column
+    updateTableNodeColumn(nodeToUpdate.id, columnToBeUpdated);
+
+    expect(nodeToUpdate.data?.columns[0]).toStrictEqual(columnToBeUpdated);
+  });
+
+  it("Should be able to edit table name", () => {
+    const nodeToUpdate = store.getNodes.value[0] as CustomTableNode;
+    const tableNameToBeUpdated = "TestTableNameUpdate";
+
+    updateTableNodeName(nodeToUpdate.id, tableNameToBeUpdated);
+    expect(nodeToUpdate.data?.tableName).toBe(tableNameToBeUpdated);
   });
 
   it("Should not be able to remove a column from an existing table when there is only one column left", () => {
