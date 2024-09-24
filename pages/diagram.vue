@@ -1,16 +1,10 @@
 <script setup lang="ts">
-const erdState = useErd();
-
-onMounted(() => {
-  erdState.fetchErdState();
-  erdState.registerAutoSaveErdState();
-});
-
 // const collaborate = useCollaborate();
 // onMounted(() => collaborate.connect());
 </script>
 
 <template>
+  <DiagramChooseDiagramStateDialog />
   <DiagramConfirmDeleteNodeDialog />
   <ResizablePanelGroup id="handle-group-1" direction="horizontal" class="">
     <ResizablePanel id="handle-panel-1" :default-size="20">

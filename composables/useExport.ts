@@ -2,6 +2,7 @@ import { useVueFlow } from "@vue-flow/core";
 import { toJpeg, toPng } from "html-to-image";
 import type { Options as HTMLToImageOptions } from "html-to-image/es/types";
 import { VUEFLOW_ID } from "~/constants/key";
+import { Base64 } from "js-base64";
 
 export type CaptureOptions = HTMLToImageOptions & {
   type?: ImageType;
@@ -13,6 +14,7 @@ export type ImageType = "jpeg" | "png";
 
 export function useExport() {
   const { vueFlowRef } = useVueFlow(VUEFLOW_ID);
+  const erdState = useErd();
 
   async function exportAsImage(options: CaptureOptions): Promise<void> {
     const fileType: ImageType = options.type ?? "png";
@@ -49,6 +51,19 @@ export function useExport() {
     }
   }
 
+  function exportAsFile(): void {
+    erdState.syncStoreWithVueflow();
+    const fileType = "json";
+    logger.info(`Exporting diagram as fileType: ${fileType}`);
+
+    const jsonState = JSON.stringify(erdState.state, null, 2);
+    const blob = new Blob([jsonState], { type: "application/json" });
+    const fileName = `yatoerd-${Date.now()}`;
+    const url = URL.createObjectURL(blob);
+
+    download(url, fileName, fileType);
+  }
+
   function download(dataUrl: string, fileName: string, fileType: string): void {
     const link = document.createElement("a");
     link.download = `${fileName}.${fileType}`;
@@ -57,6 +72,7 @@ export function useExport() {
   }
 
   return {
+    exportAsFile,
     exportAsImage,
     download,
   };

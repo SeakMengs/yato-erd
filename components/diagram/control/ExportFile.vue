@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ControlButton } from "@vue-flow/controls";
-import { ArrowDownToLine } from "lucide-vue-next";
+import { FileUpIcon } from "lucide-vue-next";
 
-const { exportAsImage } = useExport();
+const { exportAsFile } = useExport();
 </script>
 
 <template>
@@ -10,17 +10,13 @@ const { exportAsImage } = useExport();
     <Tooltip>
       <TooltipTrigger as-child>
         <ControlButton>
-          <Button
-            variant="outline"
-            size="icon"
-            @click="exportAsImage({ type: 'png', shouldDownload: true })"
-          >
-            <ArrowDownToLine class="w-4 h-4" />
+          <Button variant="outline" size="icon" @click="exportAsFile">
+            <FileUpIcon class="w-4 h-4" />
           </Button>
         </ControlButton>
       </TooltipTrigger>
       <TooltipContent side="left">
-        <p>Export as png</p>
+        <p>Export as file</p>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>

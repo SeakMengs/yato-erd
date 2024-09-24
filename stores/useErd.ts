@@ -4,31 +4,29 @@ import type { CustomTableNode } from "~/types/diagram/table_node";
 import { ERD_STATE_ID, VUEFLOW_ID } from "~/constants/key";
 import { erdStateSchema } from "~/schemas/erd";
 import { toast } from "~/components/ui/toast";
-import { ERD_STATE_AUTO_SAVE_MS } from "~/constants/vueflow";
+import { DEFAULT_ERD_STATE, ERD_STATE_AUTO_SAVE_MS } from "~/constants/vueflow";
+import isEqual from "lodash/isEqual";
 
 // Purposely create this type to ensure any change will reflect to vue flow's node and edge type
-type ERDState = {
+export type ERDState = {
   nodes: CustomTableNode[];
   edges: Edge[];
   viewport: ViewportTransform;
 };
 
 export const useErd = defineStore(ERD_STATE_ID, () => {
-  const state = ref<ERDState>({
-    nodes: [],
-    edges: [],
-    viewport: {
-      x: 0,
-      y: 0,
-      zoom: 1,
-    },
-  });
+  const state = ref<ERDState>(structuredClone(DEFAULT_ERD_STATE));
+  const { toObject } = useVueFlow(VUEFLOW_ID);
 
   let autoSaveInternal: NodeJS.Timeout;
 
   onBeforeUnmount(() => {
     clearInterval(autoSaveInternal);
   });
+
+  function setState(s: ERDState): void {
+    state.value = s;
+  }
 
   function registerAutoSaveErdState(ms: number = ERD_STATE_AUTO_SAVE_MS): void {
     autoSaveInternal = setInterval(() => {
@@ -40,7 +38,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
 
   function validateErdState(state: any): ERDState {
     const result = erdStateSchema.safeParse(state);
-    logger.info("validated", result);
+    logger.info(`Erd state validated and is valid: ${result.success}`);
     if (!result.success) {
       throw new YatoErDError(YatoErDErrorCode.ERD_STATE_IS_INVALID);
     }
@@ -54,15 +52,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
       const state = localStorage.getItem("erd-state");
 
       if (!state) {
-        return {
-          edges: [],
-          nodes: [],
-          viewport: {
-            x: 0,
-            y: 0,
-            zoom: 1,
-          },
-        };
+        return structuredClone(DEFAULT_ERD_STATE);
       }
 
       const parsed = JSON.parse(state);
@@ -73,22 +63,30 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
     }
   }
 
-  function saveErdStateToLocalStorage(options: { silent?: boolean }): void {
-    const { toObject } = useVueFlow(VUEFLOW_ID);
+  // State is handled by vue flow, so when we want to save, export, call this function to sync this store
+  function syncStoreWithVueflow(): void {
+    const data = toObject();
 
+    state.value = validateErdState({
+      nodes: data.nodes as CustomTableNode[],
+      edges: data.edges as Edge[],
+      viewport: data.viewport,
+    });
+  }
+
+  function saveErdStateToLocalStorage(options: { silent?: boolean }): void {
     try {
       logger.info("Saving erd state to local storage");
-      const data = toObject();
-      localStorage.setItem(
-        "erd-state",
-        JSON.stringify(
-          validateErdState({
-            nodes: data.nodes,
-            edges: data.edges,
-            viewport: data.viewport,
-          }),
-        ),
-      );
+      syncStoreWithVueflow();
+
+      if (!isEqual(state.value, getErdStateFromLocalStorage())) {
+        // The sync store with vue flow already validated the erd
+        localStorage.setItem("erd-state", JSON.stringify(state.value));
+      } else {
+        logger.info(
+          "Local state and current diagram state is the same, skip saving erd state",
+        );
+      }
 
       if (!options.silent) {
         toast({
@@ -115,8 +113,10 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
 
   return {
     state,
+    setState,
     registerAutoSaveErdState,
     fetchErdState,
+    syncStoreWithVueflow,
     saveErdStateToLocalStorage,
     validateErdState,
   };

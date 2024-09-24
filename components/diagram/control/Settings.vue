@@ -21,7 +21,9 @@ const toggleSettings = () => {
     >
       <DiagramControlTheme />
       <DiagramControlSave />
-      <DiagramControlExport />
+      <DiagramControlExportImage />
+      <DiagramControlExportFile />
+      <DiagramControlImportFile />
       <DiagramControlFitView />
       <DiagramControlInteractive />
     </div>
