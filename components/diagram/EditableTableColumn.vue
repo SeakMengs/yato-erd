@@ -4,7 +4,7 @@ import {
   columnIndexTypeSchemaEnum,
   tableNodeDataColumnSchema,
 } from "~/schemas/erd";
-import { configure, useForm } from "vee-validate";
+import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import type { TableNodeDataColumn } from "~/types/diagram/table_node";
 import { toast } from "~/components/ui/toast";
@@ -12,6 +12,7 @@ import { vAutoAnimate } from "@formkit/auto-animate/vue";
 import { PopoverClose } from "radix-vue";
 
 const { updateTableNodeColumn } = useVueFlowUtils();
+const { interactive } = useInterative();
 const props = defineProps<{
   tableId: string;
   columnPosition: number;
@@ -28,10 +29,6 @@ const form = useForm({
 });
 
 const columnBeforeFocus = ref<TableNodeDataColumn>(props.column);
-
-configure({
-  validateOnInput: true,
-});
 
 const formHasError = (): boolean => {
   return Object.keys(form.errors.value).length > 0;
@@ -115,44 +112,46 @@ watch(
 </script>
 
 <template>
-  <form
-    @submit.prevent
-    class="flex flex-row items-center gap-1 m-1 w-full"
-    @focusin="onInputFocusIn"
-    @focusout="onInputFocusOut"
-  >
-    <FormField v-slot="{ errors, componentField }" name="columnName">
-      <FormItem v-auto-animate class="w-full">
-        <FormControl>
-          <Input
-            :class="
-              cn({
-                'border-red-500': errors.length > 0,
-              })
-            "
-            placeholder="Name"
-            v-bind="componentField"
-          />
-        </FormControl>
-        <!-- <FormMessage /> -->
-      </FormItem>
-    </FormField>
-    <FormField v-slot="{ errors, componentField }" name="attribute.type">
-      <FormItem v-auto-animate class="w-full">
-        <FormControl>
-          <Input
-            :class="
-              cn({
-                'border-red-500': errors.length > 0,
-              })
-            "
-            placeholder="type"
-            v-bind="componentField"
-          />
-        </FormControl>
-        <!-- <FormMessage /> -->
-      </FormItem>
-    </FormField>
+  <div class="flex flex-row items-center gap-1 m-1 w-full">
+    <form @submit.prevent @focusin="onInputFocusIn" @focusout="onInputFocusOut">
+      <fieldset
+        :disabled="!interactive"
+        class="flex flex-row items-center gap-1 w-full"
+      >
+        <FormField v-slot="{ errors, componentField }" name="columnName">
+          <FormItem v-auto-animate class="w-full">
+            <FormControl>
+              <Input
+                :class="
+                  cn({
+                    'border-red-500': errors.length > 0,
+                  })
+                "
+                placeholder="Name"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <!-- <FormMessage /> -->
+          </FormItem>
+        </FormField>
+        <FormField v-slot="{ errors, componentField }" name="attribute.type">
+          <FormItem v-auto-animate class="w-full">
+            <FormControl>
+              <Input
+                :class="
+                  cn({
+                    'border-red-500': errors.length > 0,
+                  })
+                "
+                placeholder="type"
+                v-bind="componentField"
+              />
+            </FormControl>
+            <!-- <FormMessage /> -->
+          </FormItem>
+        </FormField>
+      </fieldset>
+    </form>
     <Popover>
       <PopoverTrigger>
         <TooltipProvider>
@@ -179,125 +178,136 @@ watch(
             @submit.prevent
             @focusin="onInputFocusIn"
             @focusout="onInputFocusOut"
-            class="flex flex-col gap-4 m-4 max-h-96"
           >
-            <div class="flex items-center justify-center">
-              <h1>Column attributes</h1>
-            </div>
-            <div class="flex flex-col gap-2">
-              <!-- TODO: find a better label that suit with the checkboxes -->
-              <label
-                id="constraints"
-                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Constraints
-              </label>
-              <FormField
-                v-slot="{ value, handleChange }"
-                name="attribute.nullable"
-              >
-                <FormItem
-                  v-auto-animate
-                  class="flex flex-row items-start space-x-3 space-y-0"
-                >
-                  <FormControl>
-                    <Checkbox :checked="value" @update:checked="handleChange" />
-                  </FormControl>
-                  <FormLabel>Nullable</FormLabel>
-                  <!-- <FormMessage /> -->
-                </FormItem>
-              </FormField>
-              <FormField
-                v-slot="{ value, handleChange }"
-                name="attribute.autoIncrement"
-              >
-                <FormItem
-                  v-auto-animate
-                  class="flex flex-row items-start space-x-3 space-y-0"
-                >
-                  <FormControl>
-                    <Checkbox :checked="value" @update:checked="handleChange" />
-                  </FormControl>
-                  <FormLabel>Auto increment</FormLabel>
-                  <!-- <FormMessage /> -->
-                </FormItem>
-              </FormField>
-            </div>
-            <FormField
-              v-slot="{ value, componentField }"
-              name="attribute.indexType"
+            <fieldset
+              :disabled="!interactive"
+              class="flex flex-col gap-4 m-4 max-h-96"
             >
-              <FormItem>
-                <FormLabel>Index type</FormLabel>
-                <Select
-                  v-bind="componentField"
-                  :default-value="value ?? props.column.attribute.indexType"
+              <div class="flex items-center justify-center">
+                <h1>Column attributes</h1>
+              </div>
+              <div class="flex flex-col gap-2">
+                <!-- TODO: find a better label that suit with the checkboxes -->
+                <label
+                  id="constraints"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  <FormControl>
-                    <SelectTrigger id="indexType">
-                      <SelectValue placeholder="Select index type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        v-for="(it, i) in indexTypes"
-                        :key="i"
-                        :value="it"
-                      >
-                        {{ it }}</SelectItem
-                      >
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <!-- <FormMessage /> -->
-              </FormItem>
-            </FormField>
-            <FormField
-              v-slot="{ componentField }"
-              name="attribute.defaultValue"
-            >
-              <FormItem v-auto-animate>
-                <FormLabel>Default value</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="optional default value.."
+                  Constraints
+                </label>
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="attribute.nullable"
+                >
+                  <FormItem
+                    v-auto-animate
+                    class="flex flex-row items-start space-x-3 space-y-0"
+                  >
+                    <FormControl>
+                      <Checkbox
+                        :checked="value"
+                        @update:checked="handleChange"
+                      />
+                    </FormControl>
+                    <FormLabel>Nullable</FormLabel>
+                    <!-- <FormMessage /> -->
+                  </FormItem>
+                </FormField>
+                <FormField
+                  v-slot="{ value, handleChange }"
+                  name="attribute.autoIncrement"
+                >
+                  <FormItem
+                    v-auto-animate
+                    class="flex flex-row items-start space-x-3 space-y-0"
+                  >
+                    <FormControl>
+                      <Checkbox
+                        :checked="value"
+                        @update:checked="handleChange"
+                      />
+                    </FormControl>
+                    <FormLabel>Auto increment</FormLabel>
+                    <!-- <FormMessage /> -->
+                  </FormItem>
+                </FormField>
+              </div>
+              <FormField
+                v-slot="{ value, componentField }"
+                name="attribute.indexType"
+              >
+                <FormItem>
+                  <FormLabel>Index type</FormLabel>
+                  <Select
                     v-bind="componentField"
-                  />
-                </FormControl>
-                <!-- <FormMessage /> -->
-              </FormItem>
-            </FormField>
-            <FormField v-slot="{ componentField }" name="userComment">
-              <FormItem v-auto-animate>
-                <FormLabel>Comment</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="comment.." v-bind="componentField" />
-                </FormControl>
-                <!-- <FormMessage /> -->
-              </FormItem>
-            </FormField>
-            <div class="flex flex-col gap-2">
-              <label
-                for="actions"
-                class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    :default-value="value ?? props.column.attribute.indexType"
+                    :disabled="!interactive"
+                  >
+                    <FormControl>
+                      <SelectTrigger id="indexType">
+                        <SelectValue placeholder="Select index type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          v-for="(it, i) in indexTypes"
+                          :key="i"
+                          :value="it"
+                        >
+                          {{ it }}</SelectItem
+                        >
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <!-- <FormMessage /> -->
+                </FormItem>
+              </FormField>
+              <FormField
+                v-slot="{ componentField }"
+                name="attribute.defaultValue"
               >
-                Actions
-              </label>
-              <PopoverClose as-child>
-                <Button
-                  @click="removeColumn"
-                  variant="outline"
-                  class="flex-shrink-0 text-center gap-2 hover:border-red-900 hover:text-red-900 mb-4"
+                <FormItem v-auto-animate>
+                  <FormLabel>Default value</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="optional default value.."
+                      v-bind="componentField"
+                    />
+                  </FormControl>
+                  <!-- <FormMessage /> -->
+                </FormItem>
+              </FormField>
+              <FormField v-slot="{ componentField }" name="userComment">
+                <FormItem v-auto-animate>
+                  <FormLabel>Comment</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="comment.." v-bind="componentField" />
+                  </FormControl>
+                  <!-- <FormMessage /> -->
+                </FormItem>
+              </FormField>
+              <div class="flex flex-col gap-2">
+                <label
+                  for="actions"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  <Trash class="w-4 h-4" />
-                  Delete column
-                </Button>
-              </PopoverClose>
-            </div>
+                  Actions
+                </label>
+                <PopoverClose as-child>
+                  <Button
+                    @click="removeColumn"
+                    variant="outline"
+                    class="flex-shrink-0 text-center gap-2 hover:border-red-900 hover:text-red-900 mb-4"
+                  >
+                    <Trash class="w-4 h-4" />
+                    Delete column
+                  </Button>
+                </PopoverClose>
+              </div>
+            </fieldset>
           </form>
         </ScrollArea>
       </PopoverContent>
     </Popover>
-  </form>
+  </div>
 </template>

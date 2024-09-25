@@ -15,6 +15,7 @@ const props = defineProps<{
   closeEditTableName: () => void;
 }>();
 
+const { interactive } = useInterative();
 const tableNameBefore = ref<string>(props.tableNodeDataWithNodeId.tableName);
 const formSchema = toTypedSchema(tableNodeDataSchema.pick({ tableName: true }));
 const form = useForm({
@@ -151,28 +152,25 @@ onBeforeUnmount(() => {
         :data-state="props.isOpen ? 'open' : 'close'"
         class="h-4 w-4 data-[state=close]:-rotate-90 transition-transform duration-200"
       />
-      <form
-        class="w-full"
-        @click.stop
-        @submit.prevent
-        @focusin="onInputFocusIn"
-      >
-        <FormField v-slot="{ errors, componentField }" name="tableName">
-          <FormItem v-auto-animate class="w-full">
-            <FormControl>
-              <Input
-                :class="
-                  cn({
-                    'border-red-500': errors.length > 0,
-                  })
-                "
-                placeholder="Table name"
-                v-bind="componentField"
-              />
-            </FormControl>
-            <!-- <FormMessage /> -->
-          </FormItem>
-        </FormField>
+      <form @click.stop @submit.prevent @focusin="onInputFocusIn">
+        <fieldset class="w-full" :disabled="!interactive">
+          <FormField v-slot="{ errors, componentField }" name="tableName">
+            <FormItem v-auto-animate class="w-full">
+              <FormControl>
+                <Input
+                  :class="
+                    cn({
+                      'border-red-500': errors.length > 0,
+                    })
+                  "
+                  placeholder="Table name"
+                  v-bind="componentField"
+                />
+              </FormControl>
+              <!-- <FormMessage /> -->
+            </FormItem>
+          </FormField>
+        </fieldset>
       </form>
     </div>
     <div class="flex gap-2 mr-[6px]" @click.stop>

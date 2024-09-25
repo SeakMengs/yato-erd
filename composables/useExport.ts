@@ -2,7 +2,6 @@ import { useVueFlow } from "@vue-flow/core";
 import { toJpeg, toPng } from "html-to-image";
 import type { Options as HTMLToImageOptions } from "html-to-image/es/types";
 import { VUEFLOW_ID } from "~/constants/key";
-import { Base64 } from "js-base64";
 
 export type CaptureOptions = HTMLToImageOptions & {
   type?: ImageType;

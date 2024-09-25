@@ -40,6 +40,12 @@ export enum YatoErDErrorCode {
    * The ERD state is invalid, could be because user edit the state by themselves.
    */
   ERD_STATE_IS_INVALID = "ERD_STATE_IS_INVALID",
+
+  /**
+   * When importing erd state via json file fail. could be because wrong format, wrong file type
+   */
+  IMPORT_JSON_ERD_STATE = "IMPORT_JSON_ERD_STATE",
+
   /**
    * The YJS provider needs to be set up on the client side, usually webrtc.
    */

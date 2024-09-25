@@ -43,12 +43,18 @@ export const YATO_ERD_ERROR_MESSAGE = {
     "danger",
   ),
   [YatoErDErrorCode.SAVE_ERD_STATE_TO_LOCAL_STORAGE]: buildYatoErdErrorMessage(
-    "Failed to save ERD state to local storage. This usually happen when you violate yato-erd validation format",
+    "This usually happen when you violate yato-erd validation format",
     "danger",
+    "Failed to save ERD state to local storage.",
   ),
   [YatoErDErrorCode.ERD_STATE_IS_INVALID]: buildYatoErdErrorMessage(
     "The erd state is invalid",
     "danger",
+  ),
+  [YatoErDErrorCode.IMPORT_JSON_ERD_STATE]: buildYatoErdErrorMessage(
+    "This usually happen when the json file violate yato-erd validation format",
+    "danger",
+    "Failed to import state from json file",
   ),
   [YatoErDErrorCode.YJS_PROVIDER_MUST_ESTABLISH_IN_CLIENT_SIDE]:
     buildYatoErdErrorMessage(

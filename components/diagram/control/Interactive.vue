@@ -1,16 +1,8 @@
 <script setup lang="ts">
 import { ControlButton } from "@vue-flow/controls";
-import { useVueFlow } from "@vue-flow/core";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-vue-next";
-import { VUEFLOW_ID } from "~/constants/key";
 
-const { setInteractive } = useVueFlow(VUEFLOW_ID);
-const interactive = ref<boolean>(true);
-
-const toggleInteractive = () => {
-  interactive.value = !interactive.value;
-  setInteractive(interactive.value);
-};
+const { interactive, toggleInteractive } = useInterative();
 </script>
 
 <template>

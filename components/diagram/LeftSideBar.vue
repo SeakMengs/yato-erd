@@ -7,6 +7,7 @@ const { getNodes, fitView, viewport } = useVueFlow(VUEFLOW_ID);
 const { addTable } = useVueFlowUtils();
 
 const editTableNameId = ref<string | undefined>();
+const { interactive } = useInterative();
 
 function closeEditTableName(): void {
   editTableNameId.value = undefined;
@@ -33,6 +34,7 @@ function openEditTableName(nodeId: string): void {
         {{ $t("diagram.leftSideBar.tables") }}
       </h3>
       <Button
+        :disabled="!interactive"
         @click="addTable"
         variant="outline"
         class="flex gap-2 items-center"

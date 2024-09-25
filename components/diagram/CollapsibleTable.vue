@@ -11,6 +11,7 @@ const props = defineProps<{
   closeEditTableName: () => void;
 }>();
 
+const { interactive } = useInterative();
 const isOpen = ref<boolean>(props.selected);
 const {
   removeTable,
@@ -65,41 +66,43 @@ watch(
               {{ props.tableNodeDataWithNodeId.tableName }}
             </p>
           </div>
-          <div class="flex gap-2 mr-[6px]" @click.stop>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    class="hover:border-blue-900 hover:text-blue-900"
-                    size="xs"
-                    @click="onEditTable"
-                  >
-                    <PencilLine class="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit table name</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <Button
-                    size="xs"
-                    class="hover:border-red-900 hover:text-red-900"
-                    @click="
-                      removeTable(props.tableNodeDataWithNodeId.tableNodeId)
-                    "
-                  >
-                    <Trash class="w-4 h-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Delete table</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div @click.stop>
+            <fieldset class="flex gap-2 mr-[6px]" :disabled="!interactive">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <Button
+                      class="hover:border-blue-900 hover:text-blue-900"
+                      size="xs"
+                      @click="onEditTable"
+                    >
+                      <PencilLine class="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Edit table name</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <Button
+                      size="xs"
+                      class="hover:border-red-900 hover:text-red-900"
+                      @click="
+                        removeTable(props.tableNodeDataWithNodeId.tableNodeId)
+                      "
+                    >
+                      <Trash class="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Delete table</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </fieldset>
           </div>
         </div>
         <DiagramCollapsibleTableEditName
@@ -132,6 +135,7 @@ watch(
           />
           <Button
             class="flex-shrink-0 text-center gap-2"
+            :disabled="!interactive"
             @click="() => addColumn(props.tableNodeDataWithNodeId.tableNodeId)"
           >
             <CirclePlus class="w-4 h-4" />

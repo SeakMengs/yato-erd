@@ -5,7 +5,6 @@ import {
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
-import { ERD_STATE_AUTO_SAVE_MS } from "~/constants/vueflow";
 import type {
   TableNodeData,
   TableNodeDataColumn,

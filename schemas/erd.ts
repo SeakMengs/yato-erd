@@ -49,7 +49,6 @@ export const tableNodeDataColumnSchema = z.object({
       .optional(),
     defaultValue: z
       .string()
-      .trim()
       .max(65535, {
         message: "Default value must be less than 65535 characters",
       })
@@ -58,7 +57,6 @@ export const tableNodeDataColumnSchema = z.object({
   }),
   userComment: z
     .string()
-    .trim()
     .max(2000, {
       message: "Comment must be less than 2000 characters",
     })

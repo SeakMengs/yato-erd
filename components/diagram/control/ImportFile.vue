@@ -13,8 +13,8 @@ const onButtonClick = (): void => {
   fileRef.value.click();
 };
 
-const handleFileUpload = (e: Event): void => {
-  const el = e.target as HTMLInputElement;
+const handleFileUpload = (event: Event): void => {
+  const el = event.target as HTMLInputElement;
 
   if (el.files && el.files[0]) {
     importFromJson(el.files[0]);
@@ -32,6 +32,7 @@ const handleFileUpload = (e: Event): void => {
             <input
               class="hidden"
               type="file"
+              accept="application/json"
               hidden
               ref="fileRef"
               @input="handleFileUpload"

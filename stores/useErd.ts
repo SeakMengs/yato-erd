@@ -55,8 +55,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
         return structuredClone(DEFAULT_ERD_STATE);
       }
 
-      const parsed = JSON.parse(state);
-      return validateErdState(parsed);
+      return validateErdState(JSON.parse(state));
     } catch (error) {
       logger.error(`There was an error in getErdStateFromLocalStorage`, error);
       throw new YatoErDError(YatoErDErrorCode.GET_ERD_STATE_FROM_LOCAL_STORAGE);
