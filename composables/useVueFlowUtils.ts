@@ -16,6 +16,7 @@ export function useVueFlowUtils() {
     addNodes,
     findEdge,
     setNodes,
+    setEdges,
     removeNodes,
     fitView,
     viewport,
@@ -45,6 +46,16 @@ export function useVueFlowUtils() {
       return nodes.map((n) => ({
         ...n,
         selected: false,
+      }));
+    });
+  }
+
+  function unSelectEdges(): void {
+    setEdges((edges) => {
+      return edges.map((e) => ({
+        ...e,
+        selected: false,
+        animated: false,
       }));
     });
   }
@@ -197,6 +208,7 @@ export function useVueFlowUtils() {
     handleDefaultEdgeType,
     onCollapsibleClick,
     unSelectNodes,
+    unSelectEdges,
     handleEdgeSelection,
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,

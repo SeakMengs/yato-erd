@@ -19,6 +19,8 @@ const handleFileUpload = (event: Event): void => {
   if (el.files && el.files[0]) {
     importFromJson(el.files[0]);
   }
+
+  fileRef.value!.value = "";
 };
 </script>
 

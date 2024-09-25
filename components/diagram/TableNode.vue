@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { CustomTableNodeProps } from "~/types/diagram/table_node";
 import { Position, Handle } from "@vue-flow/core";
-import { vAutoAnimate } from "@formkit/auto-animate";
 import { KeyRound, LifeBuoy } from "lucide-vue-next";
 
 const props = defineProps<CustomTableNodeProps>();
@@ -23,7 +22,7 @@ const iconSize = "w-4 h-4";
     <CardHeader class="p-4">
       <CardTitle>{{ props.data.tableName }}</CardTitle>
     </CardHeader>
-    <CardContent v-auto-animate class="p-0">
+    <CardContent class="p-0">
       <div
         v-for="(col, index) in props.data.columns"
         :key="col.columnId"
