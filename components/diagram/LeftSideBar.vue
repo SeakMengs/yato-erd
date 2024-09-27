@@ -55,9 +55,9 @@ function openEditTableName(nodeId: string): void {
             tableName: node.data?.tableName ?? '',
           }"
           :edit-table-name="editTableNameId === node.id"
-          :close-edit-table-name="closeEditTableName"
-          :open-edit-table-name="openEditTableName"
           :selected="node.selected ?? false"
+          @close-edit-table-name="closeEditTableName"
+          @open-edit-table-name="openEditTableName"
           :class="{
             'mb-2': getNodes.length === index + 1,
           }"

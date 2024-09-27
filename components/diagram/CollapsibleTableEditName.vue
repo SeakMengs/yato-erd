@@ -11,8 +11,10 @@ const { updateTableNodeName } = useVueFlowUtils();
 const props = defineProps<{
   isOpen: boolean;
   tableNodeDataWithNodeId: TableNodeDataWithNodeId;
-  openEditTableName: () => void;
-  closeEditTableName: () => void;
+}>();
+
+const emit = defineEmits<{
+  (e: "closeEditTableName"): void;
 }>();
 
 const { interactive } = useInterative();
@@ -27,6 +29,10 @@ const form = useForm({
 
 const onInputFocusIn = (): void => {
   tableNameBefore.value = props.tableNodeDataWithNodeId.tableName;
+};
+
+const closeEditTableName = (): void => {
+  emit("closeEditTableName");
 };
 
 const confirm = async ({
@@ -51,7 +57,7 @@ const confirm = async ({
 
   if (closeETN) {
     logger.info("Updated the table name, closing the edit table name");
-    props.closeEditTableName();
+    closeEditTableName();
   }
 };
 
@@ -65,7 +71,7 @@ const cancel = (): void => {
     tableNameBefore.value,
   );
 
-  props.closeEditTableName();
+  closeEditTableName();
 };
 
 const cancelIfNotValid = (): void => {
@@ -74,7 +80,7 @@ const cancelIfNotValid = (): void => {
     .safeParse(form.controlledValues.value);
 
   if (result.success) {
-    props.closeEditTableName();
+    closeEditTableName();
     return;
   }
 

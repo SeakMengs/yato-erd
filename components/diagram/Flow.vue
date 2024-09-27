@@ -49,6 +49,7 @@ const erdState = useErd();
       :auto-connect="true"
       :only-render-visible-elements="false"
       :max-zoom="2"
+      :fit-view-on-init="true"
       :min-zoom="0.5"
       @error="errorHandler"
       @edge-update="onEdgeUpdate"

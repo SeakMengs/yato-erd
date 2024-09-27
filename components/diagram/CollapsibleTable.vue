@@ -7,8 +7,11 @@ const props = defineProps<{
   tableNodeDataWithNodeId: TableNodeDataWithNodeId;
   selected: boolean;
   editTableName: boolean;
-  openEditTableName: (nodeId: string) => void;
-  closeEditTableName: () => void;
+}>();
+
+const emit = defineEmits<{
+  (e: "closeEditTableName"): void;
+  (e: "openEditTableName", nodeId: string): void;
 }>();
 
 const { interactive } = useInterative();
@@ -26,9 +29,17 @@ function toggleOpen(): void {
   onCollapsibleClick(props.tableNodeDataWithNodeId.tableNodeId);
 }
 
+function closeEditTableName(): void {
+  emit("closeEditTableName");
+}
+
+function openEditTableName(): void {
+  emit("openEditTableName", props.tableNodeDataWithNodeId.tableNodeId);
+}
+
 function onEditTable(): void {
   unSelectNodes();
-  props.openEditTableName(props.tableNodeDataWithNodeId.tableNodeId);
+  openEditTableName();
 }
 
 watch(
@@ -110,11 +121,7 @@ watch(
           :key="props.tableNodeDataWithNodeId.tableNodeId"
           :is-open="isOpen"
           :table-node-data-with-node-id="props.tableNodeDataWithNodeId"
-          :close-edit-table-name="props.closeEditTableName"
-          :open-edit-table-name="
-            () =>
-              props.openEditTableName(props.tableNodeDataWithNodeId.tableNodeId)
-          "
+          @close-edit-table-name="closeEditTableName"
         />
       </CollapsibleTrigger>
       <CollapsibleContent>
@@ -125,7 +132,7 @@ watch(
             :column="column"
             :column-position="index"
             :key="column.columnId"
-            :removeColumn="
+            @removeColumn="
               () =>
                 removeColumn(
                   props.tableNodeDataWithNodeId.tableNodeId,

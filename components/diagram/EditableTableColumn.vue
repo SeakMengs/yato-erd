@@ -17,8 +17,15 @@ const props = defineProps<{
   tableId: string;
   columnPosition: number;
   column: TableNodeDataColumn;
-  removeColumn: () => void;
 }>();
+
+const emit = defineEmits<{
+  (e: "removeColumn"): void;
+}>();
+
+const removeColumn = (): void => {
+  emit("removeColumn");
+};
 
 const indexTypes = columnIndexTypeSchemaEnum.options;
 

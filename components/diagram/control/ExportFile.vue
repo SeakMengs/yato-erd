@@ -16,7 +16,7 @@ const { exportAsJson } = useExport();
         </ControlButton>
       </TooltipTrigger>
       <TooltipContent side="left">
-        <p>Export as file</p>
+        <p>Export as json file</p>
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>
