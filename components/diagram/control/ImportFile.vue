@@ -2,6 +2,7 @@
 import { ControlButton } from "@vue-flow/controls";
 import { FileDownIcon } from "lucide-vue-next";
 
+const { smoothFitView } = useVueFlowUtils();
 const { importFromJson } = useImport();
 const fileRef = ref<HTMLInputElement | null>(null);
 
@@ -18,6 +19,7 @@ const handleFileUpload = (event: Event): void => {
 
   if (el.files && el.files[0]) {
     importFromJson(el.files[0]);
+    smoothFitView();
   }
 
   fileRef.value!.value = "";

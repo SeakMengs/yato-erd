@@ -1,39 +1,10 @@
 <script setup lang="ts">
-import { useVueFlow } from "@vue-flow/core";
-import { VUEFLOW_ID } from "~/constants/key";
-
 // const collaborate = useCollaborate();
 // onMounted(() => collaborate.connect());
-const { getNodes, getEdges, setNodes } = useVueFlow(VUEFLOW_ID);
-const { layout } = useLayout();
-
-// const beforeUnload = (event: Event | undefined): void => {
-//   alert("Do you wish to save data");
-//
-//   if (event) {
-//     event.preventDefault();
-//   }
-// };
-//
-// onBeforeRouteLeave(() => {
-//   beforeUnload(undefined);
-// });
-//
-// onMounted(() => {
-//   window.addEventListener("beforeunload", beforeUnload);
-// });
-//
-// onBeforeUnmount(() => {
-//   window.removeEventListener("beforeunload", beforeUnload);
-// });
 </script>
 
 <template>
-  <!-- <Button @click="setNodes(layout(getNodes, getEdges, 'LR'))">LR</Button> -->
-  <!-- <Button @click="setNodes(layout(getNodes, getEdges, 'RL'))">RL</Button> -->
-  <!-- <Button @click="setNodes(layout(getNodes, getEdges, 'TB'))">TB</Button> -->
-  <!-- <Button @click="setNodes(layout(getNodes, getEdges, 'BT'))">BT</Button> -->
-
+  <DiagramSaveChangesDialog />
   <DiagramChooseDiagramStateDialog />
   <DiagramConfirmDeleteNodeDialog />
   <ResizablePanelGroup id="handle-group-1" direction="horizontal">

@@ -11,13 +11,13 @@ const closeDialog = (): void => {
 // Default option if user cancel the dialog
 const openExistingDiagram = (): void => {
   erdState.fetchErdState();
-  erdState.registerAutoSaveErdState();
+  // erdState.registerAutoSaveErdState();
   closeDialog();
 };
 
 const createNewDiagram = (): void => {
   erdState.state = DEFAULT_ERD_STATE;
-  erdState.registerAutoSaveErdState();
+  // erdState.registerAutoSaveErdState();
   closeDialog();
 };
 </script>

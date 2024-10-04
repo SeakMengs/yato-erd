@@ -7,6 +7,10 @@ const isOpen = ref<boolean>(false);
 const toggleSettings = () => {
   isOpen.value = !isOpen.value;
 };
+
+const setSettingOpen = (open: boolean): void => {
+  isOpen.value = open;
+};
 </script>
 
 <template>
@@ -20,12 +24,13 @@ const toggleSettings = () => {
       }"
     >
       <DiagramControlTheme />
-      <DiagramControlSave />
       <DiagramControlExportImage />
       <DiagramControlExportFile />
       <DiagramControlImportFile />
       <DiagramControlFitView />
       <DiagramControlInteractive />
+      <DiagramControlAutoLayout @set-setting-open="setSettingOpen" />
+      <DiagramControlSave />
     </div>
     <TooltipProvider>
       <Tooltip>

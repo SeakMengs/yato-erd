@@ -58,6 +58,7 @@ const erdState = useErd();
       :only-render-visible-elements="false"
       :max-zoom="2"
       :fit-view-on-init="false"
+      :default-viewport="{ zoom: 0.8 }"
       :default-edge-options="defaultEdgeOptions"
       :min-zoom="0.5"
       @error="errorHandler"

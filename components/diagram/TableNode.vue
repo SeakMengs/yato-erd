@@ -50,7 +50,7 @@ const iconSize = "w-4 h-4";
         <!-- Column content -->
         <div>
           <Separator class="" />
-          <div class="p-4 flex justify-between items-center gap-2">
+          <div class="p-2 flex justify-between items-center gap-2">
             <p class="flex justify-center items-center gap-1">
               <TooltipProvider>
                 <Tooltip>

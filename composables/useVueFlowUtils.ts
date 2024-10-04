@@ -43,6 +43,14 @@ export function useVueFlowUtils() {
     });
   }
 
+  function smoothFitView(): void {
+    fitView({
+      duration: 500,
+      padding: 1,
+      maxZoom: viewport.value.zoom,
+    });
+  }
+
   function unSelectNodes(): void {
     removeSelectedNodes(getSelectedNodes.value);
   }
@@ -193,6 +201,7 @@ export function useVueFlowUtils() {
     onCollapsibleClick,
     unSelectNodes,
     unSelectEdges,
+    smoothFitView,
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,
   };

@@ -35,9 +35,7 @@ const node = computed<CustomTableNode | undefined>(() => {
         <AlertDialogCancel @click="onCancel">
           {{ $t("diagram.cancel") }}
         </AlertDialogCancel>
-        <AlertDialogAction @click="onConfirm">
-          {{ $t("diagram.confirm") }}
-        </AlertDialogAction>
+        <AlertDialogAction @click="onConfirm"> Delete </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

@@ -78,11 +78,31 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
   }
 
   function isStateSyncedWithLocalStorage(): boolean {
-    return isEqual(state.value, getErdStateFromLocalStorage());
+    const lsState = getErdStateFromLocalStorage();
+
+    return isEqual(
+      { nodes: state.value.nodes, edges: state.value.edges },
+      {
+        nodes: lsState.nodes,
+        edges: lsState.edges,
+      },
+    );
   }
 
   function isVueFlowStateSyncedWithLocalStorage(): boolean {
-    return isEqual(getVueFlowState(), getErdStateFromLocalStorage());
+    const vState = getVueFlowState();
+    const lsState = getErdStateFromLocalStorage();
+
+    return isEqual(
+      {
+        nodes: vState.nodes,
+        edges: vState.edges,
+      },
+      {
+        nodes: lsState.nodes,
+        edges: lsState.edges,
+      },
+    );
   }
 
   function saveErdStateToLocalStorage(options: { silent?: boolean }): void {
@@ -127,6 +147,7 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
     registerAutoSaveErdState,
     fetchErdState,
     syncStoreWithVueflow,
+    isVueFlowStateSyncedWithLocalStorage,
     saveErdStateToLocalStorage,
     validateErdState,
   };

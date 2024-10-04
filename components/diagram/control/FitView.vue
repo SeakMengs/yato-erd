@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { ControlButton } from "@vue-flow/controls";
-import { useVueFlow } from "@vue-flow/core";
 import { Scan } from "lucide-vue-next";
-import { VUEFLOW_ID } from "~/constants/key";
 
-const { fitView } = useVueFlow(VUEFLOW_ID);
+const { smoothFitView } = useVueFlowUtils();
 </script>
 
 <template>
@@ -12,7 +10,7 @@ const { fitView } = useVueFlow(VUEFLOW_ID);
     <Tooltip>
       <TooltipTrigger as-child>
         <ControlButton>
-          <Button variant="outline" size="icon" @click="fitView">
+          <Button variant="outline" size="icon" @click="smoothFitView">
             <Scan class="w-4 h-4" />
           </Button>
         </ControlButton>
