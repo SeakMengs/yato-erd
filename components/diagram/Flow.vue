@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { Controls } from "@vue-flow/controls";
 import {
+  ConnectionMode,
   useVueFlow,
   VueFlow,
   VueFlowError,
+  type DefaultEdgeOptions,
   type EdgeTypesObject,
 } from "@vue-flow/core";
-import ERDEdge from "~/components/diagram/ERDEdge.vue";
+import SimpleFloatingEdge from "~/components/diagram/SimpleFloatingEdge.vue";
 import { VUEFLOW_ID } from "~/constants/key";
+import { DEFAULT_EDGE_TYPE } from "~/constants/vueflow";
 import { THEME } from "~/types/theme";
 
 const colorMode = useColorMode();
@@ -23,9 +26,13 @@ onError((error: VueFlowError) => {
 });
 
 const edgeTypes = {
-  default: markRaw(ERDEdge),
-  erd: markRaw(ERDEdge),
+  default: markRaw(SimpleFloatingEdge),
+  erd: markRaw(SimpleFloatingEdge),
 } satisfies EdgeTypesObject;
+
+const defaultEdgeOptions = {
+  type: DEFAULT_EDGE_TYPE,
+} satisfies DefaultEdgeOptions;
 
 const erdState = useErd();
 </script>
@@ -42,6 +49,7 @@ const erdState = useErd();
       "
       :nodes="erdState.state.nodes"
       :edges="erdState.state.edges"
+      :connection-mode="ConnectionMode.Loose"
       :edges-updatable="true"
       :edge-types="edgeTypes"
       :apply-default="false"
@@ -49,7 +57,8 @@ const erdState = useErd();
       :auto-connect="true"
       :only-render-visible-elements="false"
       :max-zoom="2"
-      :fit-view-on-init="true"
+      :fit-view-on-init="false"
+      :default-edge-options="defaultEdgeOptions"
       :min-zoom="0.5"
       @error="errorHandler"
       @edge-update="onEdgeUpdate"
@@ -66,7 +75,7 @@ const erdState = useErd();
         <DiagramConnectionLine v-bind="lineProps" />
       </template>
       <template #edge-erd="edgeErdProps">
-        <DiagramERDEdge v-bind="edgeErdProps" />
+        <DiagramSimpleFloatingEdge v-bind="edgeErdProps" />
       </template>
       <!-- <MiniMap pannable zoomable /> -->
       <Controls

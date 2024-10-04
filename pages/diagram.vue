@@ -6,6 +6,26 @@ import { VUEFLOW_ID } from "~/constants/key";
 // onMounted(() => collaborate.connect());
 const { getNodes, getEdges, setNodes } = useVueFlow(VUEFLOW_ID);
 const { layout } = useLayout();
+
+// const beforeUnload = (event: Event | undefined): void => {
+//   alert("Do you wish to save data");
+//
+//   if (event) {
+//     event.preventDefault();
+//   }
+// };
+//
+// onBeforeRouteLeave(() => {
+//   beforeUnload(undefined);
+// });
+//
+// onMounted(() => {
+//   window.addEventListener("beforeunload", beforeUnload);
+// });
+//
+// onBeforeUnmount(() => {
+//   window.removeEventListener("beforeunload", beforeUnload);
+// });
 </script>
 
 <template>

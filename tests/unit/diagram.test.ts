@@ -20,8 +20,6 @@ import { tableHasConflict } from "#imports";
 describe("useVueFlowUtils functionality", () => {
   const store = useVueFlow(VUEFLOW_ID);
   const {
-    getEdgeRemoveChangeFormat,
-    getNodeRemoveChangeFormat,
     updateTableNodeName,
     updateTableNodeColumn,
     removeTable,

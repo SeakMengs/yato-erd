@@ -5,14 +5,32 @@ import {
   getSmoothStepPath,
   useVueFlow,
   type EdgeProps,
-  type SmoothStepEdgeProps,
 } from "@vue-flow/core";
 import { XIcon } from "lucide-vue-next";
 import { VUEFLOW_ID } from "~/constants/key";
 
 const { findEdge, removeEdges } = useVueFlow(VUEFLOW_ID);
 const props = defineProps<EdgeProps>();
-const path = computed(() => getSmoothStepPath(props as SmoothStepEdgeProps));
+
+const edgeParams = computed(() =>
+  getEdgeParams(
+    props.sourceNode,
+    props.targetNode,
+    extractColumnId(props.sourceHandleId),
+    extractColumnId(props.targetHandleId),
+  ),
+);
+
+const path = computed(() =>
+  getSmoothStepPath({
+    sourceX: edgeParams.value.sx,
+    sourceY: edgeParams.value.sy,
+    sourcePosition: edgeParams.value.sourcePos,
+    targetPosition: edgeParams.value.targetPos,
+    targetX: edgeParams.value.tx,
+    targetY: edgeParams.value.ty,
+  }),
+);
 
 watch(
   () => props.selected,

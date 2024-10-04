@@ -62,25 +62,36 @@ export const useErd = defineStore(ERD_STATE_ID, () => {
     }
   }
 
-  // State is handled by vue flow, so when we want to save, export, call this function to sync this store
-  function syncStoreWithVueflow(): void {
+  function getVueFlowState(): ERDState {
     const data = toObject();
 
-    state.value = validateErdState({
+    return validateErdState({
       nodes: data.nodes as CustomTableNode[],
       edges: data.edges as Edge[],
       viewport: data.viewport,
     });
   }
 
+  // State is handled by vue flow, so when we want to save, export, call this function to sync this store
+  function syncStoreWithVueflow(): void {
+    state.value = getVueFlowState();
+  }
+
+  function isStateSyncedWithLocalStorage(): boolean {
+    return isEqual(state.value, getErdStateFromLocalStorage());
+  }
+
+  function isVueFlowStateSyncedWithLocalStorage(): boolean {
+    return isEqual(getVueFlowState(), getErdStateFromLocalStorage());
+  }
+
   function saveErdStateToLocalStorage(options: { silent?: boolean }): void {
     try {
       logger.info("Saving erd state to local storage");
-      syncStoreWithVueflow();
 
-      if (!isEqual(state.value, getErdStateFromLocalStorage())) {
+      if (!isVueFlowStateSyncedWithLocalStorage()) {
         // The sync store with vue flow already validated the erd
-        localStorage.setItem("erd-state", JSON.stringify(state.value));
+        localStorage.setItem("erd-state", JSON.stringify(getVueFlowState()));
       } else {
         logger.info(
           "Local state and current diagram state is the same, skip saving erd state",

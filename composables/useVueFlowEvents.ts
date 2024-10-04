@@ -12,11 +12,8 @@ export function useVueFlowEvents() {
   const { updateEdge, applyEdgeChanges, applyNodeChanges, addEdges } =
     useVueFlow(VUEFLOW_ID);
   const { confirm, pendingNodeRemoval } = useRemoveNodeDiloag();
-  const {
-    getEdgeRemoveChangeFormat,
-    handleEdgeSelection,
-    isValidEdgeConnection,
-  } = useVueFlowUtils();
+  const { getEdgeRemoveChangeFormat, isValidEdgeConnection } =
+    useVueFlowUtils();
   const collaborate = useCollaborate();
   const { interactive } = useInterative();
 
@@ -47,7 +44,6 @@ export function useVueFlowEvents() {
     for (const c of changes) {
       switch (c.type) {
         case "select":
-          handleEdgeSelection(c.id);
           nextChanges.push(c);
           break;
         case "add":

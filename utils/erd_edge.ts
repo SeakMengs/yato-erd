@@ -1,9 +1,4 @@
-import {
-  useVueFlow,
-  type Edge,
-  type GraphEdge,
-  type Node,
-} from "@vue-flow/core";
+import { useVueFlow, type Edge } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
 import { erdEdgesSchema } from "~/schemas/erd";
 import { EdgeType } from "~/types/diagram/edge";
@@ -24,11 +19,11 @@ export function getHandleId(
 
 type SourceHandle = string | null | undefined;
 // Example targetHandle: "f48e3-left-73149" | "source-handlePositon-columnId"
-function extractColumnId(handle: SourceHandle): string {
+export function extractColumnId(handle: SourceHandle): string {
   return handle?.split("-")[2] ?? "";
 }
 
-function extractSourceId(handle: SourceHandle): string {
+export function extractSourceId(handle: SourceHandle): string {
   return handle?.split("-")[0] ?? "";
 }
 

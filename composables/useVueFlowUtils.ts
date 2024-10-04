@@ -14,9 +14,11 @@ export function useVueFlowUtils() {
   const {
     getConnectedEdges,
     addNodes,
-    findEdge,
     setNodes,
-    setEdges,
+    removeSelectedNodes,
+    removeSelectedEdges,
+    getSelectedEdges,
+    getSelectedNodes,
     removeNodes,
     fitView,
     viewport,
@@ -42,22 +44,11 @@ export function useVueFlowUtils() {
   }
 
   function unSelectNodes(): void {
-    setNodes((nodes) => {
-      return nodes.map((n) => ({
-        ...n,
-        selected: false,
-      }));
-    });
+    removeSelectedNodes(getSelectedNodes.value);
   }
 
   function unSelectEdges(): void {
-    setEdges((edges) => {
-      return edges.map((e) => ({
-        ...e,
-        selected: false,
-        animated: false,
-      }));
-    });
+    removeSelectedEdges(getSelectedEdges.value);
   }
 
   function addTable(): void {
@@ -117,13 +108,6 @@ export function useVueFlowUtils() {
     } catch (error) {
       errorHandler(error, "removeColumn");
     }
-  }
-
-  function handleEdgeSelection(edgeId: string): void {
-    const edge = findEdge(edgeId);
-
-    if (!edge) return;
-    edge.animated = !edge.selected;
   }
 
   function isValidEdgeConnection(
@@ -209,7 +193,6 @@ export function useVueFlowUtils() {
     onCollapsibleClick,
     unSelectNodes,
     unSelectEdges,
-    handleEdgeSelection,
     getEdgeRemoveChangeFormat,
     getNodeRemoveChangeFormat,
   };
