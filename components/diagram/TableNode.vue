@@ -19,7 +19,7 @@ const iconSize = "w-4 h-4";
       })
     "
   >
-    <CardHeader class="p-4">
+    <CardHeader class="p-4 rounded-t-lg">
       <CardTitle>{{ props.data.tableName }}</CardTitle>
     </CardHeader>
     <CardContent class="p-0">
@@ -29,7 +29,7 @@ const iconSize = "w-4 h-4";
         class="relative hover:bg-secondary"
         :class="
           cn({
-            'rounded-b-lg ': index === props.data.columns.length - 1,
+            'rounded-b-lg': index === props.data.columns.length - 1,
           })
         "
       >

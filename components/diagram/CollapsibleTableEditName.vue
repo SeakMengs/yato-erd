@@ -154,6 +154,7 @@ onBeforeUnmount(() => {
 <template>
   <div ref="divRef" class="flex flex-row items-center justify-between gap-2">
     <div class="w-full flex flex-row items-center gap-2">
+      <span class="border-2 h-6 dark:border-white"></span>
       <ChevronDown
         :data-state="props.isOpen ? 'open' : 'close'"
         class="h-4 w-4 data-[state=close]:-rotate-90 transition-transform duration-200"

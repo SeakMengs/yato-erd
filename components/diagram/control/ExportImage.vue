@@ -13,7 +13,13 @@ const { exportAsImage } = useExport();
           <Button
             variant="outline"
             size="icon"
-            @click="exportAsImage({ type: 'png', shouldDownload: true })"
+            @click="
+              exportAsImage({
+                type: 'png',
+                quality: 1,
+                shouldDownload: true,
+              })
+            "
           >
             <ImageUpIcon class="w-4 h-4" />
           </Button>

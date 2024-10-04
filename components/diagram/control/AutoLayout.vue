@@ -2,7 +2,6 @@
 import { ControlButton } from "@vue-flow/controls";
 import { useVueFlow } from "@vue-flow/core";
 import {
-  ArrowLeft,
   LayoutDashboard,
   MoveDown,
   MoveLeft,
@@ -29,7 +28,7 @@ const closeSetting = (): void => {
 };
 
 const layoutLR = (): void => {
-  if (!interactive) {
+  if (!interactive.value) {
     return;
   }
 
@@ -39,7 +38,7 @@ const layoutLR = (): void => {
 };
 
 const layoutRL = (): void => {
-  if (!interactive) {
+  if (!interactive.value) {
     return;
   }
 
@@ -49,7 +48,7 @@ const layoutRL = (): void => {
 };
 
 const layoutBT = (): void => {
-  if (!interactive) {
+  if (!interactive.value) {
     return;
   }
 
@@ -59,7 +58,7 @@ const layoutBT = (): void => {
 };
 
 const layoutTB = (): void => {
-  if (!interactive) {
+  if (!interactive.value) {
     return;
   }
 
@@ -75,7 +74,7 @@ const layoutTB = (): void => {
       <TooltipTrigger as-child>
         <ControlButton>
           <DropdownMenu>
-            <DropdownMenuTrigger as-child>
+            <DropdownMenuTrigger as-child :disabled="!interactive">
               <Button
                 variant="outline"
                 size="icon"

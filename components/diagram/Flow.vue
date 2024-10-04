@@ -10,7 +10,12 @@ import {
 } from "@vue-flow/core";
 import SimpleFloatingEdge from "~/components/diagram/SimpleFloatingEdge.vue";
 import { VUEFLOW_ID } from "~/constants/key";
-import { DEFAULT_EDGE_TYPE } from "~/constants/vueflow";
+import {
+  DEFAULT_EDGE_TYPE,
+  DEFAULT_ZOOM,
+  MAX_ZOOM,
+  MIN_ZOOM,
+} from "~/constants/vueflow";
 import { THEME } from "~/types/theme";
 
 const colorMode = useColorMode();
@@ -56,11 +61,11 @@ const erdState = useErd();
       :connection-radius="70"
       :auto-connect="true"
       :only-render-visible-elements="false"
-      :max-zoom="2"
+      :max-zoom="MAX_ZOOM"
       :fit-view-on-init="false"
-      :default-viewport="{ zoom: 0.8 }"
+      :default-viewport="{ zoom: DEFAULT_ZOOM }"
       :default-edge-options="defaultEdgeOptions"
-      :min-zoom="0.5"
+      :min-zoom="MIN_ZOOM"
       @error="errorHandler"
       @edge-update="onEdgeUpdate"
       @connect="onConnect"

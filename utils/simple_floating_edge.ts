@@ -1,13 +1,17 @@
 // Credit to reactflow simple float example. The code is entirely from react flow with some modification to fit this project use case.
 // https://codesandbox.io/p/sandbox/dank-architecture-c49ycq?file=%2FSimpleFloatingEdge.jsx%3A32%2C22
-import { Position, type GraphNode } from "@vue-flow/core";
+import { Position, type XYPosition, type GraphNode } from "@vue-flow/core";
 
 // returns the position (top,right,bottom or right) passed node compared to
+type GetParams = XYPosition & {
+  position: Position;
+};
+
 function getParams(
   nodeA: GraphNode,
   nodeB: GraphNode,
   columnId: string,
-): [number, number, Position] {
+): GetParams {
   const centerA = getNodeCenter(nodeA);
   const centerB = getNodeCenter(nodeB);
 
@@ -27,19 +31,19 @@ function getParams(
   // Since we only have left and right handle, no need to compare horizontal and vertical
   position = centerA.x > centerB.x ? Position.Left : Position.Right;
 
-  const [x, y] = getHandleCoordsByPosition(nodeA, position, columnId);
-  return [x, y, position];
+  const { x, y } = getHandleCoordsByPosition(nodeA, position, columnId);
+  return { x, y, position };
 }
 
 function getHandleCoordsByPosition(
   node: GraphNode,
   handlePosition: Position,
   columnId: string,
-): [number, number] {
+): XYPosition {
   let x: number = 0;
   let y: number = 0;
   if (!node.handleBounds.source) {
-    return [x, y];
+    return { x, y };
   }
 
   // all handles are from type source, that's why we use handleBounds.source here
@@ -49,7 +53,7 @@ function getHandleCoordsByPosition(
   );
 
   if (!handle) {
-    return [x, y];
+    return { x, y };
   }
 
   let offsetX = handle.width / 2;
@@ -76,10 +80,10 @@ function getHandleCoordsByPosition(
   x = node.position.x + handle.x + offsetX;
   y = node.position.y + handle.y + offsetY;
 
-  return [x, y];
+  return { x, y };
 }
 
-function getNodeCenter(node: GraphNode): { x: number; y: number } {
+function getNodeCenter(node: GraphNode): XYPosition {
   return {
     x: node.position.x + node.dimensions.width / 2,
     y: node.position.y + node.dimensions.height / 2,
@@ -87,21 +91,31 @@ function getNodeCenter(node: GraphNode): { x: number; y: number } {
 }
 
 // returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
-export function getEdgeParams(
-  sourceNode: GraphNode,
-  targetNode: GraphNode,
-  sourceColumnId: string,
-  targetColumnId: string,
-): {
+type EdgeParams = {
   sx: number;
   sy: number;
   tx: number;
   ty: number;
   sourcePos: Position;
   targetPos: Position;
-} {
-  const [sx, sy, sourcePos] = getParams(sourceNode, targetNode, sourceColumnId);
-  const [tx, ty, targetPos] = getParams(targetNode, sourceNode, targetColumnId);
+};
+
+export function getEdgeParams(
+  sourceNode: GraphNode,
+  targetNode: GraphNode,
+  sourceColumnId: string,
+  targetColumnId: string,
+): EdgeParams {
+  const {
+    x: sx,
+    y: sy,
+    position: sourcePos,
+  } = getParams(sourceNode, targetNode, sourceColumnId);
+  const {
+    x: tx,
+    y: ty,
+    position: targetPos,
+  } = getParams(targetNode, sourceNode, targetColumnId);
 
   return {
     sx,

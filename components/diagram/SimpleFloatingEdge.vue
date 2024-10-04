@@ -79,13 +79,7 @@ watch(
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger as-child>
-              <Button
-                size="icon"
-                :variant="'secondary'"
-                @click="removeEdges(id)"
-              >
-                <XIcon class="w-4 h-4" />
-              </Button>
+              <XIcon @click="removeEdges(id)" class="w-5 h-5" />
             </TooltipTrigger>
             <TooltipContent>
               <p>Remove edge</p>
