@@ -7,7 +7,7 @@ const { getNodes, fitView, viewport } = useVueFlow(VUEFLOW_ID);
 const { addTable } = useVueFlowUtils();
 
 const editTableNameId = ref<string | undefined>();
-const { interactive } = useInterative();
+const { interactive } = useInteractive();
 
 function closeEditTableName(): void {
   editTableNameId.value = undefined;

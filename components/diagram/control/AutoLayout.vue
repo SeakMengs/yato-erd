@@ -12,7 +12,7 @@ import { VUEFLOW_ID } from "~/constants/key";
 
 const { getNodes, getEdges, setNodes } = useVueFlow(VUEFLOW_ID);
 const { layout } = useLayout();
-const { interactive } = useInterative();
+const { interactive } = useInteractive();
 const { smoothFitView } = useVueFlowUtils();
 
 const emit = defineEmits<{

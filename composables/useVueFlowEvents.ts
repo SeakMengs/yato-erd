@@ -15,7 +15,7 @@ export function useVueFlowEvents() {
   const { getEdgeRemoveChangeFormat, isValidEdgeConnection } =
     useVueFlowUtils();
   const collaborate = useCollaborate();
-  const { interactive } = useInterative();
+  const { interactive } = useInteractive();
 
   // basically for user to move the connected edge to other handle
   function onEdgeUpdate({

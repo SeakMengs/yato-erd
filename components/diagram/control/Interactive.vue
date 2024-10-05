@@ -2,7 +2,7 @@
 import { ControlButton } from "@vue-flow/controls";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-vue-next";
 
-const { interactive, toggleInteractive } = useInterative();
+const { interactive, toggleInteractive } = useInteractive();
 </script>
 
 <template>

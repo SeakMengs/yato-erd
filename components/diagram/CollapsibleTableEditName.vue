@@ -17,7 +17,7 @@ const emit = defineEmits<{
   (e: "closeEditTableName"): void;
 }>();
 
-const { interactive } = useInterative();
+const { interactive } = useInteractive();
 const tableNameBefore = ref<string>(props.tableNodeDataWithNodeId.tableName);
 const formSchema = toTypedSchema(tableNodeDataSchema.pick({ tableName: true }));
 const form = useForm({

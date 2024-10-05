@@ -14,7 +14,7 @@ const emit = defineEmits<{
   (e: "openEditTableName", nodeId: string): void;
 }>();
 
-const { interactive } = useInterative();
+const { interactive } = useInteractive();
 const isOpen = ref<boolean>(props.selected);
 const {
   removeTable,
