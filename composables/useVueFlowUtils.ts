@@ -2,6 +2,7 @@ import {
   useVueFlow,
   type Connection,
   type EdgeRemoveChange,
+  type GraphNode,
   type NodeChange,
 } from "@vue-flow/core";
 import { VUEFLOW_ID } from "~/constants/key";
@@ -14,7 +15,8 @@ export function useVueFlowUtils() {
   const {
     getConnectedEdges,
     addNodes,
-    setNodes,
+    findNode,
+    addSelectedNodes,
     removeSelectedNodes,
     removeSelectedEdges,
     getSelectedEdges,
@@ -27,24 +29,19 @@ export function useVueFlowUtils() {
   // When a collapsible table on the left side bar is clicked make the table node in the diagram show as selected
   // And unselect other tables
   function onCollapsibleClick(nodeId: string) {
-    setNodes((nodes) => {
-      return nodes.map((n) => ({
-        ...n,
-        selected: n.id === nodeId ? !n.selected : false,
-      }));
-    });
+    const node = findNode(nodeId);
 
-    fitView({
-      nodes: [nodeId],
-      // use this if you want a smooth transition to the node
-      duration: 500,
-      padding: 1,
-      maxZoom: viewport.value.zoom,
-    });
+    if (!node) {
+      return;
+    }
+
+    addSelectedNodes([node]);
+    smoothFitView([nodeId]);
   }
 
-  function smoothFitView(): void {
+  function smoothFitView(nodes?: string[]): void {
     fitView({
+      nodes: nodes,
       duration: 500,
       padding: 1,
       maxZoom: viewport.value.zoom,

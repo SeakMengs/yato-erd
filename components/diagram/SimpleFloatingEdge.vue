@@ -2,6 +2,7 @@
 import {
   BaseEdge,
   EdgeLabelRenderer,
+  getBezierPath,
   getSmoothStepPath,
   useVueFlow,
   type EdgeProps,
@@ -22,7 +23,7 @@ const edgeParams = computed(() =>
 );
 
 const path = computed(() =>
-  getSmoothStepPath({
+  getBezierPath({
     sourceX: edgeParams.value.sx,
     sourceY: edgeParams.value.sy,
     sourcePosition: edgeParams.value.sourcePos,
@@ -50,7 +51,7 @@ watch(
   <g>
     <BaseEdge
       :id="id"
-      :style="{ ...style }"
+      :style="{ ...style, strokeWidth: 2 }"
       :path="path[0]"
       :marker-end="markerEnd"
       :label="data?.text"

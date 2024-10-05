@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Controls } from "@vue-flow/controls";
 import {
-  ConnectionMode,
   useVueFlow,
   VueFlow,
   VueFlowError,
@@ -23,11 +22,16 @@ const dark = computed(() => colorMode.preference === THEME.DARK);
 
 const { onEdgeUpdate, onConnect, onEdgesChange, onNodesChange } =
   useVueFlowEvents();
-const { onError } = useVueFlow(VUEFLOW_ID);
+const { smoothFitView } = useVueFlowUtils();
+const { onError, onNodesInitialized } = useVueFlow(VUEFLOW_ID);
 // const { onMouseMove } = useVueFlowMousePosition();
 
 onError((error: VueFlowError) => {
   errorHandler(error, "nuxt's onError");
+});
+
+onNodesInitialized(() => {
+  smoothFitView();
 });
 
 const edgeTypes = {
@@ -54,7 +58,6 @@ const erdState = useErd();
       "
       :nodes="erdState.state.nodes"
       :edges="erdState.state.edges"
-      :connection-mode="ConnectionMode.Loose"
       :edges-updatable="true"
       :edge-types="edgeTypes"
       :apply-default="false"

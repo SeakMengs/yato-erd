@@ -24,9 +24,8 @@ const setSettingOpen = (open: boolean): void => {
       }"
     >
       <DiagramControlTheme />
-      <DiagramControlExportImage />
-      <DiagramControlExportFile />
       <DiagramControlImportFile />
+      <DiagramControlExportAs @set-setting-open="setSettingOpen" />
       <DiagramControlFitView />
       <DiagramControlInteractive />
       <DiagramControlAutoLayout @set-setting-open="setSettingOpen" />
