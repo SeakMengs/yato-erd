@@ -7,7 +7,7 @@ export type CaptureOptions = HTMLToImageOptions & {
   shouldDownload?: boolean;
 };
 
-export type ImageType = "jpeg" | "png";
+export type ImageType = "jpeg" | "png" | "svg";
 
 export function useExport() {
   const erdState = useErd();
@@ -52,6 +52,8 @@ export function useExport() {
         transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.zoom})`,
       },
       cacheBust: true,
+      // The pixel ratio of captured image, increase to improve export image quality
+      pixelRatio: 4,
     };
 
     logger.info("Export as image options", options);
@@ -62,6 +64,9 @@ export function useExport() {
         break;
       case "png":
         dataUrl = await toPng(el, options);
+        break;
+      case "svg":
+        dataUrl = await toSvg(el, options);
         break;
       default:
         dataUrl = await toPng(el, options);

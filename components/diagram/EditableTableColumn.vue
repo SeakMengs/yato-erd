@@ -11,6 +11,7 @@ import { toast } from "~/components/ui/toast";
 import { vAutoAnimate } from "@formkit/auto-animate/vue";
 import { PopoverClose } from "radix-vue";
 
+const editColumnAttrOpen = ref<boolean>(false);
 const { updateTableNodeColumn } = useVueFlowUtils();
 const { interactive } = useInteractive();
 const props = defineProps<{
@@ -159,7 +160,7 @@ watch(
         </FormField>
       </fieldset>
     </form>
-    <Popover>
+    <Popover v-model:open="editColumnAttrOpen">
       <PopoverTrigger>
         <TooltipProvider>
           <Tooltip>
@@ -169,6 +170,9 @@ watch(
                 variant="outline"
                 size="icon"
                 class="flex-shrink-0 hover:ring-2 ring-ring mr-2"
+                :class="{
+                  'ring-2': editColumnAttrOpen,
+                }"
               >
                 <Ellipsis class="w-4 h-4" />
               </Button>
@@ -179,7 +183,7 @@ watch(
           </Tooltip>
         </TooltipProvider>
       </PopoverTrigger>
-      <PopoverContent class="min-w-32 p-0" side="right">
+      <PopoverContent class="min-w-32 p-0 m-2" side="right">
         <ScrollArea>
           <form
             @submit.prevent

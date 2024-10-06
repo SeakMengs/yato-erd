@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ControlButton } from "@vue-flow/controls";
-import { Settings } from "lucide-vue-next";
+import { Menu } from "lucide-vue-next";
 
 const isOpen = ref<boolean>(false);
 
@@ -16,11 +16,10 @@ const setSettingOpen = (open: boolean): void => {
 <template>
   <div class="group flex flex-col gap-1">
     <div
-      class="flex flex-col gap-1 overflow-hidden transition-all duration-300"
+      class="flex flex-col gap-1 overflow-hidden transition-all duration-300 opacity-0 max-h-0 ease-out"
       :class="{
         'opacity-100 max-h-96 ease-in': isOpen,
-        'opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-96 ease-out':
-          !isOpen,
+        // 'group-hover:opacity-100 group-hover:max-h-96 ': !isOpen,
       }"
     >
       <DiagramControlTheme />
@@ -43,12 +42,12 @@ const setSettingOpen = (open: boolean): void => {
                 'text-accent-foreground bg-accent': isOpen,
               }"
             >
-              <Settings class="w-4 h-4" />
+              <Menu class="w-4 h-4" />
             </Button>
           </ControlButton>
         </TooltipTrigger>
         <TooltipContent side="left">
-          <p>Settings</p>
+          <p>Menus</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

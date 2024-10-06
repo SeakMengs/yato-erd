@@ -1,4 +1,4 @@
-// Credit to reactflow simple float example. The code is entirely from react flow with some modification to fit this project use case.
+// Credit to reactflow simple float example.
 // https://codesandbox.io/p/sandbox/dank-architecture-c49ycq?file=%2FSimpleFloatingEdge.jsx%3A32%2C22
 import { Position, type XYPosition, type GraphNode } from "@vue-flow/core";
 
@@ -90,7 +90,6 @@ function getNodeCenter(node: GraphNode): XYPosition {
   };
 }
 
-// returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
 type EdgeParams = {
   sx: number;
   sy: number;
@@ -100,6 +99,7 @@ type EdgeParams = {
   targetPos: Position;
 };
 
+// returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
 export function getEdgeParams(
   sourceNode: GraphNode,
   targetNode: GraphNode,

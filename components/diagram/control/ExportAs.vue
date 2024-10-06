@@ -59,6 +59,36 @@ const { exportAsJson, exportAsImage } = useExport();
               >
                 <Image class="h-4 w-4" />Export as png</DropdownMenuItem
               >
+              <DropdownMenuItem
+                class="flex gap-2"
+                @click="
+                  () => {
+                    exportAsImage({
+                      type: 'jpeg',
+                      quality: 1,
+                      shouldDownload: true,
+                    });
+                    closeSetting();
+                  }
+                "
+              >
+                <Image class="h-4 w-4" />Export as jpeg</DropdownMenuItem
+              >
+              <DropdownMenuItem
+                class="flex gap-2"
+                @click="
+                  () => {
+                    exportAsImage({
+                      type: 'svg',
+                      quality: 1,
+                      shouldDownload: true,
+                    });
+                    closeSetting();
+                  }
+                "
+              >
+                <Image class="h-4 w-4" />Export as svg</DropdownMenuItem
+              >
             </DropdownMenuContent>
           </DropdownMenu>
         </ControlButton>

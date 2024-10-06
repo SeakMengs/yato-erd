@@ -36,5 +36,8 @@ export default defineNuxtConfig({
     componentDir: "./components/ui",
   },
   components: [{ path: "~/components", pathPrefix: true }],
+  routeRules: {
+    // Render this route on client side only
+    "/diagram": { ssr: false },
+  },
 });
-

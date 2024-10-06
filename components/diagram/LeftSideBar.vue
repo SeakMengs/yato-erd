@@ -3,7 +3,7 @@ import { useVueFlow } from "@vue-flow/core";
 import { CirclePlus, FilePenLine } from "lucide-vue-next";
 import { VUEFLOW_ID } from "~/constants/key";
 
-const { getNodes } = useVueFlow(VUEFLOW_ID);
+const { nodes } = useVueFlow(VUEFLOW_ID);
 const { addTable, smoothFitView } = useVueFlowUtils();
 
 const editTableNameId = ref<string | undefined>();
@@ -37,10 +37,10 @@ function openEditTableName(nodeId: string): void {
       </Button>
     </div>
     <Separator class="drop-shadow" />
-    <ScrollArea v-if="getNodes.length > 0">
+    <ScrollArea v-if="nodes.length > 0">
       <div>
         <DiagramCollapsibleTable
-          v-for="(node, index) in getNodes"
+          v-for="(node, index) in nodes"
           :key="node.id"
           :table-node-data-with-node-id="{
             tableNodeId: node.id,
@@ -52,7 +52,7 @@ function openEditTableName(nodeId: string): void {
           @close-edit-table-name="closeEditTableName"
           @open-edit-table-name="openEditTableName"
           :class="{
-            'mb-2': getNodes.length === index + 1,
+            'mb-2': nodes.length === index + 1,
           }"
         />
       </div>
