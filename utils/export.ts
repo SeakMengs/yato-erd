@@ -18,9 +18,16 @@ type TransformForWholeDiagram = {
 };
 
 // Since vue flow use tranform to movement, this function calculate to find tranformation such that it can tranform to see all nodes
-export function getTransformForWholeDiagram(): TransformForWholeDiagram {
-  const { getNodes } = useVueFlow(VUEFLOW_ID);
-  const nodesBounds = getRectOfNodes(getNodes.value);
+export function getTransformForWholeDiagram({
+  onlySelectedNodes,
+}: {
+  onlySelectedNodes?: boolean;
+}): TransformForWholeDiagram {
+  const { nodes, getSelectedNodes } = useVueFlow(VUEFLOW_ID);
+
+  const nodesBounds = getRectOfNodes(
+    onlySelectedNodes ? getSelectedNodes.value : nodes.value,
+  );
   const imageWidth = nodesBounds.width;
   const imageHeight = nodesBounds.height;
 

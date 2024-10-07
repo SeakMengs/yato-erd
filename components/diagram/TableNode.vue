@@ -48,31 +48,41 @@ const iconSize = "w-4 h-4";
           class="absolute top-1/2 transform -translate-y-1/2 !bg-primary"
         />
         <!-- Column content -->
+
         <div>
           <Separator class="" />
-          <div class="p-2 flex justify-between items-center gap-2">
-            <p class="flex justify-center items-center gap-1">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <KeyRound
-                      :class="iconSize"
-                      v-if="col.attribute.indexType === 'Primary key'"
-                    />
-                    <LifeBuoy
-                      :class="iconSize"
-                      v-else-if="col.attribute.indexType === 'Unique'"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{{ col.attribute.indexType }}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              {{ col.columnName }}
-            </p>
-            <p>{{ col.attribute.type }}</p>
-          </div>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <div class="p-2 flex justify-between items-center gap-2">
+                  <p class="flex justify-center items-center gap-1">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <KeyRound
+                            :class="iconSize"
+                            v-if="col.attribute.indexType === 'Primary key'"
+                          />
+                          <LifeBuoy
+                            :class="iconSize"
+                            v-else-if="col.attribute.indexType === 'Unique'"
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{{ col.attribute.indexType }}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {{ col.columnName }}
+                  </p>
+                  <p>{{ col.attribute.type }}</p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent v-if="col.userComment">
+                <p>Comment: {{ col.userComment }}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <!-- End of column content -->
         <Handle

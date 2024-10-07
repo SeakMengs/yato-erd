@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { ControlButton } from "@vue-flow/controls";
+import { useVueFlow } from "@vue-flow/core";
 import { FileJson, FileUpIcon, Image } from "lucide-vue-next";
+import { VUEFLOW_ID } from "~/constants/key";
+
+const { getSelectedNodes } = useVueFlow(VUEFLOW_ID);
 
 const emit = defineEmits<{
   (e: "setSettingOpen", open: boolean): void;
@@ -89,6 +93,59 @@ const { exportAsJson, exportAsImage } = useExport();
               >
                 <Image class="h-4 w-4" />Export as svg</DropdownMenuItem
               >
+              <template v-if="getSelectedNodes.length > 0">
+                <DropdownMenuItem
+                  class="flex gap-2"
+                  @click="
+                    () => {
+                      exportAsImage({
+                        type: 'png',
+                        quality: 1,
+                        shouldDownload: true,
+                        onlySelectedNodes: true,
+                      });
+                      closeSetting();
+                    }
+                  "
+                >
+                  <Image class="h-4 w-4" />Export selected nodes as
+                  png</DropdownMenuItem
+                >
+                <DropdownMenuItem
+                  class="flex gap-2"
+                  @click="
+                    () => {
+                      exportAsImage({
+                        type: 'jpeg',
+                        quality: 1,
+                        shouldDownload: true,
+                        onlySelectedNodes: true,
+                      });
+                      closeSetting();
+                    }
+                  "
+                >
+                  <Image class="h-4 w-4" />Export selected nodes as
+                  jpeg</DropdownMenuItem
+                >
+                <DropdownMenuItem
+                  class="flex gap-2"
+                  @click="
+                    () => {
+                      exportAsImage({
+                        type: 'svg',
+                        quality: 1,
+                        shouldDownload: true,
+                        onlySelectedNodes: true,
+                      });
+                      closeSetting();
+                    }
+                  "
+                >
+                  <Image class="h-4 w-4" />Export selected nodes as
+                  svg</DropdownMenuItem
+                >
+              </template>
             </DropdownMenuContent>
           </DropdownMenu>
         </ControlButton>

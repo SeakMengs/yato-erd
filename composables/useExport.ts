@@ -5,6 +5,7 @@ export type CaptureOptions = HTMLToImageOptions & {
   type?: ImageType;
   fileName?: string;
   shouldDownload?: boolean;
+  onlySelectedNodes?: boolean;
 };
 
 export type ImageType = "jpeg" | "png" | "svg";
@@ -27,11 +28,12 @@ export function useExport() {
       return;
     }
 
+    const { imageHeight, imageWidth, transform } = getTransformForWholeDiagram({
+      onlySelectedNodes: options.onlySelectedNodes,
+    });
+
     unSelectNodes();
     unSelectEdges();
-
-    const { imageHeight, imageWidth, transform } =
-      getTransformForWholeDiagram();
 
     let dataUrl: string;
     const fileName = options.fileName ?? `yatoerd-img-${Date.now()}`;
