@@ -1,0 +1,18 @@
+name: "YatoErd Container"
+services:
+  yatoerd_dev:
+    container_name: "yatoerd_dev"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/src
+      # Preserve node_modules during development
+      - /src/node_modules
+    # fix nitro worker issue. https://github.com/nuxt/nuxt/issues/13587#issuecomment-1451481510
+    tmpfs: /tmp
+    environment:
+      NODE_ENV: development
+    restart: always

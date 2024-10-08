@@ -126,7 +126,7 @@ watch(
         />
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div v-auto-animate class="flex flex-col gap-2 py-2">
+        <div v-auto-animate class="flex flex-col gap-1 py-2">
           <DiagramEditableTableColumn
             v-for="(column, index) in props.tableNodeDataWithNodeId.columns"
             :table-id="props.tableNodeDataWithNodeId.tableNodeId"

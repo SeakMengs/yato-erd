@@ -1,75 +1,71 @@
-# Nuxt 3 Minimal Starter
+# ✨ YatoERD
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+YatoERD is a web-based Entity-Relationship Diagram design tool that allows users to create, edit, and manage their database designs easily.
 
-## Setup
+## ✨ Roadmap
 
-Make sure to install the dependencies:
+- [x] Add table, edit table (including column)
+- [x] Auto layout using Dagre.js
+- [x] Export as JSON, PNG, JPEG, SVG
+- [x] Dark/Light mode
+- [ ] Export as MySQL, PostgreSQL file
+- [ ] Access diagram online (e.g., from Google Drive)
+- [ ] Drag and drop table columns to reorder
+
+## ✨ Setup
+
+Make sure to have node js and install the dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## ✨ Development
 
-Start the development server on `http://localhost:3000`:
+To run the development server:
 
 ```bash
-# npm
 npm run dev
+```
 
-# pnpm
-pnpm run dev
+If you prefer to use docker for development, you can use the following command:
 
-# yarn
-yarn dev
-
-# bun
-bun run dev
+```bash
+docker-compose up
 ```
 
 ## Production
 
-Build the application for production:
+To build the project:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+node .output/server/index.mjs
 ```
 
-Locally preview production build:
+If you prefer to use docker for production, you can use the following command:
 
 ```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
+docker-compose -f docker-compose.prod.yml up
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## ✨ Hosting
+
+YatoERD is simple to host, and you can use hosting services like Vercel, Netlify to deploy without any problem. However, if you prefer to host it on your server, you can use the following command:
+
+```bash
+git clone https://github.com/SeakMengs/yato-erd
+cd yato-erd
+docker-compose -f docker-compose.prod.yml up
+```
+
+## ✨ Contribute
+
+- Feel free to open an issue or pull request if you have any idea or found any bug
+- If you want to support me, you can [buy me a coffee](https://www.buymeacoffee.com/seakmeng)
+
+## ✨ Inspiration
+
+- Excalidraw
+- DrawSQL
+- Draw.io

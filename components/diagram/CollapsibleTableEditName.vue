@@ -159,8 +159,8 @@ onBeforeUnmount(() => {
         :data-state="props.isOpen ? 'open' : 'close'"
         class="h-4 w-4 data-[state=close]:-rotate-90 transition-transform duration-200"
       />
-      <form @click.stop @submit.prevent @focusin="onInputFocusIn">
-        <fieldset class="w-full" :disabled="!interactive">
+      <form class="w-full" @submit.prevent @focusin="onInputFocusIn">
+        <fieldset :disabled="!interactive">
           <FormField v-slot="{ errors, componentField }" name="tableName">
             <FormItem v-auto-animate class="w-full">
               <FormControl>

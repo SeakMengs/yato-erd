@@ -121,10 +121,15 @@ watch(
 
 <template>
   <div class="flex flex-row items-center gap-1 m-1 w-full">
-    <form @submit.prevent @focusin="onInputFocusIn" @focusout="onInputFocusOut">
+    <form
+      class="w-full"
+      @submit.prevent
+      @focusin="onInputFocusIn"
+      @focusout="onInputFocusOut"
+    >
       <fieldset
         :disabled="!interactive"
-        class="flex flex-row items-center gap-1 w-full"
+        class="flex flex-row items-center gap-1"
       >
         <FormField v-slot="{ errors, componentField }" name="columnName">
           <FormItem v-auto-animate class="w-full">

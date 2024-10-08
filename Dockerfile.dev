@@ -1,0 +1,22 @@
+ARG NODE_VERSION=lts
+
+FROM node:${NODE_VERSION} as base
+
+ENV NODE_ENV=development
+
+# set the working directory inside the Docker container to /src
+WORKDIR /src
+
+# Build
+FROM base as build
+
+# Link file to working directory
+COPY --link package.json package-lock.json ./
+RUN npm install
+
+# Run
+FROM base
+
+COPY --from=build /src/node_modules /src/node_modules
+
+CMD [ "npm", "run", "dev" ]
