@@ -66,16 +66,12 @@ cd yato-erd
 docker-compose -f docker-compose.prod.yml up
 ```
 
-## Testing
+## ✨ Testing
 
 To perform unit test run the following command:
 
 ```bash
 npm run test
-```
-
-```
-
 ```
 
 ## ✨ Contribute
