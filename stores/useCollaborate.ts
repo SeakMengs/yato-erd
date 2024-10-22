@@ -9,7 +9,7 @@ import {
 import { COLLABORATE_ID, VUEFLOW_ID } from "~/constants/key";
 import throttle from "lodash/throttle";
 import isEqual from "lodash/isEqual";
-import YjsService from "~/lib/yjs-service";
+import YjsService from "~/lib/yjs_service";
 import {
   DEFAULT_WS_CONFIG,
   SYNC_EDGES_DELAY,
