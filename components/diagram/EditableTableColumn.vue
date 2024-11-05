@@ -121,7 +121,12 @@ watch(
 
 <template>
   <div class="flex flex-row items-center gap-1 m-1 w-full">
-    <GripVertical class="w-4 h-4" />
+    <GripVertical
+      class="w-4 h-4 handle cursor-move"
+      :class="{
+        'cursor-no-drop': !interactive,
+      }"
+    />
     <form
       class="w-full"
       @submit.prevent
