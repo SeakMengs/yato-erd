@@ -75,7 +75,11 @@ const iconSize = "w-4 h-4";
                     </TooltipProvider>
                     {{ col.columnName }}
                   </p>
-                  <p>{{ col.attribute.type }}</p>
+                  <p>
+                    {{
+                      `${col.attribute.type}${col.attribute.nullable ? "?" : ""}`
+                    }}
+                  </p>
                 </div>
               </TooltipTrigger>
               <TooltipContent v-if="col.userComment">
