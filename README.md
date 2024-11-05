@@ -14,10 +14,10 @@ YatoERD is a web-based Entity-Relationship Diagram design tool.
 - [x] Auto layout
 - [x] Export as JSON, PNG, JPEG, SVG
 - [x] Dark/Light mode
+- [x] Drag and drop table columns to reorder
 - [ ] Export as MySQL, PostgreSQL file
 - [ ] Access diagram online (e.g., from Google Drive)
 - [ ] Support multilingual
-- [ ] Drag and drop table columns to reorder
 
 ## ✨ Setup
 

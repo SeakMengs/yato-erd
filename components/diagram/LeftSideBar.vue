@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useVueFlow } from "@vue-flow/core";
+import { vAutoAnimate } from "@formkit/auto-animate/vue";
+import { VueDraggableNext as draggable } from "vue-draggable-next";
 import { CirclePlus, FilePenLine } from "lucide-vue-next";
 import { VUEFLOW_ID } from "~/constants/key";
 
@@ -38,7 +40,7 @@ function openEditTableName(nodeId: string): void {
     </div>
     <Separator class="drop-shadow" />
     <ScrollArea v-if="nodes.length > 0">
-      <div>
+      <draggable v-auto-animate :list="nodes">
         <DiagramCollapsibleTable
           v-for="(node, index) in nodes"
           :key="node.id"
@@ -55,7 +57,7 @@ function openEditTableName(nodeId: string): void {
             'mb-2': nodes.length === index + 1,
           }"
         />
-      </div>
+      </draggable>
     </ScrollArea>
     <div v-else class="flex items-center justify-center my-6">
       <p>{{ $t("diagram.leftSideBar.noTable") }}</p>

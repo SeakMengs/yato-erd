@@ -44,6 +44,7 @@
     "vaul-vue": "^0.2.0",
     "vee-validate": "^4.13.2",
     "vue": "latest",
+    "vue-draggable-next": "^2.2.1",
     "vue-sonner": "^1.1.4",
     "y-protocols": "^1.0.6",
     "y-webrtc": "^10.3.0",

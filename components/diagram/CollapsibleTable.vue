@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { VueDraggableNext as draggable } from "vue-draggable-next";
 import { vAutoAnimate } from "@formkit/auto-animate/vue";
-import { ChevronDown, CirclePlus, PencilLine, Trash } from "lucide-vue-next";
+import {
+  ChevronDown,
+  CirclePlus,
+  PencilLine,
+  Trash,
+  GripVertical,
+} from "lucide-vue-next";
 import type { TableNodeDataWithNodeId } from "~/types/diagram/table_node";
 
 const props = defineProps<{
@@ -69,7 +76,8 @@ watch(
           class="flex flex-row items-center justify-between gap-2"
         >
           <div class="w-full flex flex-row items-center gap-2">
-            <span class="border-2 h-6 dark:border-white"></span>
+            <!-- <span class="border-2 h-6 dark:border-white"></span> -->
+            <GripVertical class="w-4 h-4" />
             <ChevronDown
               :data-state="isOpen ? 'open' : 'close'"
               class="h-4 w-4 data-[state=close]:-rotate-90 transition-transform duration-200"
@@ -126,21 +134,27 @@ watch(
         />
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div v-auto-animate class="flex flex-col gap-1 py-2">
-          <DiagramEditableTableColumn
-            v-for="(column, index) in props.tableNodeDataWithNodeId.columns"
-            :table-id="props.tableNodeDataWithNodeId.tableNodeId"
-            :column="column"
-            :column-position="index"
-            :key="column.columnId"
-            @removeColumn="
-              () =>
-                removeColumn(
-                  props.tableNodeDataWithNodeId.tableNodeId,
-                  column.columnId,
-                )
-            "
-          />
+        <div class="flex flex-col gap-1 py-2">
+          <draggable
+            v-auto-animate
+            :list="props.tableNodeDataWithNodeId.columns"
+          >
+            <DiagramEditableTableColumn
+              class="list-group-item"
+              v-for="(column, index) in props.tableNodeDataWithNodeId.columns"
+              :table-id="props.tableNodeDataWithNodeId.tableNodeId"
+              :column="column"
+              :column-position="index"
+              :key="column.columnId"
+              @removeColumn="
+                () =>
+                  removeColumn(
+                    props.tableNodeDataWithNodeId.tableNodeId,
+                    column.columnId,
+                  )
+              "
+            />
+          </draggable>
           <Button
             class="flex-shrink-0 text-center gap-2"
             :disabled="!interactive"

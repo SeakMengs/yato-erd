@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ellipsis, Trash } from "lucide-vue-next";
+import { Ellipsis, Trash, GripVertical } from "lucide-vue-next";
 import {
   columnIndexTypeSchemaEnum,
   tableNodeDataColumnSchema,
@@ -121,6 +121,7 @@ watch(
 
 <template>
   <div class="flex flex-row items-center gap-1 m-1 w-full">
+    <GripVertical class="w-4 h-4" />
     <form
       class="w-full"
       @submit.prevent
